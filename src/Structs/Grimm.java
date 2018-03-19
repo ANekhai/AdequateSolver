@@ -3,74 +3,75 @@ package Structs;
 
 import java.io.*;
 import java.util.Vector;
-import static java.lang.System.exit;
 
 
 public class Grimm {
-    static String endLine = System.getProperty("line.separator");
 
     static class Reader {
 
-        //TODO: function cannot handle inline comments. Should fix this.
-        Vector<Genome> parseGRIMM(String fileName){
-            Vector<Genome> genomes = new Vector();
+        //Parse multiple genomes in a GRIMM file to a vector of genomes
+        static Vector<Genome> parseGRIMM(BufferedReader in) throws IOException {
+            Vector<Genome> genomes = new Vector<>();
             Genome currGenome = null;
 
-            try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
-                for(String line; (line = in.readLine()) != null; ) {
+
+            try {
+                for (String line; (line = in.readLine()) != null; ) {
+
                     if (line.length() == 0 || line.startsWith("#")) {
                         continue;
-                    }else if (line.startsWith(">")) {
-                        if (currGenome != null){
+                    } else if (line.startsWith(">")) {
+                        if (currGenome != null) {
                             genomes.add(currGenome);
                         }
                         currGenome = new GenomeImpl(line.substring(1));
-                    }else {
+                    } else {
                         String[] labels = line.split(" ");
-                        Vector<Integer> genes = new Vector<>();
-                        boolean circular = true;
-                        for (int i = 0; i < labels.length; ++i) {
-                            if (labels[i].equals("$")) {
-                                circular = false;
-                            }else if ( labels[i].equals("@")) {
-                                circular = true;
-                            }else {
-                                genes.add(Integer.valueOf(labels[i]));
+                        Vector<String> genes = new Vector<>();
+                        for (String label : labels) {
+                            if (label.equals("$") || label.equals("@")) {
+                                if (!genes.isEmpty()) {
+                                    currGenome.addChromosome(genes, label.equals("@"));
+                                }
+                                break;
+                            } else {
+                                genes.add(label);
                             }
                         }
-                        currGenome.addChromosome(genes, circular);
                     }
 
                 }
-                genomes.add(currGenome);
 
-                in.close();
-
-            }catch (FileNotFoundException e){
-                System.out.println("File Not Found");
-                exit(1);
-            } catch (IOException e) {
-                System.out.println("Error parsing file");
-                e.printStackTrace();
+            } catch (IOException e){
+                System.err.println("Error reading file");
+                throw e;
             }
 
             return genomes;
         }
 
+
+        public Vector<Genome> readFile(String fileName) throws IOException {
+
+            try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
+                return Reader.parseGRIMM(in);
+            }
+        }
     }
+
 
     //TODO: Add functionality to write genomes to a file or stream in GRIMM format.
 //    static class Writer {
 //
 //    }
 
-    public static void main(String[] argv){
-        String fileName = "test.txt";
-
-        Reader test = new Reader();
-        Vector<Genome> genomes = new Vector<>();
-        genomes = test.parseGRIMM(fileName);
-
-    }
+//    public static void main(String[] argv){
+//        String fileName = "test.txt";
+//
+//        Reader test = new Reader();
+//        Vector<Genome> genomes = new Vector<>();
+//        // genomes = test.readFile(fileName);
+//
+//    }
 
 }
