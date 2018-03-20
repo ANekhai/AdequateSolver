@@ -15,39 +15,50 @@ public class Grimm {
             Genome currGenome = null;
 
 
-            try {
-                for (String line; (line = in.readLine()) != null; ) {
+            for (String line; (line = in.readLine()) != null; ) {
 
-                    if (line.length() == 0 || line.startsWith("#")) {
-                        continue;
-                    } else if (line.startsWith(">")) {
-                        if (currGenome != null) {
-                            genomes.add(currGenome);
-                        }
-                        currGenome = new GenomeImpl(line.substring(1));
-                    } else {
-                        String[] labels = line.split(" ");
-                        Vector<String> genes = new Vector<>();
-                        for (String label : labels) {
-                            if (label.equals("$") || label.equals("@")) {
-                                if (!genes.isEmpty()) {
-                                    currGenome.addChromosome(genes, label.equals("@"));
-                                }
-                                break;
+                if (line.length() == 0 || line.startsWith("#")) {
+                    continue;
+                } else if (line.startsWith(">")) {
+                    if (currGenome != null) {
+                        if (currGenome.isEmpty()) throw new IOException("Cannot parse empty genomes");
+                        else genomes.add(currGenome);
+                    }
+                    currGenome = new GenomeImpl(line.substring(1));
+                } else {
+                    String[] labels = line.split(" ");
+                    Vector<String> genes = new Vector<>();
+                    for (String label : labels) {
+                        if (label.equals("$") || label.equals("@")) {
+                            if (!genes.isEmpty()) {
+                                currGenome.addChromosome(genes, label.equals("@"));
+                                genes = null;
                             } else {
-                                genes.add(label);
+                                // Attempting to add empty chromosome
+                                throw new IOException("Cannot parse empty chromosomes");
                             }
+                            break;
+                        } else {
+                            genes.add(label);
                         }
+                    }
+                    // if (genes.size() > 0) throw new IOException("Chromosomes must end in '@' or '$' ");
+                    if (genes != null) {
+                        if (genes.isEmpty()) throw new IOException("Cannot parse empty genomes");
+                        else throw new IOException("Chromosomes must end in '@' or '$'");
                     }
 
                 }
 
-            } catch (IOException e){
-                System.err.println("Error reading file");
-                throw e;
             }
+            if (currGenome != null) {
+                if (currGenome.getSize() > 0) genomes.add(currGenome);
+                else throw new IOException("Cannot parse empty genomes");
 
-            return genomes;
+                return genomes;
+            } else {
+                throw new IOException("No genomes found in file");
+            }
         }
 
 

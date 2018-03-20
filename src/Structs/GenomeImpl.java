@@ -76,7 +76,7 @@ class GenomeImpl implements Genome {
         if (index < this.chromosomes.size()) {
             return this.chromosomes.get(index);
         }
-        return null;
+        throw new IndexOutOfBoundsException();
     }
 
     public boolean isEmpty(){
