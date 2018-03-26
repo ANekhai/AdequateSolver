@@ -1,25 +1,15 @@
-/*
-* GenomeImpl
-*
-* Version 1.0
-*
-* 03/06/2018
-*
-* No copyright information
- */
+package structs;
 
-package Structs;
-
-import java.util.*; //Vector
+import java.util.Vector;
 
 
-class GenomeImpl implements Genome {
-    static class Chromosome {
+public class Genome {
+    public class Chromosome {
         private Vector<String> genes;
         private boolean cyclical;
 
         //Constructor
-        private Chromosome(Vector<String> genes, boolean cyclical) {
+        Chromosome(Vector<String> genes, boolean cyclical) {
             this.genes = new Vector<>(genes);
             this.cyclical = cyclical;
         }
@@ -46,6 +36,8 @@ class GenomeImpl implements Genome {
         public int getSize(){
             return this.genes.size();
         }
+
+        public Vector<String> getGenes() { return this.genes; }
     }
 
 
@@ -53,8 +45,12 @@ class GenomeImpl implements Genome {
     private String name;
     private Vector<Chromosome> chromosomes;
 
+    public Genome(){
+        this.name = "None";
+        this.chromosomes = new Vector<>();
+    }
 
-    GenomeImpl(String name){
+    public Genome(String name){
         this.name = name;
         this.chromosomes = new Vector<>();
     }
@@ -93,16 +89,5 @@ class GenomeImpl implements Genome {
         return genome;
     }
 
-    public static void main(String[] args){
-        Genome genome = new GenomeImpl("Test");
-        Vector<String> genes = new Vector<>();
-        genes.add("1"); genes.add("3"); genes.add("5");
-
-        genome.addChromosome(genes, true);
-        genes.add("7");
-        genome.addChromosome(genes, false);
-
-        System.out.println(genome.toString());
-    }
 
 }

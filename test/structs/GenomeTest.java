@@ -1,5 +1,6 @@
-package Structs;
+package structs;
 
+import structs.Genome;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -7,13 +8,13 @@ import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GenomeImplTest {
+class GenomeTest {
     private Genome testGenome;
 
 
     @BeforeEach
     void setUp() {
-        testGenome = new GenomeImpl("Test");
+        testGenome = new Genome("Test");
 
     }
 

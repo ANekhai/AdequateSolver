@@ -1,4 +1,4 @@
-package Structs;
+package structs;
 
 
 import java.io.*;
@@ -24,7 +24,7 @@ public class Grimm {
                         if (currGenome.isEmpty()) throw new IOException("Cannot parse empty genomes");
                         else genomes.add(currGenome);
                     }
-                    currGenome = new GenomeImpl(line.substring(1));
+                    currGenome = new Genome(line.substring(1));
                 } else {
                     String[] labels = line.split(" ");
                     Vector<String> genes = new Vector<>();
