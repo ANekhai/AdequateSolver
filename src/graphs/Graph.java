@@ -1,31 +1,25 @@
 package graphs;
 
-import org.jgrapht.graph.*;
+import com.google.common.graph.*;
 import structs.Genome;
 
+import java.util.Set;
+
 public abstract class Graph {
-    protected Pseudograph<String, DefaultEdge> graph;
+    protected MutableNetwork<String, Integer> graph;
     protected int numEdges;
-    protected int numVertices;
 
     abstract void addGenome(Genome order);
 
-    abstract void addVertex(String vertex);
+    abstract void addEdge(String u, String v);
 
-    public void addVertices(String... vertices){
-        for (String vertex : vertices){
-            addVertex(vertex);
-        }
+    boolean contains(String node){
+        return graph.nodes().contains(node);
     }
 
-    abstract void addEdge(String source, String target);
+//     Accessors
+    Set<String> getNodes() { return graph.nodes(); }
 
-    // Accessors
-
-    DefaultEdge getEdge(String source, String target){
-        return 
-    }
-
-
+    boolean hasEdge(String u, String v) { return graph.hasEdgeConnecting(u, v); }
 
 }

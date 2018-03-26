@@ -4,12 +4,12 @@ import java.util.Vector;
 
 
 public class Genome {
-    static class Chromosome {
+    public class Chromosome {
         private Vector<String> genes;
         private boolean cyclical;
 
         //Constructor
-        private Chromosome(Vector<String> genes, boolean cyclical) {
+        Chromosome(Vector<String> genes, boolean cyclical) {
             this.genes = new Vector<>(genes);
             this.cyclical = cyclical;
         }
@@ -36,6 +36,8 @@ public class Genome {
         public int getSize(){
             return this.genes.size();
         }
+
+        public Vector<String> getGenes() { return this.genes; }
     }
 
 
@@ -43,12 +45,12 @@ public class Genome {
     private String name;
     private Vector<Chromosome> chromosomes;
 
-    Genome(){
+    public Genome(){
         this.name = "None";
         this.chromosomes = new Vector<>();
     }
 
-    Genome(String name){
+    public Genome(String name){
         this.name = name;
         this.chromosomes = new Vector<>();
     }
