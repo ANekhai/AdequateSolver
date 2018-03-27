@@ -16,11 +16,11 @@ public class Genome {
 
         public String toString(){
             String chromosome = "";
-            for (String gene : this.genes){
+            for (String gene : genes){
                 chromosome = chromosome.concat(gene + " ");
             }
 
-            if (this.cyclical) {
+            if (cyclical) {
                 chromosome = chromosome.concat("@");
             } else {
                 chromosome = chromosome.concat("$");
@@ -30,14 +30,14 @@ public class Genome {
         }
 
         public boolean isCyclical(){
-            return this.cyclical;
+            return cyclical;
         }
 
         public int getSize(){
-            return this.genes.size();
+            return genes.size();
         }
 
-        public Vector<String> getGenes() { return this.genes; }
+        public Vector<String> getGenes() { return (Vector<String>)genes.clone(); }
     }
 
 
@@ -46,18 +46,18 @@ public class Genome {
     private Vector<Chromosome> chromosomes;
 
     public Genome(){
-        this.name = "None";
-        this.chromosomes = new Vector<>();
+        name = "None";
+        chromosomes = new Vector<>();
     }
 
     public Genome(String name){
         this.name = name;
-        this.chromosomes = new Vector<>();
+        chromosomes = new Vector<>();
     }
 
     public void addChromosome(Vector<String> genes, boolean cyclical) {
         Chromosome newChromosome = new Chromosome(genes, cyclical);
-        this.chromosomes.add(newChromosome);
+        chromosomes.add(newChromosome);
     }
 
     public String getName(){
@@ -69,8 +69,8 @@ public class Genome {
     }
 
     public Chromosome getChromosome(int index){
-        if (index < this.chromosomes.size()) {
-            return this.chromosomes.get(index);
+        if (index < chromosomes.size()) {
+            return chromosomes.get(index);
         }
         throw new IndexOutOfBoundsException();
     }
@@ -81,8 +81,8 @@ public class Genome {
 
     public String toString(){
         String endLine = System.getProperty("line.separator");
-        String genome = this.name + endLine;
-        for (Chromosome chromosome : this.chromosomes) {
+        String genome = name + endLine;
+        for (Chromosome chromosome : chromosomes) {
             genome = genome.concat(chromosome.toString() + endLine);
         }
 

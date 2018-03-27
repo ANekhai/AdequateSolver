@@ -11,7 +11,10 @@ public abstract class Graph {
 
     abstract void addGenome(Genome order);
 
-    abstract void addEdge(String u, String v);
+    public void addEdge(String u, String v){
+        ++numEdges;
+        graph.addEdge(u, v, numEdges);
+    }
 
     boolean contains(String node){
         return graph.nodes().contains(node);
