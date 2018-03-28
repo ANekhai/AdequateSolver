@@ -2,7 +2,7 @@ package graphs;
 
 import structs.Genome;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class NonContractedGenomeTest {
     private NonContractedGenome graph;
     private Genome genome;
-    private Vector<String> chromosome;
+    private ArrayList<String> chromosome;
 
     @BeforeEach
     void setUp() {
         graph = new NonContractedGenome();
         genome = new Genome();
-        chromosome = new Vector<>();
+        chromosome = new ArrayList<>();
     }
 
     @Test
@@ -85,6 +85,7 @@ class NonContractedGenomeTest {
     @Test
     void testThreeDuplicatedGenome() {
         chromosome.add("1"); chromosome.add("2");
+        genome.addChromosome(chromosome, true);
         genome.addChromosome(chromosome, true);
         genome.addChromosome(chromosome, true);
         graph.addGenome(genome);

@@ -1,16 +1,16 @@
 package structs;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 
 public class Genome {
     public class Chromosome {
-        private Vector<String> genes;
+        private ArrayList<String> genes;
         private boolean cyclical;
 
         //Constructor
-        Chromosome(Vector<String> genes, boolean cyclical) {
-            this.genes = new Vector<>(genes);
+        Chromosome(ArrayList<String> genes, boolean cyclical) {
+            this.genes = new ArrayList<>(genes);
             this.cyclical = cyclical;
         }
 
@@ -37,25 +37,33 @@ public class Genome {
             return genes.size();
         }
 
-        public Vector<String> getGenes() { return (Vector<String>)genes.clone(); }
+        public ArrayList<String> getGenes() { return (ArrayList<String>)genes.clone(); }
     }
 
-
-    //TODO: THINK ABOUT HOW TO ENUMERATE DUPLICATED GENES FOR NONCONTRACTED BPGRAPH
     private String name;
-    private Vector<Chromosome> chromosomes;
+    private ArrayList<Chromosome> chromosomes;
 
     public Genome(){
         name = "None";
-        chromosomes = new Vector<>();
+        chromosomes = new ArrayList<>();
     }
 
     public Genome(String name){
         this.name = name;
-        chromosomes = new Vector<>();
+        chromosomes = new ArrayList<>();
     }
 
-    public void addChromosome(Vector<String> genes, boolean cyclical) {
+
+    public Genome(String name, boolean allCircular, ArrayList<String>... chromosomes){
+        this.name = name;
+        this.chromosomes = new ArrayList<>();
+        for (ArrayList<String> genes : chromosomes){
+            addChromosome(genes, allCircular);
+        }
+
+    }
+
+    public void addChromosome(ArrayList<String> genes, boolean cyclical) {
         Chromosome newChromosome = new Chromosome(genes, cyclical);
         chromosomes.add(newChromosome);
     }

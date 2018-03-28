@@ -5,14 +5,14 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 class GrimmTest {
     private BufferedReader in;
-    private Vector<Genome> readResult;
+    private ArrayList<Genome> readResult;
     private static String endLine = System.getProperty("line.separator");
 
 

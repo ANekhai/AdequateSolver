@@ -3,21 +3,21 @@ package graphs;
 
 import structs.Genome;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ContractedGraphTest {
+class ContractedGenomeTest {
     private ContractedGenome graph;
     private Genome genome;
-    private Vector<String> chromosome;
+    private ArrayList<String> chromosome;
 
     @BeforeEach
     void setUp() {
         genome = new Genome();
-        chromosome = new Vector<>();
+        chromosome = new ArrayList<>();
         graph = new ContractedGenome();
     }
 

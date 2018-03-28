@@ -3,7 +3,7 @@ package graphs;
 import structs.Genome;
 import com.google.common.graph.*;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class ContractedGenome extends Graph {
 
@@ -19,8 +19,8 @@ public class ContractedGenome extends Graph {
         addGenome(order);
     }
 
-    private Vector<String> getLabels(String gene){
-        Vector<String> labels = new Vector<>();
+    private ArrayList<String> getLabels(String gene){
+        ArrayList<String> labels = new ArrayList<>();
         if (gene.charAt(0) == '-') {
             String name = gene.substring(1);
             labels.add(name + "h"); labels.add(name + "t");
@@ -33,8 +33,8 @@ public class ContractedGenome extends Graph {
 
     public void addGenome(Genome order){
         for (int i = 0; i < order.getSize(); ++i) {
-            Vector<String> genes = order.getChromosome(i).getGenes();
-            Vector<String> uLabels, vLabels;
+            ArrayList<String> genes = order.getChromosome(i).getGenes();
+            ArrayList<String> uLabels, vLabels;
 
             for (int j = 0; j < genes.size() - 1; ++j) {
                 uLabels = getLabels(genes.get(j));

@@ -4,7 +4,7 @@ import com.google.common.graph.*;
 import structs.Genome;
 
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class NonContractedGenome extends Graph {
     private HashMap<String, Integer> geneEnum;
@@ -23,7 +23,7 @@ public class NonContractedGenome extends Graph {
         addGenome(order);
     }
 
-    private Vector<String> getLabels(String gene) {
+    private ArrayList<String> getLabels(String gene) {
         String name;
         if (gene.charAt(0) == '-') {
             name = gene.substring(1);
@@ -35,7 +35,7 @@ public class NonContractedGenome extends Graph {
         else
             geneEnum.put(name, 0);
 
-        Vector<String> labels = new Vector<>();
+        ArrayList<String> labels = new ArrayList<>();
         if (gene.equals(name)) {
             labels.add(gene + "t" + geneEnum.get(gene).toString());
             labels.add(gene + "h" + geneEnum.get(gene).toString());
@@ -49,8 +49,8 @@ public class NonContractedGenome extends Graph {
 
     public void addGenome(Genome order){
         for (int i = 0; i < order.getSize(); ++i) {
-            Vector<String> genes = order.getChromosome(i).getGenes();
-            Vector<String> currLabels, nextLabels;
+            ArrayList<String> genes = order.getChromosome(i).getGenes();
+            ArrayList<String> currLabels, nextLabels;
             currLabels = getLabels(genes.get(0));
             String leftExtremity = currLabels.get(0);
             for (int j = 1; j < genes.size(); ++j) {
