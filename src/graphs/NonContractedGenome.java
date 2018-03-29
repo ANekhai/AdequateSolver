@@ -5,6 +5,7 @@ import structs.Genome;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class NonContractedGenome extends Graph {
     private HashMap<String, Integer> geneEnum;
@@ -12,13 +13,11 @@ public class NonContractedGenome extends Graph {
     public NonContractedGenome() {
         geneEnum = new HashMap<>();
         graph = NetworkBuilder.undirected().build();
-        numEdges = 0;
     }
 
     public NonContractedGenome(Genome order) {
         geneEnum = new HashMap<>();
         graph = NetworkBuilder.undirected().build();
-        numEdges = 0;
 
         addGenome(order);
     }
@@ -65,6 +64,10 @@ public class NonContractedGenome extends Graph {
                 throw new UnsupportedOperationException();
             }
         }
+    }
+
+    public Genome toGeneOrder(){
+        return null;
     }
 
 }

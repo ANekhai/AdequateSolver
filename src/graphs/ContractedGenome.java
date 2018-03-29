@@ -9,12 +9,10 @@ public class ContractedGenome extends Graph {
 
     public ContractedGenome(){
         graph = NetworkBuilder.undirected().allowsParallelEdges(true).allowsSelfLoops(true).build();
-        numEdges = 0;
     }
 
     public ContractedGenome(Genome order){
         graph = NetworkBuilder.undirected().allowsParallelEdges(true).allowsSelfLoops(true).build();
-        numEdges = 0;
 
         addGenome(order);
     }
@@ -51,6 +49,11 @@ public class ContractedGenome extends Graph {
                 throw new UnsupportedOperationException();
             }
         }
+    }
+
+
+    public Genome toGeneOrder(){
+        return null;
     }
 
 }

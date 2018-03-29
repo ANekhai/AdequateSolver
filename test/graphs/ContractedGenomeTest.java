@@ -1,6 +1,7 @@
 package graphs;
 
 
+import com.google.common.graph.ElementOrder;
 import structs.Genome;
 
 import java.util.ArrayList;
@@ -83,6 +84,20 @@ class ContractedGenomeTest {
 
         assertEquals(4, graph.numEdges);
         assertEquals(8, graph.getNodes().size());
+    }
+
+
+    @Test
+    void testUniquenessOfEdges() {
+        chromosome.add("1"); chromosome.add("2");
+        genome.addChromosome(chromosome, true);
+        graph.addGenome(genome);
+        Graph secondGraph = new ContractedGenome(genome);
+
+        ElementOrder<Integer> order = graph.getEdgeOrder();
+
+        assertFalse(graph.getEdgeOrder().equals(secondGraph.getEdgeOrder()));
+
     }
 
     @Test
