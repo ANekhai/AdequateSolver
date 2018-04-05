@@ -2,16 +2,16 @@ package structs;
 
 
 import java.io.*;
-import java.util.Vector;
+import java.util.ArrayList;
 
 
 public class Grimm {
 
     static class Reader {
 
-        //Parse multiple genomes in a GRIMM file to a vector of genomes
-        static Vector<Genome> parseGRIMM(BufferedReader in) throws IOException {
-            Vector<Genome> genomes = new Vector<>();
+        //Parse multiple genomes in a GRIMM file to a list of genomes
+        static ArrayList<Genome> parseGRIMM(BufferedReader in) throws IOException {
+            ArrayList<Genome> genomes = new ArrayList<>();
             Genome currGenome = null;
 
 
@@ -27,7 +27,7 @@ public class Grimm {
                     currGenome = new Genome(line.substring(1));
                 } else {
                     String[] labels = line.split(" ");
-                    Vector<String> genes = new Vector<>();
+                    ArrayList<String> genes = new ArrayList<>();
                     for (String label : labels) {
                         if (label.equals("$") || label.equals("@")) {
                             if (!genes.isEmpty()) {
@@ -62,7 +62,7 @@ public class Grimm {
         }
 
 
-        public Vector<Genome> readFile(String fileName) throws IOException {
+        public ArrayList<Genome> readFile(String fileName) throws IOException {
 
             try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
                 return Reader.parseGRIMM(in);
@@ -80,7 +80,7 @@ public class Grimm {
 //        String fileName = "test.txt";
 //
 //        Reader test = new Reader();
-//        Vector<Genome> genomes = new Vector<>();
+//        ArrayList<Genome> genomes = new ArrayList<>();
 //        // genomes = test.readFile(fileName);
 //
 //    }

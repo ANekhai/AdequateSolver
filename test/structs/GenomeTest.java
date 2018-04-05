@@ -4,7 +4,7 @@ import structs.Genome;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +20,7 @@ class GenomeTest {
 
     @Test
     void testAdditionOfChromosomes(){
-        Vector<String> chromosome = new Vector<>();
+        ArrayList<String> chromosome = new ArrayList<>();
         chromosome.add("1");
         testGenome.addChromosome(chromosome, true);
         chromosome.add("2");
@@ -36,7 +36,7 @@ class GenomeTest {
 
     @Test
     void testStringConversion(){
-        Vector<String> chromosome = new Vector<>();
+        ArrayList<String> chromosome = new ArrayList<>();
         chromosome.add("1"); chromosome.add("2");
         testGenome.addChromosome(chromosome, true);
         testGenome.addChromosome(chromosome, false);
