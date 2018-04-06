@@ -6,44 +6,56 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class BPGraph {
-    ArrayList<Graph> subGraphs;
-    //one idea, store type of graph contained in subGraphs vector
+    ArrayList<Graph> colors;
+    //one idea, store type of graph contained in colors array
     boolean isContracted;
     HashMap<String, Boolean> availableVertices;
 
     public BPGraph(){
-        subGraphs = new ArrayList<>();
+        colors = new ArrayList<>();
     }
 
     public BPGraph(ContractedGenome... graphs) {
         isContracted = true;
-        subGraphs = new ArrayList<>();
-        subGraphs.addAll(Arrays.asList(graphs));
+        colors = new ArrayList<>();
+        colors.addAll(Arrays.asList(graphs));
         addAvailabilities(graphs);
     }
 
     public BPGraph(NonContractedGenome... graphs) {
         isContracted = false;
-        subGraphs = new ArrayList<>();
-        subGraphs.addAll(Arrays.asList(graphs));
+        colors = new ArrayList<>();
+        colors.addAll(Arrays.asList(graphs));
         addAvailabilities(graphs);
     }
 
     //Getters
     public Set<String> getNodes() { return availableVertices.keySet(); }
 
+    public ArrayList<Set<String>> getAllAdjacencies(String node) {
+        ArrayList<Set<String>> adjacencies = new ArrayList<>();
+        for (Graph color : colors) {
+            adjacencies.add(color.getAdjacentNodes(node));
+        }
+        return adjacencies;
+    }
 
+    public int getColorsSize() { return colors.size(); }
+
+    public Set<String> getNodesInColor(int color) { return colors.get(color).getNodes(); }
+
+    public Set<String> getAdjacencyInColor(String node, int color) { return colors.get(color).getAdjacentNodes(node); }
 
     //Member functions
     public void add(Graph graph) {
-        if (subGraphs.isEmpty()){
+        if (colors.isEmpty()){
             isContracted = graph instanceof ContractedGenome;
         } else if ((graph instanceof NonContractedGenome && isContracted) ||
                 (graph instanceof ContractedGenome && !isContracted) ) {
             //perhaps modify this to throw a checked exception instead
             throw new UnsupportedOperationException("Breakpoint graph must consist of the same genome graph type");
         }
-        subGraphs.add(graph);
+        colors.add(graph);
         addAvailabilities(graph);
     }
 

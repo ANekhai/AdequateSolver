@@ -4,11 +4,13 @@ import graphs.BPGraph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Detector {
     private int numDetected;
     private ArrayList<String> foundSubgraphs;
     private HashMap<String, Boolean> valid;
+    private HashMap<String, Boolean> incidentVertices;
     //BUNCH OF OTHER STRUCTURES FROM DCJSTREAM DETECTOR
 
     public Detector(){
@@ -70,11 +72,26 @@ public class Detector {
 
     private boolean AS1(BPGraph graph) {
         valid = graph.copyAvailability();
-        for (String key : graph.getNodes()) {
-            if (!graph.checkAvailable(key)) {
+        for (String node : graph.getNodes()) {
+            if (!valid.get(node)) {
                 continue;
             }
-            //extract adjacencies from all the colors and use them to find subgraphs
+            //extract adjacencies from all the colors
+            ArrayList<Set<String>> adjacencies = graph.getAllAdjacencies(node);
+            //maybe I should assume there are only 3 colors to cut down on for loops
+            for (int i = 0; i < graph.getColorsSize() - 1; ++i) {
+                for (String adjNode : adjacencies.get(i)) {
+                    for (int j = i + 1; j < graph.getColorsSize(); ++j) {
+                        if (adjacencies.get(j).contains(adjNode)) {
+                            this.addVertex(node);
+                            this.addVertex(adjNode);
+                            valid.put(node, false);
+                            valid.put(adjNode, false);
+                        }
+
+                    }
+                }
+            }
 
         }
 
@@ -87,6 +104,28 @@ public class Detector {
     }
 
     private boolean AS2_one(BPGraph graph) {
+        Boolean onlyTwoColors = false;
+        incidentVertices = graph.copyAvailability();
+
+        for (int color = 0; color < graph.getColorsSize(); ++color){
+            valid = (HashMap<String, Boolean>) incidentVertices.clone();
+
+            for (String u : graph.getNodesInColor(color)) {
+                if (!valid.get(u)) {
+                    continue;
+                }
+
+                Set<String> v = graph.getAdjacencyInColor(u, color);
+
+
+                // get other colors. HERE WE DECLARE THERE ARE ONLY THREE COLORS
+                int secondColor = (color + 1) % 3, thirdColor = (color + 2) % 3;
+
+
+            }
+
+        }
+
         return false;
     }
 

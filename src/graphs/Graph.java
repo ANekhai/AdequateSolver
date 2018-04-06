@@ -3,6 +3,7 @@ package graphs;
 import com.google.common.graph.*;
 import structs.Genome;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Graph {
@@ -29,7 +30,13 @@ public abstract class Graph {
 
     public Set<Integer> incidentEdges(String node) { return graph.incidentEdges(node); }
 
-    public Set<String> getAdjacentNodes(String node) { return graph.adjacentNodes(node); }
+    public Set<String> getAdjacentNodes(String node) {
+        try {
+            return graph.adjacentNodes(node);
+        } catch (IllegalArgumentException e) {
+            return new HashSet<>();
+        }
+    }
 
     public Set<Integer> getEdgesConnecting(String nodeU, String nodeV) { return graph.edgesConnecting(nodeU, nodeV); }
 
