@@ -10,7 +10,7 @@ import java.util.Set;
 public class Detector {
     private int numDetected;
     private ArrayList<String> foundSubgraphs;
-    private ArrayList<String> foundFourCycle;
+    private String[] fourCycle = new String[4];
     private HashMap<String, Boolean> valid;
     private HashMap<String, Boolean> incident; // stores incident vertices to detected AS
     //BUNCH OF OTHER STRUCTURES FROM DCJSTREAM DETECTOR
@@ -105,6 +105,18 @@ public class Detector {
         }
     }
 
+    private void addVertices(String... vertices) {
+        for (String vertex : vertices) {
+            addVertex(vertex);
+        }
+    }
+
+    private void updateVisitedVertices(HashMap<String, Boolean> map, String... vertices) {
+        for (String vertex : vertices) {
+            map.put(vertex, false);
+        }
+    }
+
     private boolean AS2_one(BPGraph graph) { // Why is it called AS2_one vs AS2_all???????
         Boolean onlyTwoColors = false;
         incident = graph.copyAvailability();
@@ -125,122 +137,87 @@ public class Detector {
                     continue;
                 }
                 // TODO: perhaps check if u or v have degree > 1
-                valid.put(u, false);
-                valid.put(v, false);
+                updateVisitedVertices(valid, u, v);
 
                 // get other colors. HERE WE DECLARE THERE ARE ONLY THREE COLORS
                 int secondColor = (color + 1) % 3, thirdColor = (color + 2) % 3;
 
                 //TODO: Code here will need to be refactored to accept multidegree nodes too
-                String u2 = Iterables.getOnlyElement(graph.getAdjacencyInColor(u, secondColor));
-                String u3 = Iterables.getOnlyElement(graph.getAdjacencyInColor(u, thirdColor));
-                String v2 = Iterables.getOnlyElement(graph.getAdjacencyInColor(v, secondColor));
-                String v3 = Iterables.getOnlyElement(graph.getAdjacencyInColor(v, thirdColor));
+                String u1 = Iterables.getOnlyElement(graph.getAdjacencyInColor(u, secondColor));
+                String u2 = Iterables.getOnlyElement(graph.getAdjacencyInColor(u, thirdColor));
+                String v1 = Iterables.getOnlyElement(graph.getAdjacencyInColor(v, secondColor));
+                String v2 = Iterables.getOnlyElement(graph.getAdjacencyInColor(v, thirdColor));
 
-                if(Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, secondColor)).equals(v3) 
-                        && valid.get(u2) && valid.get(v3)){
+                if(Iterables.getOnlyElement(graph.getAdjacencyInColor(u1, secondColor)).equals(v2) 
+                        && valid.get(u1) && valid.get(v2)){
                     // 0 1' 2, 0
-                    addVertex(u);
-                    addVertex(u2);
-                    addVertex(v);
-                    addVertex(v3);
-                    incident.put(u, false); incident.put(v, false); incident.put(u2, false); incident.put(v3, false);
-                    valid.put(u, false); valid.put(v, false); valid.put(u2, false); valid.put(v3, false);
-                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u3, color)).equals(v2)
-                        && valid.get(u3) && valid.get(v2)) {
+                    addVertices(u, u1, v, v2);
+                    updateVisitedVertices(incident, u, u1, v, v2);
+                    updateVisitedVertices(valid, u, u1, v, v2);
+                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, color)).equals(v1)
+                        && valid.get(u2) && valid.get(v1)) {
                     //0 2' 1, 0
-                    addVertex(u);
-                    addVertex(u3);
-                    addVertex(v);
-                    addVertex(v2);
-                    incident.put(u, false); incident.put(v, false); incident.put(u3, false); incident.put(v2, false);
-                    valid.put(u, false); valid.put(v, false);  valid.put(u3, false); valid.put(v2, false);
-
-                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, thirdColor)).equals(v2)
-                        && valid.get(u2) && valid.get(v2)) {
+                    addVertices(u, u2, v, v1);
+                    updateVisitedVertices(incident, u, u2, v, v1);
+                    updateVisitedVertices(valid, u, u2, v, v1);
+                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u1, thirdColor)).equals(v1)
+                        && valid.get(u1) && valid.get(v1)) {
                     // 0 1' 1, 2
-                    addVertex(u);
-                    addVertex(v);
-                    addVertex(u2);
-                    addVertex(v2);
-                    incident.put(u, false); incident.put(v, false); incident.put(u2, false); incident.put(v2, false);
-                    valid.put(u, false); incident.put(v, false); incident.put(u2, false); incident.put(v2, false);
-                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u3, secondColor)).equals(v2)
-                        && valid.get(u3) && valid.get(v3)) {
+                    addVertices(u, v, u1, v1);
+                    updateVisitedVertices(incident, u, v, u1, v1);
+                    updateVisitedVertices(valid, u, v, u1, v1);
+                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, secondColor)).equals(v1)
+                        && valid.get(u2) && valid.get(v2)) {
                     // 0 2' 2, 1
-                    addVertex(u);
-                    addVertex(v);
-                    addVertex(u3);
-                    addVertex(v3);
-                    incident.put(u, false); incident.put(v, false); incident.put(u3, false); incident.put(v3, false);
-                    valid.put(u, false); incident.put(v, false); incident.put(u3, false); incident.put(v3, false);
+                    addVertices(u, v, u2, v2);
+                    updateVisitedVertices(incident, u, v, u2, v2);
+                    updateVisitedVertices(valid, u, v, u2, v2);
+                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u1, color)).equals(v1)
+                        && (u1.equals(v2) || v1.equals(u2)) && valid.get(u1) && valid.get(v1)) {
+                    // 0 1' 1, 0 u2 == v1 || v2 == u1
+                    addVertices(u, u1, v, v1);
+                    updateVisitedVertices(incident, u, u1, v, v1);
+                    updateVisitedVertices(valid, u, u1, v, v1);
                 } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, color)).equals(v2)
-                        && (u2.equals(v3) || v2.equals(u3)) && valid.get(u2) && valid.get(v2)) {
-                    // 0 1' 1, 0 u3 == v2 || v3 == u2
-                    addVertex(u);
-                    addVertex(u2);
-                    addVertex(v);
-                    addVertex(v2);
-                    incident.put(u, false); incident.put(v, false); incident.put(u2, false); incident.put(v2, false);
-                    valid.put(u, false); valid.put(v, false); valid.put(u2, false); valid.put(v2, false);
-                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u3, color)).equals(v3)
-                        && (u2.equals(v3) || v2.equals(u3)) && valid.get(u3) && valid.get(v3)) {
-                    // 0 2' 2, 0 u2 == v3 || v2 == u3
-                    addVertex(u);
-                    addVertex(u3);
-                    addVertex(v);
-                    addVertex(v3);
-                    incident.put(u, false); incident.put(v, false); incident.put(u3, false); incident.put(v3, false);
-                    valid.put(u, false); valid.put(v, false); valid.put(u3, false); valid.put(v3, false);
-
-                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, color)).equals(v2)
-                        && Iterables.getOnlyElement(graph.getAdjacencyInColor(u3, color)).equals(v3)
-                        && !u2.equals(v3) && !u3.equals(v2) && valid.get(u2) && valid.get(u3)
-                        && valid.get(v2) && valid.get(v3)) {
+                        && (u1.equals(v2) || v1.equals(u2)) && valid.get(u2) && valid.get(v2)) {
+                    // 0 2' 2, 0 u1 == v2 || v1 == u2
+                    addVertices(u, u2, v, v2);
+                    updateVisitedVertices(incident, u, u2, v, v2);
+                    updateVisitedVertices(valid, u, u2, v, v2);
+                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u1, color)).equals(v1)
+                        && Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, color)).equals(v2)
+                        && !u1.equals(v2) && !u2.equals(v1) && valid.get(u1) && valid.get(u2)
+                        && valid.get(v1) && valid.get(v2)) {
                     // double four 0 1 1, 0 2' 2, 0
-                    addVertex(u);
-                    addVertex(v);
-                    addVertex(u2);
-                    addVertex(v2);
-                    addVertex(u3);
-                    addVertex(v3);
-                    incident.put(u, false); incident.put(v, false); incident.put(u2, false);
-                    incident.put(v2, false); incident.put(u3, false); incident.put(v3, false);
-                    valid.put(u, false); valid.put(v, false); valid.put(u2, false);
-                    valid.put(v2, false); valid.put(u3, false); valid.put(v3, false);
+                    addVertices(u, v, u1, v1, u2, v2);
+                    updateVisitedVertices(incident, u, v, u1, v1, u2, v2);
+                    updateVisitedVertices(valid, u, v, u1, v1, u2, v2);
                 }else if (foundSubgraphs.size() == 0) { // This could probably just be an else as I think foundSubgraphs should be empty?
-                    foundFourCycle = new ArrayList<>();
-                    if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, color)).equals(v2)
+                    if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u1, color)).equals(v1)
+                            && valid.get(u1) && valid.get(v1)) {
+                        onlyTwoColors = true;
+                        fourCycle[0] = u;
+                        fourCycle[1] = v;
+                        fourCycle[2] = u1;
+                        fourCycle[3] = v1;                        
+                    } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, color)).equals(v2)
                             && valid.get(u2) && valid.get(v2)) {
                         onlyTwoColors = true;
-                        foundFourCycle.add(u);
-                        foundFourCycle.add(v);
-                        foundFourCycle.add(u2);
-                        foundFourCycle.add(v2);
-                    } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u3, color)).equals(v3)
-                            && valid.get(u3) && valid.get(v3)) {
-                        onlyTwoColors = true;
-                        foundFourCycle.add(u);
-                        foundFourCycle.add(v);
-                        foundFourCycle.add(u3);
-                        foundFourCycle.add(v3);
-
+                        fourCycle[0] = u;
+                        fourCycle[1] = v;
+                        fourCycle[2] = u2;
+                        fourCycle[3] = v2;
                     }
-
                 }
-
             }
-
         }
 
         if (foundSubgraphs.size() > 0) {
             numDetected = 1;
             return true;
         } else if (onlyTwoColors) {
-            addVertex(foundFourCycle.get(0)); addVertex(foundFourCycle.get(1));
-            addVertex(foundFourCycle.get(2)); addVertex(foundFourCycle.get(4));
-            addVertex(foundFourCycle.get(0)); addVertex(foundFourCycle.get(2));
-            addVertex(foundFourCycle.get(1)); addVertex(foundFourCycle.get(3));
+            addVertices(fourCycle);
+            addVertices(fourCycle[0], fourCycle[2], fourCycle[1], fourCycle[3]);
             numDetected = 2;
             return true;
         } else {
@@ -249,6 +226,12 @@ public class Detector {
     }
 
     private boolean AS4(BPGraph graph) {
+        incident = graph.copyAvailability();
+        valid = (HashMap<String, Boolean>) incident.clone();
+
+        // Detect 5-3-5 subgraph
+
+
         return false;
     }
 
