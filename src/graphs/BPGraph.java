@@ -1,5 +1,7 @@
 package graphs;
 
+import com.google.common.collect.Iterables;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,6 +48,10 @@ public class BPGraph {
 
     public Set<String> getAdjacencyInColor(String node, int color) { return colors.get(color).getAdjacentNodes(node); }
 
+    public String getFirstAdjacency(String node, int color) {
+        return colors.get(color).getAdjacentNodes(node).iterator().next();
+    }
+
     //Member functions
     public void add(Graph graph) {
         if (colors.isEmpty()){
@@ -80,5 +86,14 @@ public class BPGraph {
     }
 
     public HashMap<String, Boolean> copyAvailability() { return (HashMap<String, Boolean>) availableVertices.clone(); }
+
+    public boolean isConnected(String u, String v) {
+        for (Graph graph : colors) {
+            if (graph.hasEdge(u, v)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

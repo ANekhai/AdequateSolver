@@ -1,8 +1,6 @@
 package detector;
 
-import com.google.common.collect.Iterables;
 import graphs.BPGraph;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -10,14 +8,21 @@ import java.util.Set;
 public class Detector {
     private int numDetected;
     private ArrayList<String> foundSubgraphs;
-    private String[] fourCycle = new String[4];
     private HashMap<String, Boolean> valid;
     private HashMap<String, Boolean> incident; // stores incident vertices to detected AS
-    //BUNCH OF OTHER STRUCTURES FROM DCJSTREAM DETECTOR
+    //For AS2
+    private String[] fourCycle;
+    //For AS4
+    private String[] triangle;
+    private String[] pointingOut;
+
 
     public Detector(){
         numDetected = 0;
         foundSubgraphs = new ArrayList<>();
+        fourCycle = new String[4];
+        triangle = new String[3];
+        pointingOut = new String[3];
 
     }
 
@@ -31,7 +36,7 @@ public class Detector {
         this.clean();
         if (AS1(graph)) {
             return;
-        } else if (AS2_one(graph)) {
+        } else if (AS2(graph)) {
             if (numDetected > 1) {
                 //transMajor(); //figure this function out
                 if (AS4(graph)) {
@@ -117,7 +122,7 @@ public class Detector {
         }
     }
 
-    private boolean AS2_one(BPGraph graph) { // Why is it called AS2_one vs AS2_all???????
+    private boolean AS2(BPGraph graph) { // Originally called AS2_one, not sure why
         Boolean onlyTwoColors = false;
         incident = graph.copyAvailability();
 
@@ -130,8 +135,7 @@ public class Detector {
                 }
                 
                 //TODO: Currently I assume that each gene has only one adjacency, will need to refactor this once dealing with duplicated genes
-                Set<String> vs = graph.getAdjacencyInColor(u, color);
-                String v = Iterables.getOnlyElement(vs);
+                String v = graph.getFirstAdjacency(u, color);
 
                 if (!valid.get(v)){
                     continue;
@@ -143,49 +147,49 @@ public class Detector {
                 int secondColor = (color + 1) % 3, thirdColor = (color + 2) % 3;
 
                 //TODO: Code here will need to be refactored to accept multidegree nodes too
-                String u1 = Iterables.getOnlyElement(graph.getAdjacencyInColor(u, secondColor));
-                String u2 = Iterables.getOnlyElement(graph.getAdjacencyInColor(u, thirdColor));
-                String v1 = Iterables.getOnlyElement(graph.getAdjacencyInColor(v, secondColor));
-                String v2 = Iterables.getOnlyElement(graph.getAdjacencyInColor(v, thirdColor));
+                String u1 = graph.getFirstAdjacency(u, secondColor);
+                String u2 = graph.getFirstAdjacency(u, thirdColor);
+                String v1 = graph.getFirstAdjacency(v, secondColor);
+                String v2 = graph.getFirstAdjacency(v, thirdColor);
 
-                if(Iterables.getOnlyElement(graph.getAdjacencyInColor(u1, secondColor)).equals(v2) 
+                if(graph.getFirstAdjacency(u1, secondColor).equals(v2)
                         && valid.get(u1) && valid.get(v2)){
                     // 0 1' 2, 0
                     addVertices(u, u1, v, v2);
                     updateVisitedVertices(incident, u, u1, v, v2);
                     updateVisitedVertices(valid, u, u1, v, v2);
-                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, color)).equals(v1)
+                } else if (graph.getFirstAdjacency(u2, color).equals(v1)
                         && valid.get(u2) && valid.get(v1)) {
                     //0 2' 1, 0
                     addVertices(u, u2, v, v1);
                     updateVisitedVertices(incident, u, u2, v, v1);
                     updateVisitedVertices(valid, u, u2, v, v1);
-                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u1, thirdColor)).equals(v1)
+                } else if (graph.getFirstAdjacency(u1, thirdColor).equals(v1)
                         && valid.get(u1) && valid.get(v1)) {
                     // 0 1' 1, 2
                     addVertices(u, v, u1, v1);
                     updateVisitedVertices(incident, u, v, u1, v1);
                     updateVisitedVertices(valid, u, v, u1, v1);
-                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, secondColor)).equals(v1)
+                } else if (graph.getFirstAdjacency(u2, secondColor).equals(v1)
                         && valid.get(u2) && valid.get(v2)) {
                     // 0 2' 2, 1
                     addVertices(u, v, u2, v2);
                     updateVisitedVertices(incident, u, v, u2, v2);
                     updateVisitedVertices(valid, u, v, u2, v2);
-                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u1, color)).equals(v1)
+                } else if (graph.getFirstAdjacency(u1, color).equals(v1)
                         && (u1.equals(v2) || v1.equals(u2)) && valid.get(u1) && valid.get(v1)) {
                     // 0 1' 1, 0 u2 == v1 || v2 == u1
                     addVertices(u, u1, v, v1);
                     updateVisitedVertices(incident, u, u1, v, v1);
                     updateVisitedVertices(valid, u, u1, v, v1);
-                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, color)).equals(v2)
+                } else if (graph.getFirstAdjacency(u2, color).equals(v2)
                         && (u1.equals(v2) || v1.equals(u2)) && valid.get(u2) && valid.get(v2)) {
                     // 0 2' 2, 0 u1 == v2 || v1 == u2
                     addVertices(u, u2, v, v2);
                     updateVisitedVertices(incident, u, u2, v, v2);
                     updateVisitedVertices(valid, u, u2, v, v2);
-                } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u1, color)).equals(v1)
-                        && Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, color)).equals(v2)
+                } else if (graph.getFirstAdjacency(u1, color).equals(v1)
+                        && graph.getFirstAdjacency(u2, color).equals(v2)
                         && !u1.equals(v2) && !u2.equals(v1) && valid.get(u1) && valid.get(u2)
                         && valid.get(v1) && valid.get(v2)) {
                     // double four 0 1 1, 0 2' 2, 0
@@ -193,14 +197,14 @@ public class Detector {
                     updateVisitedVertices(incident, u, v, u1, v1, u2, v2);
                     updateVisitedVertices(valid, u, v, u1, v1, u2, v2);
                 }else if (foundSubgraphs.size() == 0) { // This could probably just be an else as I think foundSubgraphs should be empty?
-                    if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u1, color)).equals(v1)
+                    if (graph.getFirstAdjacency(u1, color).equals(v1)
                             && valid.get(u1) && valid.get(v1)) {
                         onlyTwoColors = true;
                         fourCycle[0] = u;
                         fourCycle[1] = v;
                         fourCycle[2] = u1;
                         fourCycle[3] = v1;                        
-                    } else if (Iterables.getOnlyElement(graph.getAdjacencyInColor(u2, color)).equals(v2)
+                    } else if (graph.getFirstAdjacency(u2, color).equals(v2)
                             && valid.get(u2) && valid.get(v2)) {
                         onlyTwoColors = true;
                         fourCycle[0] = u;
@@ -229,10 +233,86 @@ public class Detector {
         incident = graph.copyAvailability();
         valid = (HashMap<String, Boolean>) incident.clone();
 
-        // Detect 5-3-5 subgraph
+        // Detect 5-3-5 type AS4
+        detect535: for (String coreNode : graph.getNodes()) {
+            if (!valid.get(coreNode)) {
+                continue;
+            }
+            for (int color1 = 0; color1 < 2; ++color1) {
+                //TODO: maybe change the name
+                String coreAdj1 = graph.getFirstAdjacency(coreNode, color1);
+                if (!valid.get(coreAdj1)) {
+                    continue;
+                }
+
+                for (int color2 = color1 + 1; color2 < 3; ++color2) {
+                    String coreAdj2 = graph.getFirstAdjacency(coreNode, color2);
+                    if (!valid.get(coreAdj2)) {
+                        continue;
+                    }
+
+                    int color3 = 3 - color1 - color2;
+
+                    // TODO: When refactoring make a triangle detecting function separately
+
+                    if (graph.getFirstAdjacency(coreAdj1, color3).equals(coreAdj2)) {
+                        // Triangle Detected
+                        triangle[color3] = coreNode;
+                        triangle[color2] = coreAdj1;
+                        triangle[color1] = coreAdj2;
+                        updateVisitedVertices(valid, coreNode, coreAdj1, coreAdj2);
+
+                        // Check if three points of the triangle point out
+                        for (int i = 0; i < 3; ++i) {
+                            pointingOut[i] = graph.getFirstAdjacency(triangle[i], i);
+                            if (!valid.get(pointingOut[i])) {
+                                continue detect535;
+                            }
+                        }
+
+                        // Include 2-3, 2-4, 2-5, 2-6 subgraphs
+                        for (int col1 = 0; col1 < 3; ++col1) {
+                            int col2 = (col1 + 1) % 3, col3 = (col1 + 2) % 3;
+                            String out12 = graph.getFirstAdjacency(pointingOut[col1], col2);
+                            String out13 = graph.getFirstAdjacency(pointingOut[col1], col3);
+
+                            if (!valid.get(out12) || !valid.get(out13)) {
+                                continue;
+                            }
+
+                            if (graph.isConnected(out12, pointingOut[col2])
+                                    && graph.isConnected(out13, pointingOut[col3])) {
+                                // Found 5-3-5 subgraph
+                                addVertices(pointingOut[col2], out12, pointingOut[col3], out13, triangle[col1],
+                                        pointingOut[col1], triangle[col2], triangle[col2]);
+
+                                updateVisitedVertices(valid, pointingOut[col2], out12, pointingOut[col3], out13,
+                                        triangle[col1], pointingOut[col1], triangle[col2], triangle[col3]);
+
+                                updateVisitedVertices(incident, pointingOut[col2], out12, pointingOut[col3], out13,
+                                        triangle[col1], pointingOut[col1], triangle[col2], triangle[col3]);
+
+                                continue detect535;
+                            }
 
 
-        return false;
+                        }
+                        // Triangle found, but no AS4
+                        continue detect535;
+
+                    }
+                }
+            }
+        }
+
+        //loop to check for 3-3-3 or 3-3-other type subgraphs
+        
+
+        if (foundSubgraphs.size() == 0) {
+            return false;
+        }
+        this.numDetected = 1;
+        return true;
     }
 
     //TODO: Figure out transMajor and transMajorBack functions

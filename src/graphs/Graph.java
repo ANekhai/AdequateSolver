@@ -64,6 +64,7 @@ public abstract class Graph {
 
     abstract Genome toGeneOrder();
 
+
     //TODO: Add Shrink function for graph
 
 }
