@@ -88,6 +88,9 @@ public class BPGraph {
     public HashMap<String, Boolean> copyAvailability() { return (HashMap<String, Boolean>) availableVertices.clone(); }
 
     public boolean isConnected(String u, String v) {
+        if (u == null || v == null)
+            return false;
+
         for (Graph graph : colors) {
             if (graph.hasEdge(u, v)) {
                 return true;

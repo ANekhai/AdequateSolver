@@ -15,6 +15,10 @@ public class Detector {
     //For AS4
     private String[] triangle;
     private String[] pointingOut;
+    //represent vertices of distance 1, 2, 3 away from first node
+    private String[] oneDeep;
+    private String[][] twoDeep;
+    private String[][] threeDeep;
 
 
     public Detector(){
@@ -23,6 +27,9 @@ public class Detector {
         fourCycle = new String[4];
         triangle = new String[3];
         pointingOut = new String[3];
+        oneDeep = new String[3];
+        twoDeep = new String[3][3];
+        threeDeep = new String[3][3];
 
     }
 
@@ -306,7 +313,88 @@ public class Detector {
         }
 
         //loop to check for 3-3-3 or 3-3-other type subgraphs
-        
+        valid = (HashMap<String, Boolean>) incident.clone();
+
+        detect333: for (String coreNode : graph.getNodes()) {
+            if (!valid.get(coreNode)) {
+                continue;
+            }
+            //TODO: this code assumes only one adjacency per node, not necessarily true in contracted bpgraph
+            for (int color1 = 0; color1 < 3; ++color1) {
+                oneDeep[color1] = graph.getFirstAdjacency(coreNode, color1);
+                for (int color2 = 0; color2 < 3; ++color2) {
+                    if (!valid.get(graph.getFirstAdjacency(graph.getFirstAdjacency(oneDeep[color1], color2 ), color2))
+                            || !valid.get(graph.getFirstAdjacency(oneDeep[color1], color2))
+                            || !valid.get(oneDeep[color1]) || color1 == color2) {
+                        twoDeep[color1][color2] = null;
+                        threeDeep[color1][color2] = null;
+
+                    } else {
+                        twoDeep[color1][color2] = graph.getFirstAdjacency(oneDeep[color1], color2);
+                        threeDeep[color1][color2] = graph.getFirstAdjacency(twoDeep[color1][color2], color1);
+                    }
+                }
+            }
+
+            // Check for 3-3-3
+            for (int color1 = 0; color1 < 3; ++color1) {
+                if (threeDeep[0][color1] == null)
+                    continue;
+
+                for (int color2 = 0; color2 < 3; ++color2) {
+                    if (threeDeep[1][color2] == null)
+                        continue;
+
+                    for (int color3= 0; color3 < 3; ++color3) {
+                        if (threeDeep[2][color3] == null)
+                            continue;
+                        if (threeDeep[0][color1].equals(threeDeep[1][color2])
+                                && threeDeep[0][color1].equals(threeDeep[2][color3])) {
+                            boolean found = false;
+                            //TODO: called co_core in original code ??? what does this mean???
+                            String coCore = threeDeep[0][color1];
+
+                            if (color1 != color2 && color1 != color3 && color2 != color3) {
+                                found = true;
+                            } else if (graph.isConnected(oneDeep[0], oneDeep[1])
+                                    || graph.isConnected(oneDeep[0], oneDeep[2])
+                                    || graph.isConnected(oneDeep[2], oneDeep[1])
+                                    || graph.isConnected(twoDeep[0][color1], twoDeep[1][color2])
+                                    || graph.isConnected(twoDeep[0][color1], twoDeep[2][color3])
+                                    || graph.isConnected(twoDeep[2][color3], twoDeep[1][color2])) {
+                                found = true;
+
+                            }
+
+                            if (found) {
+                                addVertices(coreNode, coCore, oneDeep[0], twoDeep[0][color1], oneDeep[1],
+                                        twoDeep[1][color2], oneDeep[2], twoDeep[2][color3]);
+
+                                updateVisitedVertices(valid, coreNode, coCore, oneDeep[0], twoDeep[0][color1],
+                                        oneDeep[1], twoDeep[1][color2], oneDeep[2], twoDeep[2][color3]);
+                                updateVisitedVertices(incident, coreNode, coCore, oneDeep[0], twoDeep[0][color1],
+                                        oneDeep[1], twoDeep[1][color2], oneDeep[2], twoDeep[2][color3]);
+                                continue detect333;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // Check for 3-3-other
+            for (int c1 = 0; c1 < 2; ++c1) {
+                for (int c2 = c1 + 1; c2 < 3; ++c2) {
+                    for (int c1c = 0; c1c < 3; ++c1c) {
+                        
+                    }
+
+                }
+
+            }
+
+        }
+
 
         if (foundSubgraphs.size() == 0) {
             return false;
