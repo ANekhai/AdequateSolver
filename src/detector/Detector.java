@@ -7,7 +7,9 @@ import java.util.Set;
 
 public class Detector {
     private int numDetected;
+    private int tempNumDetected;
     private ArrayList<String> foundSubgraphs;
+    private ArrayList<String> tempFound;
     private HashMap<String, Boolean> valid;
     private HashMap<String, Boolean> incident; // stores incident vertices to detected AS
     //For AS2
@@ -23,6 +25,7 @@ public class Detector {
 
     public Detector(){
         numDetected = 0;
+        tempNumDetected = 0;
         foundSubgraphs = new ArrayList<>();
         fourCycle = new String[4];
         triangle = new String[3];
@@ -45,16 +48,16 @@ public class Detector {
             return;
         } else if (AS2(graph)) {
             if (numDetected > 1) {
-                //transMajor(); //figure this function out
+                transFound();
                 if (AS4(graph)) {
                     return;
                 } else {
-                    //transMajorBack(); // and this one
+                    transFoundBack();
                 }
 
             }
         } else if (AS4(graph)){
-
+            return;
         } else {
             AS0(graph);
         }
@@ -385,14 +388,93 @@ public class Detector {
             // Check for 3-3-other
             for (int c1 = 0; c1 < 2; ++c1) {
                 for (int c2 = c1 + 1; c2 < 3; ++c2) {
+
                     for (int c1c = 0; c1c < 3; ++c1c) {
-                        
+                        if (threeDeep[c1][c1c] == null) {
+                            continue;
+                        }
+
+                        for (int c2c = 0; c2c < 3; ++c2c) {
+                            if (threeDeep[c2][c2c] == null)
+                                continue;
+
+                            if (threeDeep[c1][c1c] == threeDeep[c2][c2c]) {
+
+
+                                String coCore = threeDeep[c1][c1c];
+                                String out1 = null, out2 = null;
+                                boolean has33Other = false;
+                                int c3 = 3 - c1 - c2;
+
+                                if (valid.get(graph.getFirstAdjacency(coreNode, c3))
+                                        && valid.get(graph.getFirstAdjacency(coCore, c3))) {
+                                    out1 = graph.getFirstAdjacency(coreNode, c3);
+                                    out2 = graph.getFirstAdjacency(coCore, c3);
+
+                                    if (out1.equals(graph.getFirstAdjacency(graph.getFirstAdjacency(coreNode, c1), 3 - c1 - c1c))
+                                            && out2.equals(graph.getFirstAdjacency(graph.getFirstAdjacency(coCore, c1), 3 - c1 - c1c))) {
+                                        has33Other = true;
+                                    } else if (out1.equals(graph.getFirstAdjacency(graph.getFirstAdjacency(coreNode, c2), 3 - c2 - c2c))
+                                            && out2.equals(graph.getFirstAdjacency(graph.getFirstAdjacency(coCore, c2), 3 - c2 - c2c))) {
+                                        has33Other = true;
+                                    }
+
+                                }
+                                if (!has33Other) {
+                                    String p1 = graph.getFirstAdjacency(coreNode, c1),
+                                            p2 = graph.getFirstAdjacency(coreNode, c2);
+                                    String cop1 = graph.getFirstAdjacency(coCore, c1),
+                                            cop2 = graph.getFirstAdjacency(coCore, c2);
+
+                                    if (c1 == c2c && c2 == c1c) {
+                                        // Try to Detect (3-5)
+                                        if (graph.getFirstAdjacency(p1, c3).equals(p2)) {
+                                            out1 = graph.getFirstAdjacency(cop1, c3);
+                                            out2 = graph.getFirstAdjacency(cop2, c3);
+                                            if (valid.get(out1) && valid.get(out2) && graph.isConnected(out1, out2)) {
+                                                has33Other = true;
+                                            }
+
+                                        } else if (graph.getFirstAdjacency(cop1, c3).equals(cop2)) {
+                                            out1 = graph.getFirstAdjacency(p1, c3);
+                                            out2 = graph.getFirstAdjacency(p2, c3);
+                                            if (valid.get(out1) && valid.get(out2) && graph.isConnected(out1, out2)) {
+                                                has33Other = true;
+                                            }
+                                        }
+
+                                    }
+                                    if (!has33Other) {
+                                        // Try to detect (3-1) or (3-2)
+                                        String p1e = graph.getFirstAdjacency(p1, 3 - c1 - c1c),
+                                                cop2e = graph.getFirstAdjacency(cop2, 3 - c2 - c2c);
+                                        String p2e = graph.getFirstAdjacency(p2, 3 - c2 - c2c),
+                                                cop1e = graph.getFirstAdjacency(cop1, 3 - c1 - c1c);
+                                        out1 = p1e;
+                                        out2 = p2e;
+                                        if (valid.get(out1) && valid.get(out2)
+                                                && out1.equals(cop2e) && out2.equals(cop1e)) {
+                                            has33Other = true;
+                                        }
+                                    }
+
+                                }
+
+                                if (has33Other) {
+                                    addVertices(coreNode, coCore, out1, out2,
+                                            oneDeep[c1], twoDeep[c1][c1c], oneDeep[c2], twoDeep[c2][c2c]);
+                                    updateVisitedVertices(valid, coreNode, coCore, out1, out2,
+                                            oneDeep[c1], twoDeep[c1][c1c], oneDeep[c2], twoDeep[c2][c2c]);
+                                    updateVisitedVertices(incident, coreNode, coCore, out1, out2,
+                                            oneDeep[c1], twoDeep[c1][c1c], oneDeep[c2], twoDeep[c2][c2c]);
+
+                                    continue detect333;
+                                }
+                            }
+                        }
                     }
-
                 }
-
             }
-
         }
 
 
@@ -404,6 +486,19 @@ public class Detector {
     }
 
     //TODO: Figure out transMajor and transMajorBack functions
+
+    private void transFound() {
+        tempFound = (ArrayList<String>) foundSubgraphs.clone();
+        foundSubgraphs = new ArrayList<String>();
+        tempNumDetected = numDetected;
+        numDetected = 0;
+    }
+
+    private void transFoundBack() {
+        foundSubgraphs = (ArrayList<String>) tempFound.clone();
+        numDetected = tempNumDetected;
+        tempNumDetected = 0;
+    }
 
     public int getNumDetected() { return numDetected; }
 
