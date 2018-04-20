@@ -8,11 +8,12 @@ public class AS4 extends SubDetector{
     private String[] triangle = new String[3];
     private String[] pointingOut = new String[3];
 
+    //represent vertices of distance 1, 2, 3 away from first node
     private String[] oneDeep = new String[3];
     private String[][] twoDeep = new String[3][3];
     private String[][] threeDeep = new String[3][3];
 
-    private boolean AS4(BPGraph graph) {
+    public boolean AS4(BPGraph graph) {
         incident = graph.copyAvailability();
         valid = (HashMap<String, Boolean>) incident.clone();
 
