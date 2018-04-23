@@ -6,8 +6,17 @@ import java.util.HashMap;
 public class SubDetector {
     protected int numDetected;
     protected ArrayList<String> foundSubgraphs;
-    protected HashMap<String, Boolean> valid;
+    protected HashMap<String, Boolean> valid ;
     protected HashMap<String, Boolean> incident; // stores incident vertices to detected AS
+
+
+    public SubDetector() {
+        numDetected = 0;
+        foundSubgraphs = new ArrayList<>();
+        valid = new HashMap<>();
+        incident = new HashMap<>();
+
+    }
 
     private void addVertex(String vertex) { foundSubgraphs.add(vertex); }
 

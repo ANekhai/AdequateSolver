@@ -27,7 +27,7 @@ class BPGraphTest {
     void testBPGraphFromContractedGraphs() {
         bpGraph = new BPGraph(contracted, contracted);
 
-        assertEquals(2, bpGraph.subGraphs.size());
+        assertEquals(2, bpGraph.colors.size());
         assertTrue(bpGraph.isContracted);
     }
 
@@ -35,7 +35,7 @@ class BPGraphTest {
     void testBPGraphFromNonContractedGraphs() {
         bpGraph = new BPGraph(nonContracted, nonContracted);
 
-        assertEquals(2, bpGraph.subGraphs.size());
+        assertEquals(2, bpGraph.colors.size());
         assertFalse(bpGraph.isContracted);
     }
 

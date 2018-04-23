@@ -15,20 +15,21 @@ public class BPGraph {
 
     public BPGraph(){
         colors = new ArrayList<>();
+        availableVertices = new HashMap<>();
     }
 
     public BPGraph(ContractedGenome... graphs) {
         isContracted = true;
         colors = new ArrayList<>();
         colors.addAll(Arrays.asList(graphs));
-        addAvailabilities(graphs);
+        addInitialAvailabilities(graphs);
     }
 
     public BPGraph(NonContractedGenome... graphs) {
         isContracted = false;
         colors = new ArrayList<>();
         colors.addAll(Arrays.asList(graphs));
-        addAvailabilities(graphs);
+        addInitialAvailabilities(graphs);
     }
 
     //Getters
@@ -62,16 +63,16 @@ public class BPGraph {
             throw new UnsupportedOperationException("Breakpoint graph must consist of the same genome graph type");
         }
         colors.add(graph);
-        addAvailabilities(graph);
+        addInitialAvailabilities(graph);
     }
 
-    private void addAvailabilities(Graph... graphs) {
+    private void addInitialAvailabilities(Graph... graphs) {
         for (Graph graph : graphs) {
-            addAvailabilities(graph);
+            addInitialAvailabilities(graph);
         }
     }
 
-    private void addAvailabilities(Graph graph) {
+    private void addInitialAvailabilities(Graph graph) {
         for (String node : graph.getNodes()) {
             availableVertices.putIfAbsent(node, true);
         }
@@ -87,6 +88,17 @@ public class BPGraph {
 
     public HashMap<String, Boolean> copyAvailability() { return (HashMap<String, Boolean>) availableVertices.clone(); }
 
+    public void markUsedNode(String node) {
+        availableVertices.put(node, false);
+    }
+
+    public void markUsedNode(String... nodes) {
+        for (String node : nodes) {
+            markUsedNode(node);
+        }
+    }
+
+
     public boolean isConnected(String u, String v) {
         if (u == null || v == null)
             return false;
@@ -98,5 +110,6 @@ public class BPGraph {
         }
         return false;
     }
+
 
 }
