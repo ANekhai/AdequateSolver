@@ -1,7 +1,5 @@
 package graphs;
 
-import com.google.common.collect.Iterables;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,14 +16,14 @@ public class BPGraph {
         availableVertices = new HashMap<>();
     }
 
-    public BPGraph(ContractedGenome... graphs) {
+    public BPGraph(ContractedGraph... graphs) {
         isContracted = true;
         colors = new ArrayList<>();
         colors.addAll(Arrays.asList(graphs));
         addInitialAvailabilities(graphs);
     }
 
-    public BPGraph(NonContractedGenome... graphs) {
+    public BPGraph(NonContractedGraph... graphs) {
         isContracted = false;
         colors = new ArrayList<>();
         colors.addAll(Arrays.asList(graphs));
@@ -56,9 +54,9 @@ public class BPGraph {
     //Member functions
     public void add(Graph graph) {
         if (colors.isEmpty()){
-            isContracted = graph instanceof ContractedGenome;
-        } else if ((graph instanceof NonContractedGenome && isContracted) ||
-                (graph instanceof ContractedGenome && !isContracted) ) {
+            isContracted = graph instanceof ContractedGraph;
+        } else if ((graph instanceof NonContractedGraph && isContracted) ||
+                (graph instanceof ContractedGraph && !isContracted) ) {
             //perhaps modify this to throw a checked exception instead
             throw new UnsupportedOperationException("Breakpoint graph must consist of the same genome graph type");
         }

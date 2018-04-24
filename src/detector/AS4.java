@@ -261,4 +261,14 @@ public class AS4 extends SubDetector{
         return true;
     }
 
+    @Override
+    public void clean() {
+        super.clean();
+        triangle = new String[3];
+        pointingOut = new String[3];
+        oneDeep = new String[3];
+        twoDeep = new String[3][3];
+        threeDeep = new String[3][3];
+    }
+
 }

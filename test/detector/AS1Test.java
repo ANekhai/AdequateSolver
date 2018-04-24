@@ -1,7 +1,8 @@
 package detector;
 
 import graphs.BPGraph;
-import graphs.ContractedGenome;
+import graphs.ContractedGraph;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import structs.Genome;
@@ -19,14 +20,17 @@ class AS1Test {
     @BeforeEach
     void setUp() {
         graph = new BPGraph();
+    }
 
-
+    @AfterEach
+    void tearDown() {
+        detector.clean();
     }
 
     private void addGraphFromGenes(String... genes) {
         ArrayList<String> geneArray = new ArrayList<>(Arrays.asList(genes));
         Genome order = new Genome("test", true, geneArray);
-        ContractedGenome genomeGraph = new ContractedGenome(order);
+        ContractedGraph genomeGraph = new ContractedGraph(order);
         graph.add(genomeGraph);
 
     }

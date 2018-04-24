@@ -1,25 +1,23 @@
 package graphs;
 
-
-import com.google.common.graph.ElementOrder;
 import structs.Genome;
 
 import java.util.ArrayList;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ContractedGraphTest {
-    private ContractedGraph graph;
+class NonContractedGraphTest {
+    private NonContractedGraph graph;
     private Genome genome;
     private ArrayList<String> chromosome;
 
     @BeforeEach
     void setUp() {
+        graph = new NonContractedGraph();
         genome = new Genome();
         chromosome = new ArrayList<>();
-        graph = new ContractedGraph();
     }
 
     @Test
@@ -38,17 +36,16 @@ class ContractedGraphTest {
         genome.addChromosome(chromosome, true);
         graph.addGenome(genome);
 
-        assertTrue(graph.contains("1h") && graph.contains("2t"));
-
+        assertTrue(graph.contains("1h0") && graph.contains("2t0"));
     }
 
     @Test
-    void testDuplicateGenes() {
+    void testDuplicatedGenes() {
         chromosome.add("1"); chromosome.add("2"); chromosome.add("1"); chromosome.add("2");
         genome.addChromosome(chromosome, true);
         graph.addGenome(genome);
 
-        assertEquals(4, graph.getNodes().size());
+        assertEquals(8, graph.getNodes().size());
         assertEquals(4, graph.numEdges);
     }
 
@@ -58,19 +55,7 @@ class ContractedGraphTest {
         genome.addChromosome(chromosome, true);
         graph.addGenome(genome);
 
-        assertTrue(graph.contains("200t"));
-
-    }
-
-    @Test
-    void testGenomeWithSelfLoops() {
-        chromosome.add("1"); chromosome.add("-1");
-        genome.addChromosome(chromosome, true);
-        graph.addGenome(genome);
-
-        assertTrue(graph.hasEdge("1h", "1h"));
-        assertTrue(graph.hasEdge("1t", "1t"));
-
+        assertTrue(graph.contains("100h0") && graph.contains("200t0"));
     }
 
     @Test
@@ -82,22 +67,8 @@ class ContractedGraphTest {
         genome.addChromosome(chromosome, true);
         graph.addGenome(genome);
 
-        assertEquals(4, graph.numEdges);
         assertEquals(8, graph.getNodes().size());
-    }
-
-
-    @Test
-    void testUniquenessOfEdges() {
-        chromosome.add("1"); chromosome.add("2");
-        genome.addChromosome(chromosome, true);
-        graph.addGenome(genome);
-        Graph secondGraph = new ContractedGraph(genome);
-
-        ElementOrder<Integer> order = graph.getEdgeOrder();
-
-        assertFalse(graph.getEdgeOrder().equals(secondGraph.getEdgeOrder()));
-
+        assertEquals(4, graph.numEdges);
     }
 
     @Test
@@ -107,7 +78,7 @@ class ContractedGraphTest {
         genome.addChromosome(chromosome, true);
         graph.addGenome(genome);
 
-        assertEquals(4, graph.getNodes().size());
+        assertEquals(8, graph.getNodes().size());
         assertEquals(4, graph.numEdges);
     }
 
@@ -119,9 +90,8 @@ class ContractedGraphTest {
         genome.addChromosome(chromosome, true);
         graph.addGenome(genome);
 
-        assertEquals(4, graph.getNodes().size());
+        assertEquals(12, graph.getNodes().size());
         assertEquals(6, graph.numEdges);
     }
-
 
 }

@@ -6,16 +6,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import structs.Genome;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AS2Test {
-    AS2 detector = new AS2();
+class AS4Test {
     BPGraph graph;
-
+    AS4 detector = new AS4();
 
     @BeforeEach
     void setUp() {
@@ -52,58 +51,23 @@ class AS2Test {
         addGraphFromGenes("1", "2");
         addGraphFromGenes("1", "2");
 
-        detector.AS2(graph);
+        detector.AS4(graph);
 
         assertEquals(0, detector.numDetected);
+
     }
 
     @Test
-    void testTwoColorBox() {
+    void testOnlyAS2s() {
         addGraphFromGenes("1", "2");
         addGraphFromGenes("1", "-2");
         addGraphFromGenes("1", "2"); // Throw away gene
 
-        detector.AS2(graph);
+        detector.AS4(graph);
 
-        assertEquals(1, detector.numDetected);
+        assertEquals(0, detector.numDetected);
     }
 
-    @Test
-    void testThreeColorBox() {
-        addGraphFromGenes("1", "-2");
-        ContractedGraph circularGenes = getGenomeWithSingleCircularChromosomes("1", "2");
-        graph.add(circularGenes); graph.add(circularGenes);
 
-        detector.AS2(graph);
-
-        assertEquals(1, detector.numDetected);
-
-    }
-
-    //TODO: Think about these two, as they are the same right now. hmm...
-
-    @Test
-    void testThirdColorDiagonalBox() {
-        addGraphFromGenes("1", "-2");
-        addGraphFromGenes("1", "2");
-        ContractedGraph circularGenes = getGenomeWithSingleCircularChromosomes("1", "2");
-        graph.add(circularGenes);
-
-        detector.AS2(graph);
-
-        assertEquals(1, detector.numDetected);
-    }
-
-    @Test
-    void testThirdColorCrossBox() {
-        addGraphFromGenes("1", "-2");
-        addGraphFromGenes("1", "2");
-        ContractedGraph circularGenes = getGenomeWithSingleCircularChromosomes("1", "2");
-        graph.add(circularGenes);
-
-        detector.AS2(graph);
-
-        assertEquals(1, detector.numDetected);
-    }
 
 }

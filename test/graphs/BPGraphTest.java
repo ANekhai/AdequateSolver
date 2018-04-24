@@ -4,23 +4,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import structs.Genome;
 
-import javax.management.RuntimeErrorException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class BPGraphTest {
     private BPGraph bpGraph;
-    private ContractedGenome contracted;
-    private NonContractedGenome nonContracted;
+    private ContractedGraph contracted;
+    private NonContractedGraph nonContracted;
 
     @BeforeEach
     void setUp() {
         ArrayList<String> genes = new ArrayList<>();
         genes.add("1"); genes.add("2");
         Genome genome = new Genome("test", true, genes);
-        contracted = new ContractedGenome(genome);
-        nonContracted = new NonContractedGenome(genome);
+        contracted = new ContractedGraph(genome);
+        nonContracted = new NonContractedGraph(genome);
     }
 
     @Test

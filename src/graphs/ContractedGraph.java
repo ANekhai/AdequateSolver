@@ -3,24 +3,22 @@ package graphs;
 import structs.Genome;
 import com.google.common.graph.*;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class ContractedGraph extends Graph {
 
     public ContractedGraph(){
         graph = NetworkBuilder.undirected().allowsParallelEdges(true).allowsSelfLoops(true).build();
-        numEdges = 0;
     }
 
     public ContractedGraph(Genome order){
         graph = NetworkBuilder.undirected().allowsParallelEdges(true).allowsSelfLoops(true).build();
-        numEdges = 0;
 
         addGenome(order);
     }
 
-    private Vector<String> getLabels(String gene){
-        Vector<String> labels = new Vector<>();
+    private ArrayList<String> getLabels(String gene){
+        ArrayList<String> labels = new ArrayList<>();
         if (gene.charAt(0) == '-') {
             String name = gene.substring(1);
             labels.add(name + "h"); labels.add(name + "t");
@@ -30,11 +28,11 @@ public class ContractedGraph extends Graph {
 
         return labels;
     }
-    
-    public void addGenome(Genome order) throws UnsupportedOperationException{
+
+    public void addGenome(Genome order){
         for (int i = 0; i < order.getSize(); ++i) {
-            Vector<String> genes = order.getChromosome(i).getGenes();
-            Vector<String> uLabels, vLabels;
+            ArrayList<String> genes = order.getChromosome(i).getGenes();
+            ArrayList<String> uLabels, vLabels;
 
             for (int j = 0; j < genes.size() - 1; ++j) {
                 uLabels = getLabels(genes.get(j));
@@ -47,16 +45,15 @@ public class ContractedGraph extends Graph {
                 vLabels = getLabels(genes.get(genes.size() - 1));
                 addEdge(uLabels.get(0), vLabels.get(1));
             }else {
+                //TODO: Add support for Linear Chromosomes
                 throw new UnsupportedOperationException();
             }
         }
     }
 
-    public void addEdge(String u, String v){
-        ++numEdges;
-        graph.addEdge(u, v, numEdges);
+
+    public Genome toGeneOrder(){
+        return null;
     }
-
-
 
 }
