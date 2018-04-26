@@ -7,10 +7,10 @@ import java.util.ArrayList;
 
 public class Grimm {
 
-    static class Reader {
+    public static class Reader {
 
         //Parse multiple genomes in a GRIMM file to a list of genomes
-        static ArrayList<Genome> parseGRIMM(BufferedReader in) throws IOException {
+        public static ArrayList<Genome> parseGRIMM(BufferedReader in) throws IOException {
             ArrayList<Genome> genomes = new ArrayList<>();
             Genome currGenome = null;
 

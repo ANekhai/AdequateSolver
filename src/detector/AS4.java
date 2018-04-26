@@ -55,6 +55,7 @@ public class AS4 extends SubDetector{
                             }
                         }
 
+                        // DETECT 5-3-5 SUBGRAPHS
                         // Include 2-3, 2-4, 2-5, 2-6 subgraphs
                         for (int col1 = 0; col1 < 3; ++col1) {
                             int col2 = (col1 + 1) % 3, col3 = (col1 + 2) % 3;
@@ -65,6 +66,7 @@ public class AS4 extends SubDetector{
                                 continue;
                             }
 
+                            //TODO: Examine isConnected, as error may occur in this function
                             if (graph.isConnected(out12, pointingOut[col2])
                                     && graph.isConnected(out13, pointingOut[col3])) {
                                 // Found 5-3-5 subgraph
@@ -92,7 +94,7 @@ public class AS4 extends SubDetector{
 
         //loop to check for 3-3-3 or 3-3-other type subgraphs
         valid = (HashMap<String, Boolean>) incident.clone();
-
+        //TODO: Error may be in this part of the code
         detect333:
         for (String coreNode : graph.getNodes()) {
             if (!valid.get(coreNode)) {

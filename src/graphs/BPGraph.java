@@ -9,11 +9,10 @@ public class BPGraph {
     ArrayList<Graph> colors;
     //one idea, store type of graph contained in colors array
     boolean isContracted;
-    HashMap<String, Boolean> availableVertices;
+    HashMap<String, Boolean> availableVertices = new HashMap<>();
 
     public BPGraph(){
         colors = new ArrayList<>();
-        availableVertices = new HashMap<>();
     }
 
     public BPGraph(ContractedGraph... graphs) {
@@ -102,7 +101,7 @@ public class BPGraph {
             return false;
 
         for (Graph graph : colors) {
-            if (graph.hasEdge(u, v)) {
+            if (graph.contains(u) && graph.contains(v) && graph.hasEdge(u, v)) {
                 return true;
             }
         }

@@ -48,7 +48,6 @@ public class SubDetector {
         //TODO: are these needed?
         valid.clear();
         incident.clear();
-        //TODO: think about the structures specific to each subdetector
 
     }
 

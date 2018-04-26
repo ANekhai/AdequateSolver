@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AS4Test {
     BPGraph graph;
     AS4 detector = new AS4();
+
     String endLine = System.getProperty("line.separator");
 
     @BeforeEach
