@@ -46,6 +46,10 @@ public class BPGraph {
 
     public Set<String> getAdjacencyInColor(String node, int color) { return colors.get(color).getAdjacentNodes(node); }
 
+    public Set<Integer> getEdgesInColor(String u, String v, int color) {
+        return colors.get(color).getEdgesConnecting(u, v);
+    }
+
     public String getFirstAdjacency(String node, int color) {
         return colors.get(color).getAdjacentNodes(node).iterator().next();
     }

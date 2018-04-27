@@ -66,7 +66,6 @@ public class AS4 extends SubDetector{
                                 continue;
                             }
 
-                            //TODO: Examine isConnected, as error may occur in this function
                             if (graph.isConnected(out12, pointingOut[col2])
                                     && graph.isConnected(out13, pointingOut[col3])) {
                                 // Found 5-3-5 subgraph
@@ -94,17 +93,18 @@ public class AS4 extends SubDetector{
 
         //loop to check for 3-3-3 or 3-3-other type subgraphs
         valid = (HashMap<String, Boolean>) incident.clone();
-        //TODO: Error may be in this part of the code
+
         detect333:
         for (String coreNode : graph.getNodes()) {
             if (!valid.get(coreNode)) {
                 continue;
             }
+
             //TODO: this code assumes only one adjacency per node, not necessarily true in contracted bpgraph
             for (int color1 = 0; color1 < 3; ++color1) {
                 oneDeep[color1] = graph.getFirstAdjacency(coreNode, color1);
                 for (int color2 = 0; color2 < 3; ++color2) {
-                    if (!valid.get(graph.getFirstAdjacency(graph.getFirstAdjacency(oneDeep[color1], color2), color2))
+                    if (!valid.get(graph.getFirstAdjacency(graph.getFirstAdjacency(oneDeep[color1], color2), color1))
                             || !valid.get(graph.getFirstAdjacency(oneDeep[color1], color2))
                             || !valid.get(oneDeep[color1]) || color1 == color2) {
                         twoDeep[color1][color2] = null;
@@ -116,6 +116,8 @@ public class AS4 extends SubDetector{
                     }
                 }
             }
+
+
 
             // Check for 3-3-3
             for (int color1 = 0; color1 < 3; ++color1) {
@@ -129,6 +131,8 @@ public class AS4 extends SubDetector{
                     for (int color3 = 0; color3 < 3; ++color3) {
                         if (threeDeep[2][color3] == null)
                             continue;
+
+                        //TODO: All above code matches
                         if (threeDeep[0][color1].equals(threeDeep[1][color2])
                                 && threeDeep[0][color1].equals(threeDeep[2][color3])) {
                             boolean found = false;

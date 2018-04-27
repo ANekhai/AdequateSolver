@@ -41,7 +41,7 @@ class AS1Test {
         addGraphFromGenes("2");
         addGraphFromGenes("3");
 
-        detector.AS1(graph);
+        assertFalse(detector.AS1(graph));
 
         assertEquals(0, detector.numDetected);
 
@@ -53,7 +53,7 @@ class AS1Test {
         addGraphFromGenes("1");
         addGraphFromGenes("2");
 
-        detector.AS1(graph);
+        assertTrue(detector.AS1(graph));
 
         assertEquals(1, detector.numDetected);
         assertEquals(2,detector.foundSubgraphs.size());
@@ -66,11 +66,32 @@ class AS1Test {
         addGraphFromGenes("1");
         addGraphFromGenes("1");
 
-        detector.AS1(graph);
+        assertTrue(detector.AS1(graph));
 
         // should detect an 2 nodes in an AS for each
         assertEquals(1, detector.numDetected);
         assertEquals(6, detector.foundSubgraphs.size());
+
+    }
+
+    @Test
+    void testGraphWithDuplicatedEarSubgraph() {
+        addGraphFromGenes("1", "-1");
+        addGraphFromGenes("1");
+
+        assertTrue(detector.duplicateAS1(graph));
+
+        assertEquals(1, detector.numDetected);
+    }
+
+    @Test
+    void testGraphWithParallelEdgesInColor() {
+        addGraphFromGenes("1", "1");
+        addGraphFromGenes("1");
+
+        assertTrue(detector.duplicateAS1(graph));
+
+        assertEquals(1, detector.numDetected);
 
     }
 

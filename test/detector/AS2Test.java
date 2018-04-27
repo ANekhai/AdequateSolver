@@ -52,7 +52,7 @@ class AS2Test {
         addGraphFromGenes("1", "2");
         addGraphFromGenes("1", "2");
 
-        detector.AS2(graph);
+        assertFalse(detector.AS2(graph));
 
         assertEquals(0, detector.numDetected);
     }
@@ -63,7 +63,7 @@ class AS2Test {
         addGraphFromGenes("1", "-2");
         addGraphFromGenes("1", "2"); // Throw away gene
 
-        detector.AS2(graph);
+        assertTrue(detector.AS2(graph));
 
         assertEquals(1, detector.numDetected);
     }
@@ -74,7 +74,7 @@ class AS2Test {
         ContractedGraph circularGenes = getGenomeWithSingleCircularChromosomes("1", "2");
         graph.add(circularGenes); graph.add(circularGenes);
 
-        detector.AS2(graph);
+        assertTrue(detector.AS2(graph));
 
         assertEquals(1, detector.numDetected);
 
@@ -89,7 +89,7 @@ class AS2Test {
         ContractedGraph circularGenes = getGenomeWithSingleCircularChromosomes("1", "2");
         graph.add(circularGenes);
 
-        detector.AS2(graph);
+        assertTrue(detector.AS2(graph));
 
         assertEquals(1, detector.numDetected);
     }
@@ -101,7 +101,7 @@ class AS2Test {
         ContractedGraph circularGenes = getGenomeWithSingleCircularChromosomes("1", "2");
         graph.add(circularGenes);
 
-        detector.AS2(graph);
+        assertTrue(detector.AS2(graph));
 
         assertEquals(1, detector.numDetected);
     }

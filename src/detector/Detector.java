@@ -6,11 +6,9 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class Detector {
-    //TODO: Clean these up!
     private int numDetected;
     private ArrayList<String> foundSubgraphs;
     private HashMap<String, Boolean> valid;
-    //DO I NEED THIS?
     private HashMap<String, Boolean> incident; // stores incident vertices to detected AS
 
     //SubGraph Detectors
