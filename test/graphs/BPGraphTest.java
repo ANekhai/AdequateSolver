@@ -85,4 +85,7 @@ class BPGraphTest {
 
     }
 
+    //TODO: TEST AVAILABILITY PARAMETERS
+
+
 }

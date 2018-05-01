@@ -13,7 +13,7 @@ public abstract class ASMSolver {
         return false;
     }
 
-    //TODO: Figure this out, used for
+    //TODO: Figure this out
     public static void checkUpdate(int threadNumber) {
         ;
     }

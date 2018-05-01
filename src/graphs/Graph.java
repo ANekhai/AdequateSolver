@@ -1,7 +1,7 @@
 package graphs;
 
 import com.google.common.graph.*;
-import structs.Genome;
+import genome.Genome;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +16,10 @@ public abstract class Graph {
     public void addEdge(String u, String v) {
         graph.addEdge(u, v, numEdges);
         ++numEdges;
+    }
+
+    public void removeEdge(String u, String v) {
+        graph.removeEdge(graph.edgeConnectingOrNull(u, v));
     }
 
     //Getters

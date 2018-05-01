@@ -34,6 +34,8 @@ public class Detector {
 
     public int getDetectedSubgraphsSize() { return foundSubgraphs.size(); }
 
+    public ArrayList<String> getSubgraphs() { return foundSubgraphs; }
+
     public void addVertices(String... vertices) {
         for (String vertex : vertices) {
             addVertex(vertex);
@@ -79,6 +81,8 @@ public class Detector {
             copy(as0);
         }
     }
+
+
     // have an idea on how to refactor this post testing
 
 }
