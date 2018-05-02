@@ -5,7 +5,6 @@ import genome.Genome;
 
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class NonContractedGraph extends Graph {
     private HashMap<String, Integer> geneEnum;

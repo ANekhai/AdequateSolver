@@ -6,16 +6,18 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class BPGraph {
-    ArrayList<Graph> colors;
-    //one idea, store type of graph contained in colors array
-    boolean isContracted;
-    HashMap<String, Boolean> availableVertices = new HashMap<>();
-    int cycleNumber = 0;
-    int[] cycles = new int[3];
-    int edgeNum = 0;
-    int upperBound = 0;
-    int lowerBound = 0;
-    ArrayList<String> footprint = new ArrayList<>();
+    private ArrayList<Graph> colors;
+    private boolean isContracted;
+    private HashMap<String, Boolean> availableVertices = new HashMap<>();
+    private int cycleNumber = 0;
+    private int[] cycles = new int[3];
+    private int edgeNum = 0;
+    private int upperBound = 0;
+    private int lowerBound = 0;
+    private ArrayList<String> footprint = new ArrayList<>();
+    private int footprintIndex = 0;
+    private ArrayList<String> footprintCopy;
+    private int footprintCopyIndex = 0;
 
 
 
@@ -83,6 +85,10 @@ public class BPGraph {
         this.upperBound = upperBound;
     }
 
+    public void setCycle(int i, int cycles) {
+        this.cycles[i] = cycles;
+    }
+
     //Member functions
 
     public void add(Graph graph) {
@@ -144,7 +150,7 @@ public class BPGraph {
         return false;
     }
 
-    //TODO: EXAMINE THIS FOR THE LINEAR CASE, AS THIS IS THE CIRCULAR ONE
+    //TODO: CIRCULAR CASE, WILL NEED MODIFICATION FOR LINEAR ONE
     public void shrink(ArrayList<String> subGraphs, int start, int end) {
         String left, right;
 
@@ -179,11 +185,71 @@ public class BPGraph {
 
         }
 
-//        edgeNum -= (end - start) / 2;
+        // TODO: Need to think about this for duplicated shrink
+        edgeNum -= (end - start) / 2;
 
     }
 
-    private void addFootprint(String u) { footprint.add(u); }
+    //TODO: THINK ABOUT HOW THIS WORKS FOR DUPLICATED CASE
+    //I'm not quite sure of the significance of this?
+        public void expand(ArrayList<String> subGraphs, int start, int end) {
+        int i;
+        String left, right;
+
+        for (i = start; i < end; ++i) {
+            availableVertices.put(subGraphs.get(i), true);
+        }
+
+        for (i = end - 1; i >= start; i -= 2) {
+            left = subGraphs.get(i - 1);
+            right = subGraphs.get(i);
+
+            for (int color = 0; color < colors.size(); ++color) {
+                if (colors.get(color).getAdjacentNodes(left).contains(right)) {
+                    --cycleNumber;
+                } else {
+                    String twoDeepLeft = getFirstAdjacency(getFirstAdjacency(left, color), color);
+                    String twoDeepRight = getFirstAdjacency(getFirstAdjacency(right, color), color);
+                    // remove edges
+                    colors.get(color).removeEdge(twoDeepLeft, getFirstAdjacency(twoDeepLeft, color));
+                    colors.get(color).removeEdge(twoDeepRight, getFirstAdjacency(twoDeepRight, color));
+                    // set new edges
+                    colors.get(color).addEdge(twoDeepLeft, left);
+                    colors.get(color).addEdge(twoDeepRight, right);
+                }
+
+            }
+
+        }
+        for (i = start; i < end; ++i) {
+            removeFootprint();
+        }
+
+        edgeNum += (end - start) /2;
+    }
+
+    // TODO: I don't think I need index ints, will remove them
+    private void addFootprint(String u) {
+        footprint.add(u);
+        ++footprintIndex;
+    }
+
+    private void removeFootprint() {
+        --footprintIndex;
+    }
+
+    public void cleanFootprint() {
+//        // copy to a temp location
+//        for (int i = 0; i < this.idx_ft; i++, ft_before_idx++) {
+//            this.ft_before_rename[ft_before_idx] = this.footprint[i];
+//        }
+//        this.idx_ft = 0;
+        footprintCopy = (ArrayList<String>) footprint.clone();
+        footprintCopyIndex = footprintIndex;
+        footprint = new ArrayList<>();
+        footprintIndex = 0;
+
+    }
 
     public void getBounds() {
         int lowestIndex = -1;
@@ -239,5 +305,4 @@ public class BPGraph {
         }
         this.cycles[cycleIndex] = cycles;
     }
-
 }

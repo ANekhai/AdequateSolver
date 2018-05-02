@@ -32,7 +32,7 @@ public class SubDetector {
         }
     }
 
-    // getters
+    // Getters
 
 
     public int getNumDetected() { return numDetected; }
@@ -41,6 +41,8 @@ public class SubDetector {
     public ArrayList<String> getFoundSubgraphs() { return foundSubgraphs; }
 
     public HashMap<String, Boolean> getValidVertices() { return valid; }
+
+    // Member Functions
 
     public void clean() {
         numDetected = 0;

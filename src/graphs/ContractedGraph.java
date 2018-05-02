@@ -1,7 +1,7 @@
 package graphs;
 
-import structs.Genome;
 import com.google.common.graph.*;
+import genome.Genome;
 
 import java.util.ArrayList;
 

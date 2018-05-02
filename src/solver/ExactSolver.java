@@ -15,13 +15,13 @@ public class ExactSolver extends ASMSolver {
         int maxLow = graph.getLowerBound(), maxUp = graph.getUpperBound();
         boolean started = false;
 
-        //There is something about a collapse function here?
-//        if (collapse(g, p, info, ade, list)){
-//            System.out.printf("finished in collpase %d\n", g.lower_bound);
-//            return g.lower_bound;
-//        }
 
-        detector.clean();
+        if (collapse(graph, detector)){
+            // System.out.printf("finished in collapse %d\n", graph.getLowerBound());
+            return graph.getLowerBound();
+        }
+
+        detector.clean(); //
 
         //actual algorithm
         while (maxLow != maxUp ) {
@@ -31,7 +31,6 @@ public class ExactSolver extends ASMSolver {
             // Updates after first iteration of while loop
             if (started){
 
-                //perhaps this is for load balancing
 //                if (!list.get(info.max_up[0], g, info)) {
 //                    list.list[info.max_up[0]] = null;
 //                    System.gc();
@@ -92,10 +91,13 @@ public class ExactSolver extends ASMSolver {
 
                 graph.shrink(detector.getSubgraphs(), start, end);
 
-                if (detector.getNumDetected() > 2) { //I think this is the case when AS0 detector happens
+                if (detector.getNumDetected() > 2) { //I think this only occurs with AS0 works
 //                    g.c[0] = cycle[0];
 //                    g.c[1] = cycle[1];
 //                    g.c[2] = cycle[2];
+                    for (int j = 0; j < 3; ++j) {
+                        graph.setCycle(j, cycle[j]);
+                    }
 //
 //                    g.get_bounds_linear(ade.major[start_major],
 //                            ade.major[end_major - 1]);
