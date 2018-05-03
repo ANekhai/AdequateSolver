@@ -5,8 +5,8 @@ import graphs.ContractedGraph;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import structs.Genome;
-import structs.Grimm;
+import genome.Genome;
+import genome.Grimm;
 
 import java.io.BufferedReader;
 import java.io.IOException;

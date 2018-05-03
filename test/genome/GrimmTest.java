@@ -1,4 +1,4 @@
-package structs;
+package genome;
 
 import org.junit.jupiter.api.Test;
 

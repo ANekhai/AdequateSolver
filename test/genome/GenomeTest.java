@@ -1,6 +1,5 @@
-package structs;
+package genome;
 
-import structs.Genome;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

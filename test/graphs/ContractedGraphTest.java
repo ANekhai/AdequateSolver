@@ -2,7 +2,7 @@ package graphs;
 
 
 import com.google.common.graph.ElementOrder;
-import structs.Genome;
+import genome.Genome;
 
 import java.util.ArrayList;
 

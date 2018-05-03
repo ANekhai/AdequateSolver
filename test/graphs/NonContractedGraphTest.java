@@ -1,6 +1,6 @@
 package graphs;
 
-import structs.Genome;
+import genome.Genome;
 
 import java.util.ArrayList;
 

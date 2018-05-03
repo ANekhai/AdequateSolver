@@ -38,17 +38,14 @@ public class ExactSolver extends ASMSolver {
 //                    continue;
 //                }
 
-                ASMSolver.checkUpdate(0); //TODO: Implement this
-//                graph.expand();
-//                graph.shrink();
+                ASMSolver.checkUpdate(0); // Used when multiple threads all working at once
+
                 // TODO: Figure out the rest of the functions in this conditional
 //                g.expand(g.footprint, 0, g.idx_ft);
 //                g.shrink(g.major_tmp, 0, g.idx_tmp);
-//                //if(info.count[0]==8088){
-//                //	System.out.println(info.count[0]);
-//                //	break;
-//                //}
+
 //                info.total[0]--;
+//                list.refresh_all(info.max_up[0], info);
             }
 //            info.count[0]++
             started = true;
@@ -58,7 +55,7 @@ public class ExactSolver extends ASMSolver {
 
             detector.detectAdequateSubgraphs(graph);
 
-            // TODO: IT SEEMS LIKE THIS IS USED FOR THE LINEAR CASE AND NOT THE CIRCULAR CASE
+            // Only used for linear case right now so most functionality is missing
             if (detector.getNumDetected() > 2) {
                 graph.getBounds();
 

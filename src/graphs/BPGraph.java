@@ -1,22 +1,27 @@
 package graphs;
 
+import genome.Genome;
+import genome.Grimm;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
 public class BPGraph {
-    private ArrayList<Graph> colors;
+    private ArrayList<Graph> colors = new ArrayList<>();
     private boolean isContracted;
     private HashMap<String, Boolean> availableVertices = new HashMap<>();
     private int cycleNumber = 0;
     private int[] cycles = new int[3];
-    private int edgeNum = 0;
+    private int edgeNumber = 0;
     private int upperBound = 0;
     private int lowerBound = 0;
     private ArrayList<String> footprint = new ArrayList<>();
     private int footprintIndex = 0;
-    private ArrayList<String> footprintCopy;
+    private ArrayList<String> footprintCopy = new ArrayList<>();
     private int footprintCopyIndex = 0;
 
 
@@ -28,7 +33,6 @@ public class BPGraph {
 
     public BPGraph(ContractedGraph... graphs) {
         isContracted = true;
-        colors = new ArrayList<>();
         colors.addAll(Arrays.asList(graphs));
         initializeEdgeCount();
         addInitialAvailabilities(graphs);
@@ -37,15 +41,33 @@ public class BPGraph {
 
     public BPGraph(NonContractedGraph... graphs) {
         isContracted = false;
-        colors = new ArrayList<>();
         colors.addAll(Arrays.asList(graphs));
         initializeEdgeCount();
         addInitialAvailabilities(graphs);
     }
 
+    public BPGraph(BufferedReader in) {
+        ArrayList<Genome> genomes = new ArrayList<>();
+        try {
+            genomes = Grimm.Reader.parseGRIMM(in);
+        } catch (IOException e) {
+            System.out.println(e.getStackTrace());
+            isContracted = false;
+            return;
+        }
+        Graph contracted;
+        for (Genome genome : genomes) {
+            contracted = new ContractedGraph(genome);
+            add(contracted);
+            addInitialAvailabilities(contracted);
+        }
+        initializeEdgeCount();
+        getBounds();
+    }
+
     public void initializeEdgeCount() {
         for (int i = 0; i < colors.size(); ++i) {
-            edgeNum += colors.get(i).getNumEdges();
+            edgeNumber += colors.get(i).getNumEdges();
         }
     }
 
@@ -74,6 +96,12 @@ public class BPGraph {
     public String getFirstAdjacency(String node, int color) {
         return colors.get(color).getAdjacentNodes(node).iterator().next();
     }
+    
+    public int getEdgeNumber() { return edgeNumber; }
+
+    public int getCycleNumber() { return cycleNumber; }
+
+    public int getFootprintSize() { return footprint.size(); }
 
     public int getUpperBound() { return upperBound; }
 
@@ -101,7 +129,7 @@ public class BPGraph {
         }
         colors.add(graph);
         addInitialAvailabilities(graph);
-        edgeNum += graph.getNumEdges();
+        edgeNumber += graph.getNumEdges();
 
     }
 
@@ -137,6 +165,7 @@ public class BPGraph {
         }
     }
 
+    public boolean isContracted() { return isContracted; }
 
     public boolean isConnected(String u, String v) {
         if (u == null || v == null)
@@ -164,16 +193,13 @@ public class BPGraph {
                     ++cycleNumber;
                 } else {
                     //TODO: This code will not work with duplicated nodes. should I remove all edges in a color from a node that's being shrunk?
-                    String oneDeepLeft = getFirstAdjacency(left, color);
-                    String oneDeepRight = getFirstAdjacency(right, color);
-                    String twoDeepLeft = getFirstAdjacency(oneDeepLeft, color);
-                    String twoDeepRight = getFirstAdjacency(oneDeepRight, color);
+                    String leftAdjacency = getFirstAdjacency(left, color);
+                    String rightAdjacency = getFirstAdjacency(right, color);
                     // remove edges
-                    colors.get(color).removeEdge(twoDeepLeft, getFirstAdjacency(twoDeepLeft, color));
-                    colors.get(color).removeEdge(twoDeepRight, getFirstAdjacency(twoDeepRight, color));
+                    colors.get(color).removeEdge(left, leftAdjacency);
+                    colors.get(color).removeEdge(right, rightAdjacency);
                     // add new edges
-                    colors.get(color).addEdge(twoDeepLeft, oneDeepRight);
-                    colors.get(color).addEdge(twoDeepRight, oneDeepLeft);
+                    colors.get(color).addEdge(leftAdjacency, rightAdjacency);
                 }
 
             }
@@ -186,11 +212,11 @@ public class BPGraph {
         }
 
         // TODO: Need to think about this for duplicated shrink
-        edgeNum -= (end - start) / 2;
+        edgeNumber -= (end - start) / 2;
 
     }
 
-    //TODO: THINK ABOUT HOW THIS WORKS FOR DUPLICATED CASE
+    //TODO: NEEDS TO BE BROUGHT INTO CLOSER ALIGNMENT WITH SHRINK FUNCTION
     //I'm not quite sure of the significance of this?
         public void expand(ArrayList<String> subGraphs, int start, int end) {
         int i;
@@ -225,7 +251,7 @@ public class BPGraph {
             removeFootprint();
         }
 
-        edgeNum += (end - start) /2;
+        edgeNumber += (end - start) / 2;
     }
 
     // TODO: I don't think I need index ints, will remove them
@@ -266,11 +292,11 @@ public class BPGraph {
             lowestIndex = 2;
         }
         // TODO:
-        upperBound = cycleNumber + (int) Math.floor(( 3 * edgeNum + cycles[0] + cycles[1] + cycles[2]) / 2);
-        lowerBound = cycleNumber + edgeNum + cycles[0] + cycles[1] + cycles[2] - cycles[lowestIndex];
+        upperBound = cycleNumber + (int) Math.floor(( 3 * edgeNumber + cycles[0] + cycles[1] + cycles[2]) / 2);
+        lowerBound = cycleNumber + edgeNumber + cycles[0] + cycles[1] + cycles[2] - cycles[lowestIndex];
     }
 
-    private void countCycles(int firstColor, int secondColor) {
+    protected void countCycles(int firstColor, int secondColor) {
 
         String start, left, right;
         int cycles = 0;
@@ -289,6 +315,7 @@ public class BPGraph {
         for (String node : availableVertices.keySet()) {
 
             // TODO: Modify this to work with duplicated nodes
+            // TODO: BUG HERE
             if (!unused.get(node))
                 continue;
 

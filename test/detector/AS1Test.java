@@ -5,7 +5,7 @@ import graphs.ContractedGraph;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import structs.Genome;
+import genome.Genome;
 
 import java.util.ArrayList;
 import java.util.Arrays;
