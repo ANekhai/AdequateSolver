@@ -40,7 +40,7 @@ public class ExactSolver extends ASMSolver {
 
                 ASMSolver.checkUpdate(0); // Used when multiple threads all working at once
 
-                // TODO: Figure out the rest of the functions in this conditional
+                // TODO: Figure out what major_tmp is?
 //                g.expand(g.footprint, 0, g.idx_ft);
 //                g.shrink(g.major_tmp, 0, g.idx_tmp);
 

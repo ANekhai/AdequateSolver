@@ -68,11 +68,13 @@ public class Detector {
             copy(as1);
         } else if (as2.AS2(graph)) {
             if (as2.getNumDetected() > 1) {
-                if (as4.AS4(graph)) {
-                    copy(as4);
-                } else {
-                    copy(as2);
-                }
+                //TODO: Add these back in when tested
+//                if (as4.AS4(graph)) {
+//                    copy(as4);
+//                } else {
+//                    copy(as2);
+//                }
+                copy(as2);
             }
         } else if (as4.AS4(graph)){
             copy(as4);

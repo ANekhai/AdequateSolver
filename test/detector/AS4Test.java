@@ -91,16 +91,11 @@ class AS4Test {
 //
 //    //TODO: These should be AS4s, gotta find the bug with them
 //    @Test
-//    void testAS4noTriangles() throws IOException {
+//    void testAS4noTriangles() {
 //        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 2 4 3 @" +
 //                endLine + ">Two" + endLine + "1 -2 -4 @" + endLine + "3 @" + endLine + ">Three" +
 //                endLine + "-1 -4 -3 -2 @"));
-//        ArrayList<Genome> genomes = Grimm.Reader.parseGRIMM(in);
-//
-//        for (Genome genome : genomes) {
-//            ContractedGraph geneGraph = new ContractedGraph(genome);
-//            graph.add(geneGraph);
-//        }
+//        graph = new BPGraph(in);
 //
 //       assertTrue(detector.AS4(graph));
 //
@@ -110,16 +105,11 @@ class AS4Test {
 //    }
 //
 //    @Test
-//    void testAS4withTriangle() throws IOException {
+//    void testAS4withTriangle() {
 //        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 2 4 3 @" +
 //                endLine + ">Two" + endLine + "1 -2 @" + endLine + "3 4 @" + endLine + ">Three" +
 //                endLine + "-1 -4 -3 2 @"));
-//        ArrayList<Genome> genomes = Grimm.Reader.parseGRIMM(in);
-//
-//        for (Genome genome : genomes) {
-//            ContractedGraph geneGraph = new ContractedGraph(genome);
-//            graph.add(geneGraph);
-//        }
+//        graph = new BPGraph(in);
 //
 //        assertTrue(detector.AS4(graph));
 //
@@ -129,16 +119,11 @@ class AS4Test {
 //    }
 //
 //    @Test
-//    void testPentagonalAS4() throws IOException {
+//    void testPentagonalAS4() {
 //        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 4 3 2 @" +
 //                endLine + ">Two" + endLine + "1 -2 @" + endLine + "-4 3 @" + endLine + ">Three" +
 //                endLine + "-3 1 2 4 @"));
-//        ArrayList<Genome> genomes = Grimm.Reader.parseGRIMM(in);
-//
-//        for (Genome genome : genomes) {
-//            ContractedGraph geneGraph = new ContractedGraph(genome);
-//            graph.add(geneGraph);
-//        }
+//        graph = new BPGraph(in);
 //
 //        assertTrue(detector.AS4(graph));
 //

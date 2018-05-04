@@ -61,7 +61,6 @@ public class BPGraph {
             add(contracted);
             addInitialAvailabilities(contracted);
         }
-        initializeEdgeCount();
         getBounds();
     }
 
@@ -216,6 +215,26 @@ public class BPGraph {
 
     }
 
+    public void duplicatedShrink(ArrayList<String> subGraphs, int start, int end) {
+        String left, right;
+
+        for (int i = start; i < end; i += 2) {
+            left = subGraphs.get(i);
+            right = subGraphs.get(i + 1);
+            for (Graph color : colors) {
+                if (color.getAdjacentNodes(left).contains(right)) {
+                    //TODO: verify this
+                    cycleNumber += color.getEdgesConnecting(left, right).size();
+                } else {
+
+
+
+                }
+            }
+        }
+    }
+
+
     //TODO: NEEDS TO BE BROUGHT INTO CLOSER ALIGNMENT WITH SHRINK FUNCTION
     //I'm not quite sure of the significance of this?
         public void expand(ArrayList<String> subGraphs, int start, int end) {
@@ -288,7 +307,7 @@ public class BPGraph {
             lowestIndex = 0;
         } else if (cycles[1] <= cycles[0] && cycles[1] <= cycles[2]) {
             lowestIndex = 1;
-        } else if (cycles[2] <= cycles[0]) {
+        } else if (cycles[2] <= cycles[0] && cycles[2] <= cycles[1]) {
             lowestIndex = 2;
         }
         // TODO:
@@ -326,10 +345,16 @@ public class BPGraph {
                 unused.put(left, false);
                 unused.put(right, false);
                 left = getFirstAdjacency(right, secondColor);
-            } while (left != start);
+            } while (!left.equals(start));
 
             ++cycles;
         }
         this.cycles[cycleIndex] = cycles;
     }
+
+    protected int countCyclesWithDuplications(int firstColor, int secondColor) {
+
+        return 0;
+    }
+
 }
