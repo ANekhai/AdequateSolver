@@ -2,5 +2,125 @@ package structs;
 
 public class Info {
 
+    private int countIterations[];
+    private int numberAS = 0;
+    private int kernelSize = 0;
+    private boolean kernelFound = false;
+    // TODO: figure these out
+    private int num_t[];
+    private int total[];
 
+    private int maxUpper[];
+    private int maxLower[];
+    private boolean started = true;
+    private int iterator = 0;
+    private int originalGeneNumber;
+    // private BufferedWriter traceWriter;
+    private boolean parallel = false;
+    private int result[];
+    private int threadNumber = 0;
+    // buncha time checkers
+//    public long time[];
+//    public long io_time[];
+//    public long bound_time[];
+//    public long vec_time[];
+//    public long as_time[];
+//    public long other_time[];
+//    public long thread_time[];
+    //parallel functionality checks
+    private boolean active[];
+    private volatile boolean isLocked[];
+    private int f_check[][]; //TODO: ???
+    private int f_base; //TODO: ???
+    private long breakNumber;
+//    private long break_num;
+//    private boolean isBuffered;
+    private int maxElementSize;
+    private int averageNodeNumber;
+//    private boolean enableTrace = false;
+    private boolean isParallel = false;
+    private int threadTotal[][];
+//    private float spaceUsage[][];
+//    private float actualUsage[][];
+//    private float actualBytes = 0;
+//    private boolean isZero;
+    private boolean globalFinished = false;
+
+
+    public Info(Parameters params) {
+        threadNumber = params.getThreadNumber();
+        maxUpper = new int[threadNumber];
+        maxLower = new int[threadNumber];
+        result = new int[threadNumber];
+        countIterations = new int[threadNumber];
+        num_t = new int[threadNumber];
+        total = new int[threadNumber];
+//        time = new long[threadNumber];
+//        bound_time = new long[p.th_num];
+//        as_time = new long[p.th_num];
+//        vec_time = new long[p.th_num];
+//        other_time = new long[p.th_num];
+//        thread_time = new long[p.th_num];
+        active = new boolean[threadNumber];
+        isLocked = new boolean[threadNumber];
+        breakNumber = params.getBreakNumber();
+//        this.freq = p.check_freq;
+//        this.root_dir = p.root;
+//        this.is_buffered = p.is_buffered;
+//        this.max_elem_sz = p.thresh;
+//        this.avg_node_num = p.avg_node_num;
+//        this.enable_trace = p.enable_trace;
+//        space_usage = new float[p.th_num][3];
+//        actual_usage = new float[p.th_num][3];
+//        actual_byte = 0;
+//        this.is_zero=p.is_zero;
+    }
+
+    //GETTERS AND SETTERS
+    public boolean getStarted() {
+        return started;
+    }
+
+    public int getThreadNumber() {
+        return threadNumber;
+    }
+
+    public int getMaxLower() {
+        return maxLower[0];
+    }
+
+    public int getMaxUpper() {
+        return maxUpper[0];
+    }
+
+    public void setMaxUpper(int maxUpper) {
+        this.maxUpper[0] = maxUpper;
+    }
+
+    public void setMaxLower(int maxLower) {
+        this.maxLower[0] = maxLower;
+    }
+
+    //Member functions
+
+    public void markStarted() {
+        started = false;
+    }
+
+    public void addIteration() {
+        ++countIterations[0];
+    }
+
+    public boolean checkBreakNumber() {
+        if (breakNumber == -1) {
+            return false;
+        } else {
+            return countIterations[0] > breakNumber;
+        }
+
+    }
+
+    public void markFinished() {
+        globalFinished = true;
+    }
 }

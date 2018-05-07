@@ -15,14 +15,12 @@ public class BPGraph {
     private boolean isContracted;
     private HashMap<String, Boolean> availableVertices = new HashMap<>();
     private int cycleNumber = 0;
-    private int[] cycles = new int[3];
+    private ArrayList<Integer> cycles = new ArrayList<>();
     private int edgeNumber = 0;
     private int upperBound = 0;
     private int lowerBound = 0;
     private ArrayList<String> footprint = new ArrayList<>();
-    private int footprintIndex = 0;
     private ArrayList<String> footprintCopy = new ArrayList<>();
-    private int footprintCopyIndex = 0;
 
 
 
@@ -106,14 +104,14 @@ public class BPGraph {
 
     public int getLowerBound() { return lowerBound; }
 
-    public int getCycle(int i) { return cycles[i]; }
+    public int getCycle(int i) { return cycles.get(i); }
 
     public void setUpperBound(int upperBound) {
         this.upperBound = upperBound;
     }
 
     public void setCycle(int i, int cycles) {
-        this.cycles[i] = cycles;
+        this.cycles.set(i, cycles);
     }
 
     //Member functions
@@ -276,11 +274,10 @@ public class BPGraph {
     // TODO: I don't think I need index ints, will remove them
     private void addFootprint(String u) {
         footprint.add(u);
-        ++footprintIndex;
     }
 
     private void removeFootprint() {
-        --footprintIndex;
+        footprint.remove(footprint.size() - 1);
     }
 
     public void cleanFootprint() {
@@ -290,32 +287,36 @@ public class BPGraph {
 //        }
 //        this.idx_ft = 0;
         footprintCopy = (ArrayList<String>) footprint.clone();
-        footprintCopyIndex = footprintIndex;
         footprint = new ArrayList<>();
-        footprintIndex = 0;
 
     }
 
     public void getBounds() {
-        int lowestIndex = -1;
 
-        countCycles(0, 1);
-        countCycles(0, 2);
-        countCycles(1, 2);
-
-        if (cycles[0] <= cycles[1] && cycles[0] <= cycles[2]) {
-            lowestIndex = 0;
-        } else if (cycles[1] <= cycles[0] && cycles[1] <= cycles[2]) {
-            lowestIndex = 1;
-        } else if (cycles[2] <= cycles[0] && cycles[2] <= cycles[1]) {
-            lowestIndex = 2;
+        cycles = new ArrayList<>();
+        for (int i = 0; i < colors.size(); ++i) {
+            for (int j = i + 1; j < colors.size(); ++j) {
+                cycles.add(countCycles(i, j));
+            }
         }
-        // TODO:
-        upperBound = cycleNumber + (int) Math.floor(( 3 * edgeNumber + cycles[0] + cycles[1] + cycles[2]) / 2);
-        lowerBound = cycleNumber + edgeNumber + cycles[0] + cycles[1] + cycles[2] - cycles[lowestIndex];
+
+        //generalizing finding lowest index
+        int lowestIndex = 0;
+        int lowestValue = cycles.get(0);
+        for (int i = 0; i < cycles.size(); ++i) {
+            if (cycles.get(i) <= lowestValue) {
+                lowestIndex = i;
+                lowestValue = cycles.get(i);
+            }
+        }
+
+        if (cycles.size() == 3) {
+            upperBound = cycleNumber + (int) Math.floor((3 * edgeNumber + cycles.get(0) + cycles.get(1) + cycles.get(2)) / 2);
+            lowerBound = cycleNumber + edgeNumber + cycles.get(0) + cycles.get(1) + cycles.get(2) - cycles.get(lowestIndex);
+        }
     }
 
-    protected void countCycles(int firstColor, int secondColor) {
+    protected int countCycles(int firstColor, int secondColor) {
 
         String start, left, right;
         int cycles = 0;
@@ -323,18 +324,8 @@ public class BPGraph {
 
         HashMap<String, Boolean> unused = copyAvailability();
 
-        if (firstColor == 0 && secondColor == 1) {
-            cycleIndex = 2;
-        } else if (firstColor == 0 && secondColor == 2) {
-            cycleIndex = 1;
-        } else if (firstColor == 1 && secondColor == 2) {
-            cycleIndex = 0;
-        }
-
         for (String node : availableVertices.keySet()) {
 
-            // TODO: Modify this to work with duplicated nodes
-            // TODO: BUG HERE
             if (!unused.get(node))
                 continue;
 
@@ -349,7 +340,7 @@ public class BPGraph {
 
             ++cycles;
         }
-        this.cycles[cycleIndex] = cycles;
+        return cycles;
     }
 
     protected int countCyclesWithDuplications(int firstColor, int secondColor) {
@@ -357,4 +348,7 @@ public class BPGraph {
         return 0;
     }
 
+    public ArrayList<String> getFootprint() {
+        return footprint;
+    }
 }

@@ -78,6 +78,7 @@ class BPGraphTest {
         assertThrows(RuntimeException.class, ()->bpGraph.add(nonContracted));
     }
 
+    //TODO: REWRITE THIS TEST AS BPGRAPH REQUIRES EQUAL GENE CONTENT RIGHT NOW
     @Test
     void testConnectedEdgeChecking() {
         BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 @" + endLine +
@@ -140,7 +141,7 @@ class BPGraphTest {
         bpGraph = new BPGraph(in);
         bpGraph.countCycles(0, 1);
 
-        assertEquals(2, bpGraph.getCycle(2));
+        assertEquals(2, bpGraph.getCycle(0));
 
     }
 

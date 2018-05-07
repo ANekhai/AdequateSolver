@@ -2,18 +2,19 @@ package solver;
 
 import detector.Detector;
 import graphs.BPGraph;
+import structs.Info;
 
 public class ExactSolver extends ASMSolver {
 
 
-    public int solve(BPGraph graph, Detector detector) {
+    public int solve(BPGraph graph, Detector detector, Info info) {
         //set up functions
         //TODO: Think about moving everything into an INFO struct for ease of everything... this is where maxLow
         //TODO: and maxUp are in the original code
 
         int cycle[] = new int[3];
-        int maxLow = graph.getLowerBound(), maxUp = graph.getUpperBound();
-        boolean started = false;
+        info.setMaxLower(graph.getLowerBound());
+        info.setMaxUpper(graph.getUpperBound());
 
 
         if (collapse(graph, detector)){
@@ -24,12 +25,15 @@ public class ExactSolver extends ASMSolver {
         detector.clean(); //
 
         //actual algorithm
-        while (maxLow != maxUp ) {
+        while (info.getMaxLower() != info.getMaxUpper() ) {
 
             //Some parallel bookkeeping functions and load balancing functions first
+            if(info.getThreadNumber() > 1) {
+                // some stuff for load balancing
+            }
 
             // Updates after first iteration of while loop
-            if (started){
+            if (info.getStarted()){
 
 //                if (!list.get(info.max_up[0], g, info)) {
 //                    list.list[info.max_up[0]] = null;
@@ -38,20 +42,21 @@ public class ExactSolver extends ASMSolver {
 //                    continue;
 //                }
 
-                ASMSolver.checkUpdate(0); // Used when multiple threads all working at once
+//                ASMSolver.checkUpdate(0); // Used when multiple threads all working at once
 
-                // TODO: Figure out what major_tmp is?
-//                g.expand(g.footprint, 0, g.idx_ft);
+                // TODO: Figure out what major_tmp is
 //                g.shrink(g.major_tmp, 0, g.idx_tmp);
+                graph.expand(graph.getFootprint(), 0, graph.getFootprintSize());
+                graph.shrink(major_tmp, 0, idx_tmp);
 
 //                info.total[0]--;
 //                list.refresh_all(info.max_up[0], info);
             }
-//            info.count[0]++
-            started = true;
+            info.addIteration();
+            info.markStarted();
 
-//            if (info.count[0] > info.breakNum)
-//                break;
+            if (info.checkBreakNumber())
+                break;
 
             detector.detectAdequateSubgraphs(graph);
 
@@ -103,24 +108,25 @@ public class ExactSolver extends ASMSolver {
                     graph.getBounds();
                 }
 
-                if (graph.getLowerBound() > maxLow) {
-                    maxLow = graph.getLowerBound();
+                if (graph.getLowerBound() > info.getMaxLower()) {
+                    info.setMaxLower(graph.getLowerBound());
                 }
-                if (graph.getUpperBound() > maxUp) {
-                    graph.setUpperBound(maxUp);
+                if (graph.getUpperBound() > info.getMaxUpper()) {
+                    graph.setUpperBound(info.getMaxUpper());
                     //TODO: This seems a little strange to me
                 }
 
             }
 
-            if (graph.getLowerBound() >= maxUp) {
-                maxLow = graph.getLowerBound();
+            if (graph.getLowerBound() >= info.getMaxUpper()) {
+                info.setMaxLower(graph.getLowerBound());
                 graph = null;
-                return maxLow;
+                info.markFinished();
+                return info.getMaxLower();
             }
 
         }
-        return maxLow;
+        return info.getMaxLower();
     }
 
 }

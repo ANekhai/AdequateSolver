@@ -2,12 +2,11 @@ package solver;
 
 import detector.Detector;
 import graphs.BPGraph;
+import structs.Info;
 
 public abstract class ASMSolver {
 
-    public abstract int solve(BPGraph g, Detector detector);
-
-    //TODO: perhaps move detector out of ASMSolver class...
+    public abstract int solve(BPGraph g, Detector detector, Info info);
 
     public boolean collapse(BPGraph graph, Detector detector) {
         int maxLower = graph.getLowerBound(), maxUpper = graph.getUpperBound();
