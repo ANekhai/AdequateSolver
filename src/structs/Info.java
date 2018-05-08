@@ -9,7 +9,7 @@ public class Info {
     // TODO: figure these out
     private int num_t[];
     private int total[];
-
+    private String rootFolder;
     private int maxUpper[];
     private int maxLower[];
     private boolean started = true;
@@ -51,6 +51,7 @@ public class Info {
         threadNumber = params.getThreadNumber();
         maxUpper = new int[threadNumber];
         maxLower = new int[threadNumber];
+        rootFolder = params.getRootFolder();
         result = new int[threadNumber];
         countIterations = new int[threadNumber];
         num_t = new int[threadNumber];
@@ -67,7 +68,7 @@ public class Info {
 //        this.freq = p.check_freq;
 //        this.root_dir = p.root;
 //        this.is_buffered = p.is_buffered;
-//        this.max_elem_sz = p.thresh;
+        this.maxElementSize = params.getThreshhold();
 //        this.avg_node_num = p.avg_node_num;
 //        this.enable_trace = p.enable_trace;
 //        space_usage = new float[p.th_num][3];
@@ -91,6 +92,10 @@ public class Info {
 
     public int getMaxUpper() {
         return maxUpper[0];
+    }
+
+    public String getRootFolder() {
+        return rootFolder;
     }
 
     public void setMaxUpper(int maxUpper) {
@@ -122,5 +127,26 @@ public class Info {
 
     public void markFinished() {
         globalFinished = true;
+    }
+
+    public void setThreadMaxUpper(int threadID, int value) {
+        this.maxUpper[threadID] = value;
+    }
+
+    public void setThreadMaxLower(int threadID, int value) {
+        this.maxLower[threadID] = value;
+    }
+
+    public int getThreadMaxUpper(int threadID) {
+        return maxUpper[threadID];
+    }
+
+
+    public int getThreadMaxLower(int threadID) {
+        return maxLower[threadID];
+    }
+
+    public int getMaxElementSize() {
+        return maxElementSize;
     }
 }

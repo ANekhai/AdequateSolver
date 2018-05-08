@@ -84,6 +84,10 @@ public class Detector {
         }
     }
 
+    public String getSubgraphVertex(int i) {
+        return foundSubgraphs.get(i);
+    }
+
 
     // have an idea on how to refactor this post testing
 

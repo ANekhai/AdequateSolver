@@ -21,8 +21,7 @@ public class BPGraph {
     private int lowerBound = 0;
     private ArrayList<String> footprint = new ArrayList<>();
     private ArrayList<String> footprintCopy = new ArrayList<>();
-
-
+    private ArrayList<String> temporarySubgraphs;
 
 
     public BPGraph(){
@@ -350,5 +349,25 @@ public class BPGraph {
 
     public ArrayList<String> getFootprint() {
         return footprint;
+    }
+
+    public void cleanTemporarySubgraphs() {
+        temporarySubgraphs = new ArrayList<>();
+    }
+
+    public ArrayList<String> getTempSubgraphs() {
+        return temporarySubgraphs;
+    }
+
+    public int getTempSubgraphsSize() {
+        return temporarySubgraphs.size();
+    }
+
+    public String getTempSubgraphVertex(int i) {
+        return temporarySubgraphs.get(i);
+    }
+
+    public void addTempSubgraphVertex(String vertex) {
+        temporarySubgraphs.add(vertex);
     }
 }

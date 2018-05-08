@@ -47,7 +47,7 @@ public class ExactSolver extends ASMSolver {
                 // TODO: Figure out what major_tmp is
 //                g.shrink(g.major_tmp, 0, g.idx_tmp);
                 graph.expand(graph.getFootprint(), 0, graph.getFootprintSize());
-                graph.shrink(major_tmp, 0, idx_tmp);
+                graph.shrink(graph.getTempSubgraphs(), 0, graph.getTempSubgraphsSize());
 
 //                info.total[0]--;
 //                list.refresh_all(info.max_up[0], info);
