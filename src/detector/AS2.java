@@ -19,19 +19,17 @@ public class AS2 extends SubDetector{
                     continue;
                 }
 
-                //TODO: Currently I assume that each gene has only one adjacency, will need to refactor this once dealing with duplicated genes
                 String v = graph.getFirstAdjacency(u, color);
 
                 if (!valid.get(v)){
                     continue;
                 }
-                // TODO: perhaps check if u or v have degree > 1
+
                 updateVisitedVertices(valid, u, v);
 
                 // get other colors. HERE WE DECLARE THERE ARE ONLY THREE COLORS
                 int secondColor = (color + 1) % 3, thirdColor = (color + 2) % 3;
 
-                //TODO: Code here will need to be refactored to accept multidegree nodes too, this requires equal gene content hmph
                 String u1 = graph.getFirstAdjacency(u, secondColor);
                 String u2 = graph.getFirstAdjacency(u, thirdColor);
                 String v1 = graph.getFirstAdjacency(v, secondColor);
@@ -112,6 +110,10 @@ public class AS2 extends SubDetector{
         } else {
             return false;
         }
+    }
+
+    public boolean duplicatedAS2() {
+        return false;
     }
 
     @Override

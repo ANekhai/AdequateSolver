@@ -125,28 +125,18 @@ public class Info {
 
     }
 
-    public void markFinished() {
-        globalFinished = true;
-    }
+    public void markFinished() { globalFinished = true; }
 
-    public void setThreadMaxUpper(int threadID, int value) {
-        this.maxUpper[threadID] = value;
-    }
+    public void setThreadMaxUpper(int threadID, int value) { this.maxUpper[threadID] = value; }
 
-    public void setThreadMaxLower(int threadID, int value) {
-        this.maxLower[threadID] = value;
-    }
+    public void setThreadMaxLower(int threadID, int value) { this.maxLower[threadID] = value; }
 
-    public int getThreadMaxUpper(int threadID) {
-        return maxUpper[threadID];
-    }
+    public int getThreadMaxUpper(int threadID) { return maxUpper[threadID]; }
 
 
-    public int getThreadMaxLower(int threadID) {
-        return maxLower[threadID];
-    }
+    public int getThreadMaxLower(int threadID) { return maxLower[threadID]; }
 
-    public int getMaxElementSize() {
-        return maxElementSize;
-    }
+    public int getMaxElementSize() { return maxElementSize; }
+
+    public boolean isLocked(int threadID) { return isLocked[threadID]; }
 }
