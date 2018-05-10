@@ -370,4 +370,8 @@ public class BPGraph {
     public void addTempSubgraphVertex(String vertex) {
         temporarySubgraphs.add(vertex);
     }
+
+    public Set<String> getAdjacenciesInColor(String u, int color) { return colors.get(color).getAdjacentNodes(u); }
+
+    public boolean hasEdgeInColor(String u, String v, int color) { return colors.get(color).hasEdge(u, v); }
 }

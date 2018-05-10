@@ -5,7 +5,7 @@ import graphs.BPGraph;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class AS1 extends SubDetector {
+public class S1 extends SubDetector {
     public boolean AS1(BPGraph graph) {
         valid = graph.copyAvailability();
         for (String node : graph.getNodes()) {
