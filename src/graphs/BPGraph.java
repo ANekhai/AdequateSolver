@@ -184,11 +184,9 @@ public class BPGraph {
             right = subGraphs.get(i + 1);
 
             for (int color = 0; color < colors.size(); ++color) {
-                // TODO: May need to rethink this for duplicated genes
                 if (colors.get(color).getAdjacentNodes(left).contains(right)) {
                     ++cycleNumber;
                 } else {
-                    //TODO: This code will not work with duplicated nodes. should I remove all edges in a color from a node that's being shrunk?
                     String leftAdjacency = getFirstAdjacency(left, color);
                     String rightAdjacency = getFirstAdjacency(right, color);
                     // remove edges

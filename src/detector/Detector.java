@@ -13,12 +13,10 @@ public class Detector {
 
     //SubGraph Detectors
     //TODO: condense these into a list storing subdetectors
-    AS0 as0 = new AS0();
-    AS1 as1 = new AS1();
-    AS2 as2 = new AS2();
-    AS4 as4 = new AS4();
-
-
+    private AS0 as0 = new AS0();
+    private AS1 as1 = new AS1();
+    private AS2 as2 = new AS2();
+    private AS4 as4 = new AS4();
 
 
     public Detector(){
@@ -67,15 +65,15 @@ public class Detector {
         if (as1.AS1(graph)) {
             copy(as1);
         } else if (as2.AS2(graph)) {
-            if (as2.getNumDetected() > 1) {
+//            if (as2.getNumDetected() > 1) {
                 //TODO: Add these back in when tested
 //                if (as4.AS4(graph)) {
 //                    copy(as4);
 //                } else {
 //                    copy(as2);
 //                }
-                copy(as2);
-            }
+//            }
+            copy(as2);
         } else if (as4.AS4(graph)){
             copy(as4);
         } else {

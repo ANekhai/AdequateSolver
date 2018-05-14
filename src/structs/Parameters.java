@@ -6,6 +6,9 @@ public class Parameters {
     private String rootFolder;
     private int threshhold = 2000; //from params file they provided
 
+    public Parameters() {
+        rootFolder = null;
+    }
 
     public Parameters(String[] args) {
         rootFolder = null;

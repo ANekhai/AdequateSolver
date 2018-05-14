@@ -9,6 +9,7 @@ public class Info {
     // TODO: figure these out
     private int num_t[];
     private int total[];
+
     private String rootFolder;
     private int maxUpper[];
     private int maxLower[];
@@ -30,8 +31,8 @@ public class Info {
     //parallel functionality checks
     private boolean active[];
     private volatile boolean isLocked[];
-    private int f_check[][]; //TODO: ???
-    private int f_base; //TODO: ???
+    private int fileCheck[][];
+    private int fileBase;
     private long breakNumber;
 //    private long break_num;
 //    private boolean isBuffered;
@@ -75,6 +76,23 @@ public class Info {
 //        actual_usage = new float[p.th_num][3];
 //        actual_byte = 0;
 //        this.is_zero=p.is_zero;
+    }
+
+    public void initFileCheck(int upperBound, int lowerBound) {
+        this.fileCheck = new int[threadNumber][upperBound + 1];
+        this.fileBase = lowerBound;
+    }
+
+    public void incrementFileCheck(int threadID, int upperBound) {
+        ++this.fileCheck[threadID][upperBound];
+    }
+
+    public void decrementFileCheck(int threadID, int upperBound) {
+        --this.fileCheck[threadID][upperBound];
+    }
+
+    public int getFileCheck(int threadID, int upperBound) {
+        return fileCheck[threadID][upperBound];
     }
 
     //GETTERS AND SETTERS

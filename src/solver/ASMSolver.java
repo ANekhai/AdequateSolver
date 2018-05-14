@@ -3,12 +3,13 @@ package solver;
 import detector.Detector;
 import graphs.BPGraph;
 import structs.Info;
+import structs.SearchList;
 
 public abstract class ASMSolver {
 
-    public abstract int solve(BPGraph g, Detector detector, Info info);
+    public abstract int solve(BPGraph g, Detector detector, Info info, SearchList list);
 
-    public boolean collapse(BPGraph graph, Detector detector) {
+    public boolean collapse(BPGraph graph, Detector detector, Info info, SearchList list) {
         int maxLower = graph.getLowerBound(), maxUpper = graph.getUpperBound();
         while (true){
             detector.detectAdequateSubgraphs(graph);
@@ -28,14 +29,14 @@ public abstract class ASMSolver {
             }
 
         }
-        //TODO: implement rename maybe?
+        //TODO: will avoid implementing this probably
 //        if (info.root != false && !parameter.isSim())
 //            graph.rename();
         if (maxUpper <= maxLower) {
             return true;
         }
-        // list.init(info, 0)
-        // info.init_f_check(graph.getUpperBound(), graph.getLowerBound());
+        list.init(info, 0);
+        info.initFileCheck(graph.getUpperBound(), graph.getLowerBound());
         return false;
     }
 

@@ -203,7 +203,7 @@ public class Element {
             childIndex = finalChildIndex[currentPosition];
             childCheck = finalChildCheck[currentPosition];
         } else {
-            if (info.f_check[threadID][upperBound] == 0) {
+            if (info.getFileCheck(threadID, upperBound) == 0) {
                 return false;
             } else {
                 this.currentPosition = 0;
@@ -318,8 +318,8 @@ public class Element {
             }
         }
         this.available[writePosition] = false;
-//        ++info.f_check[thread_id][ub];
-        String name = info.getRootFolder() + "/" + threadID + "_" + upperBound + "_" + info.f_check[threadID][upperBound];
+        info.incrementFileCheck(threadID, upperBound);
+        String name = info.getRootFolder() + "/" + threadID + "_" + upperBound + "_" + info.getFileCheck(threadID, upperBound);
         File file = new File(name);
 
         try {
@@ -376,7 +376,7 @@ public class Element {
             }
         }
 
-        if (info.f_check[threadID][upperBound] == 0) {
+        if (info.getFileCheck(threadID, upperBound) == 0) {
             return false;
         }
 
@@ -389,7 +389,7 @@ public class Element {
         }
         this.available[readPosition] = false;
 
-        String name = info.getRootFolder() + "/" + threadID + "_" + upperBound + "_" + info.f_check[threadID][upperBound];
+        String name = info.getRootFolder() + "/" + threadID + "_" + upperBound + "_" + info.getFileCheck(threadID, upperBound);
         File file = new File(name);
 
         try {
@@ -430,7 +430,7 @@ public class Element {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        info.f_check[threadID][upperBound]--;
+        info.decrementFileCheck(threadID, upperBound);
         file.delete();
 
         this.available[readPosition] = true;

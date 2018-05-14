@@ -133,8 +133,8 @@ public class AS2 extends SubDetector{
     }
 
     private void detectTwoColorFourCycles(BPGraph graph, String u, String v, int c1, int c2) {
-        Set<String> uAdjacencies = graph.getAdjacenciesInColor(u, c1);
-        Set<String> vAdjacencies = graph.getAdjacencyInColor(v, c1);
+        Set<String> uAdjacencies = graph.getAdjacenciesInColor(u, c2);
+        Set<String> vAdjacencies = graph.getAdjacencyInColor(v, c2);
         for (String u1 : uAdjacencies) {
             for (String v1 : vAdjacencies) {
 
@@ -144,7 +144,7 @@ public class AS2 extends SubDetector{
                     if(graph.hasEdgeInColor(u, v1, c1) || graph.hasEdgeInColor(v, u1, c1)) {
 
                     } else { //TODO: decide where to put median edges
-                        
+
 
                     }
                     updateVisitedVertices(valid, u, v, u1, v1);

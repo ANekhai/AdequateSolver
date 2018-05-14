@@ -11,7 +11,7 @@ public class SearchList {
     private String rootFolder;
     private int threadID;
 
-    public SearchList(Info info, int threadID) {
+    public void init(Info info, int threadID) {
         this.threadID = threadID;
         this.rootFolder = info.getRootFolder();
         info.setThreadMaxUpper(threadID, info.getMaxUpper());
@@ -26,6 +26,9 @@ public class SearchList {
 //            for (int i = info.max_low[thread_id]; i < info.max_up[thread_id] + 1; i++)
 //                list[i] = new ElemWithBuffer(info, i, thread_id);
 
+        for (int i = info.getThreadMaxLower(threadID); i < info.getThreadMaxUpper(threadID) + 1; ++i) {
+            list[i] = new Element(info, i, threadID);
+        }
     }
 
     public void add(BPGraph graph, Detector detector, int s, int e, int upperBound, Info info) {
@@ -52,7 +55,7 @@ public class SearchList {
     public void clean(int lowerBound, Info info ) {
         for (int k = info.getThreadMaxLower(threadID); k < lowerBound; ++k) {
             //TODO: Figure out what f_check does
-            for (int j = 1; j <= info.f_check[this.threadID][k]; ++j) {
+            for (int j = 1; j <= info.getFileCheck(this.threadID, k); ++j) {
                // constructing files...
                String name = "Temp/temp" + k + "_" + j;
                File file = new File(name);

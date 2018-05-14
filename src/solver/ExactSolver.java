@@ -3,11 +3,12 @@ package solver;
 import detector.Detector;
 import graphs.BPGraph;
 import structs.Info;
+import structs.SearchList;
 
 public class ExactSolver extends ASMSolver {
 
 
-    public int solve(BPGraph graph, Detector detector, Info info) {
+    public int solve(BPGraph graph, Detector detector, Info info, SearchList list) {
         //set up functions
         //TODO: Think about moving everything into an INFO struct for ease of everything... this is where maxLow
         //TODO: and maxUp are in the original code
@@ -17,7 +18,7 @@ public class ExactSolver extends ASMSolver {
         info.setMaxUpper(graph.getUpperBound());
 
 
-        if (collapse(graph, detector)){
+        if (collapse(graph, detector, info, list)){
             // System.out.printf("finished in collapse %d\n", graph.getLowerBound());
             return graph.getLowerBound();
         }
