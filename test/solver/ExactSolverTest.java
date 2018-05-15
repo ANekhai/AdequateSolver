@@ -39,7 +39,7 @@ class ExactSolverTest {
 
         graph = new BPGraph(in);
 
-        solver.collapse(graph, detector, info, list);
+        assertTrue(solver.collapse(graph, detector, info, list));
         //why 27...
         assertEquals(9, graph.getCycleNumber());
 
@@ -52,9 +52,44 @@ class ExactSolverTest {
 
         graph = new BPGraph(in);
 
-        solver.collapse(graph, detector, info, list);
+        assertTrue(solver.collapse(graph, detector, info, list));
 
-        assertEquals(2, graph.getCycleNumber());
+        assertEquals(4, graph.getCycleNumber());
+    }
+
+    @Test
+    void testCollapseOnGenomeWithAS1sAnd2s() {
+        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 2 @" + endLine + "3 @" +
+                endLine + ">Two" + endLine + "1 -2 @" + endLine + "3 @" + endLine +
+                ">Three" + endLine + "1 @" + endLine + "2 @" + endLine + "3 @"));
+
+        graph = new BPGraph(in);
+
+        assertTrue(solver.collapse(graph, detector, info, list));
+
+        assertEquals(7, graph.getCycleNumber());
+
+    }
+
+    @Test
+    void testExactSolverWithIdenticalGenomes() {
+        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 2 3 @" + endLine +
+                ">Two" + endLine + "1 2 3 @" + endLine + ">Three" + endLine + "1 2 3 @"));
+
+        graph = new BPGraph(in);
+
+        assertEquals(9, solver.solve(graph, detector, info, list));
+
+    }
+
+    @Test
+    void testExactSolverWithAS2() {
+        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 2 @" + endLine +
+                ">Two" + endLine + "1 -2 @" + endLine + ">Three" + endLine + "1 @" + endLine + "2 @"));
+
+        graph = new BPGraph(in);
+
+        assertEquals(4, solver.solve(graph, detector, info, list));
     }
 
 }

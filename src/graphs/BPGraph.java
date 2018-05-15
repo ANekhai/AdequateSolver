@@ -16,12 +16,12 @@ public class BPGraph {
     private HashMap<String, Boolean> availableVertices = new HashMap<>();
     private int cycleNumber = 0;
     private ArrayList<Integer> cycles = new ArrayList<>();
-    private int edgeNumber = 0;
+    private int geneNumber = 0;
     private int upperBound = 0;
     private int lowerBound = 0;
     private ArrayList<String> footprint = new ArrayList<>();
     private ArrayList<String> footprintCopy = new ArrayList<>();
-    private ArrayList<String> temporarySubgraphs;
+    private ArrayList<String> temporarySubgraphs = new ArrayList<>();
 
 
     public BPGraph(){
@@ -31,7 +31,6 @@ public class BPGraph {
     public BPGraph(ContractedGraph... graphs) {
         isContracted = true;
         colors.addAll(Arrays.asList(graphs));
-        initializeEdgeCount();
         addInitialAvailabilities(graphs);
         getBounds();
     }
@@ -39,7 +38,6 @@ public class BPGraph {
     public BPGraph(NonContractedGraph... graphs) {
         isContracted = false;
         colors.addAll(Arrays.asList(graphs));
-        initializeEdgeCount();
         addInitialAvailabilities(graphs);
     }
 
@@ -58,13 +56,8 @@ public class BPGraph {
             add(contracted);
             addInitialAvailabilities(contracted);
         }
+        geneNumber = availableVertices.keySet().size() / 2;
         getBounds();
-    }
-
-    public void initializeEdgeCount() {
-        for (int i = 0; i < colors.size(); ++i) {
-            edgeNumber += colors.get(i).getNumEdges();
-        }
     }
 
     //Getters and Setters
@@ -93,7 +86,7 @@ public class BPGraph {
         return colors.get(color).getAdjacentNodes(node).iterator().next();
     }
     
-    public int getEdgeNumber() { return edgeNumber; }
+    public int getGeneNumber() { return geneNumber; }
 
     public int getCycleNumber() { return cycleNumber; }
 
@@ -125,8 +118,7 @@ public class BPGraph {
         }
         colors.add(graph);
         addInitialAvailabilities(graph);
-        edgeNumber += graph.getNumEdges();
-
+        geneNumber = this.getNodes().size() / 2;
     }
 
     private void addInitialAvailabilities(Graph... graphs) {
@@ -139,6 +131,7 @@ public class BPGraph {
         for (String node : graph.getNodes()) {
             availableVertices.putIfAbsent(node, true);
         }
+        geneNumber = this.getNodes().size() / 2;
     }
 
     public boolean checkAvailable(String node){
@@ -205,8 +198,7 @@ public class BPGraph {
 
         }
 
-        // TODO: Need to think about this for duplicated shrink
-        edgeNumber -= (end - start) / 2;
+        geneNumber -= (end - start) / 2;
 
     }
 
@@ -218,11 +210,8 @@ public class BPGraph {
             right = subGraphs.get(i + 1);
             for (Graph color : colors) {
                 if (color.getAdjacentNodes(left).contains(right)) {
-                    //TODO: verify this
-                    cycleNumber += color.getEdgesConnecting(left, right).size();
+
                 } else {
-
-
 
                 }
             }
@@ -231,8 +220,8 @@ public class BPGraph {
 
 
     //TODO: NEEDS TO BE BROUGHT INTO CLOSER ALIGNMENT WITH SHRINK FUNCTION
-    //I'm not quite sure of the significance of this?
-        public void expand(ArrayList<String> subGraphs, int start, int end) {
+
+    public void expand(ArrayList<String> subGraphs, int start, int end) {
         int i;
         String left, right;
 
@@ -265,7 +254,7 @@ public class BPGraph {
             removeFootprint();
         }
 
-        edgeNumber += (end - start) / 2;
+        geneNumber += (end - start) / 2;
     }
 
     // TODO: I don't think I need index ints, will remove them
@@ -308,8 +297,8 @@ public class BPGraph {
         }
 
         if (cycles.size() == 3) {
-            upperBound = cycleNumber + (int) Math.floor((3 * edgeNumber + cycles.get(0) + cycles.get(1) + cycles.get(2)) / 2);
-            lowerBound = cycleNumber + edgeNumber + cycles.get(0) + cycles.get(1) + cycles.get(2) - cycles.get(lowestIndex);
+            upperBound = cycleNumber + (int) Math.floor((3 * geneNumber + cycles.get(0) + cycles.get(1) + cycles.get(2)) / 2);
+            lowerBound = cycleNumber + geneNumber + cycles.get(0) + cycles.get(1) + cycles.get(2) - cycles.get(lowestIndex);
         }
     }
 

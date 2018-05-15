@@ -7,9 +7,9 @@ public class Info {
     private int kernelSize = 0;
     private boolean kernelFound = false;
     // TODO: figure these out
-    private int num_t[];
+    private int threadCount[];
     private int total[];
-
+    private boolean isRoot = false;
     private String rootFolder;
     private int maxUpper[];
     private int maxLower[];
@@ -55,7 +55,7 @@ public class Info {
         rootFolder = params.getRootFolder();
         result = new int[threadNumber];
         countIterations = new int[threadNumber];
-        num_t = new int[threadNumber];
+        threadCount = new int[threadNumber];
         total = new int[threadNumber];
 //        time = new long[threadNumber];
 //        bound_time = new long[p.th_num];
@@ -157,4 +157,8 @@ public class Info {
     public int getMaxElementSize() { return maxElementSize; }
 
     public boolean isLocked(int threadID) { return isLocked[threadID]; }
+
+    public void incrementCount(int thread) { ++this.countIterations[thread]; }
+
+    public void setRoot() { this.isRoot = true; }
 }

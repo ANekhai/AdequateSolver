@@ -94,7 +94,7 @@ public class ExactSolver extends ASMSolver {
 
                 graph.shrink(detector.getSubgraphs(), start, end);
 
-                if (detector.getNumDetected() > 2) { //I think this only occurs with AS0 works
+                if (detector.getNumDetected() > 2) { // I am fairly certain this is only for the linear case
 //                    g.c[0] = cycle[0];
 //                    g.c[1] = cycle[1];
 //                    g.c[2] = cycle[2];

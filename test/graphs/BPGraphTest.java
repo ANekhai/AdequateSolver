@@ -35,7 +35,7 @@ class BPGraphTest {
         bpGraph = new BPGraph(in);
 
         assertEquals(3, bpGraph.getColorsSize());
-        assertEquals(9, bpGraph.getEdgeNumber());
+        assertEquals(9, bpGraph.getGeneNumber());
 
     }
 

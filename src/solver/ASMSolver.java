@@ -14,8 +14,8 @@ public abstract class ASMSolver {
         while (true){
             detector.detectAdequateSubgraphs(graph);
             if (detector.getNumDetected() == 1) {
-                //info.count[0]++;
-                //info.root = true;
+                info.incrementCount(0);
+                info.setRoot();
                 graph.shrink(detector.getSubgraphs(), 0, detector.getDetectedSubgraphsSize());
                 graph.getBounds();
                 if (graph.getLowerBound() > maxLower)
