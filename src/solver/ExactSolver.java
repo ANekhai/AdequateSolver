@@ -61,7 +61,7 @@ public class ExactSolver extends ASMSolver {
 
             detector.detectAdequateSubgraphs(graph);
 
-            // Only used for linear case right now so most functionality is missing
+            // used for both linear case and AS0
             if (detector.getNumDetected() > 2) {
                 graph.getBounds();
 
@@ -101,7 +101,10 @@ public class ExactSolver extends ASMSolver {
                     for (int j = 0; j < 3; ++j) {
                         graph.setCycle(j, cycle[j]);
                     }
-//
+
+                    // ???
+                    graph.getBounds();
+                    // Definitely problems here
 //                    g.get_bounds_linear(ade.major[start_major],
 //                            ade.major[end_major - 1]);
 
@@ -114,16 +117,20 @@ public class ExactSolver extends ASMSolver {
                 }
                 if (graph.getUpperBound() > info.getMaxUpper()) {
                     graph.setUpperBound(info.getMaxUpper());
-                    //TODO: This seems a little strange to me
                 }
 
-            }
+                if (graph.getLowerBound() >= info.getMaxUpper()) {
+                    info.setMaxLower(graph.getLowerBound());
+                    graph = null;
+                    info.markFinished();
+                    return info.getMaxLower();
+                }
 
-            if (graph.getLowerBound() >= info.getMaxUpper()) {
-                info.setMaxLower(graph.getLowerBound());
-                graph = null;
-                info.markFinished();
-                return info.getMaxLower();
+                if(graph.getGeneNumber() > 0 && graph.getUpperBound() > info.getMaxLower()) {
+                    list.add(graph, detector, start, end, graph.getUpperBound(), info);
+                    info.incrementCount(0);
+                }
+
             }
 
         }

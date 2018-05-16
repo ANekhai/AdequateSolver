@@ -180,13 +180,14 @@ public class BPGraph {
                 if (colors.get(color).getAdjacentNodes(left).contains(right)) {
                     ++cycleNumber;
                 } else {
-                    String leftAdjacency = getFirstAdjacency(left, color);
+                    String leftAdjacency = getFirstAdjacency(left, color); // TODO: breaks here when AS0 shrink happens
                     String rightAdjacency = getFirstAdjacency(right, color);
                     // remove edges
                     colors.get(color).removeEdge(left, leftAdjacency);
                     colors.get(color).removeEdge(right, rightAdjacency);
                     // add new edges
-                    colors.get(color).addEdge(leftAdjacency, rightAdjacency);
+                    colors.get(color).addEdge(left, rightAdjacency);
+                    colors.get(color).addEdge(right, leftAdjacency);
                 }
 
             }

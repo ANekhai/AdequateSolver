@@ -54,7 +54,7 @@ class ExactSolverTest {
 
         assertTrue(solver.collapse(graph, detector, info, list));
 
-        assertEquals(4, graph.getCycleNumber());
+        assertEquals(2, graph.getCycleNumber());
     }
 
     @Test
@@ -67,7 +67,7 @@ class ExactSolverTest {
 
         assertTrue(solver.collapse(graph, detector, info, list));
 
-        assertEquals(7, graph.getCycleNumber());
+        assertEquals(5, graph.getCycleNumber());
 
     }
 
@@ -89,7 +89,45 @@ class ExactSolverTest {
 
         graph = new BPGraph(in);
 
-        assertEquals(4, solver.solve(graph, detector, info, list));
+        assertEquals(2, solver.solve(graph, detector, info, list));
     }
+
+    //TODO: breaks on expand
+    @Test
+    void testExactSolverWithNoAdequateSubgraphs() {
+        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine +
+                "1 2 3 4 5 @" + endLine + ">Two" +
+                endLine + "1 5 3 2 4 @" + endLine + ">Three" +
+                endLine + "1 3 5 4 2 @"));
+
+        graph = new BPGraph(in);
+
+        int lower = graph.getLowerBound(), upper = graph.getUpperBound();
+
+        int result = solver.solve(graph, detector, info, list);
+        System.out.println(result);
+
+        assertTrue(lower <= result);
+        assertTrue(upper >= result);
+
+    }
+
+    // TODO: Nonterminating while loop in this
+//    @Test
+//    void testExactSolverWithRandomGenomes() {
+//        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine +
+//                "-14 -10 5 7 -11 -8 -15 -6 2 3 9 -13 1 12 -4 @" + endLine + ">Two" +
+//                endLine + "8 -2 9 -4 -10 -12 1 3 11 -5 7 -15 6 -14 -13 @" + endLine + ">Three" +
+//                endLine + "9 6 -4 1 7 -14 5 15 11 12 -10 -2 -3 13 -8 @"));
+//
+//        graph = new BPGraph(in);
+//        int lower = graph.getLowerBound(), upper = graph.getUpperBound();
+//
+//        int result = solver.solve(graph, detector, info, list);
+//
+//        assertTrue(lower <= result);
+//        assertTrue(upper >= result);
+//
+//    }
 
 }
