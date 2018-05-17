@@ -5,13 +5,15 @@ import graphs.BPGraph;
 import structs.Info;
 import structs.SearchList;
 
+import java.io.File;
+
 public class ExactSolver extends ASMSolver {
 
 
     public int solve(BPGraph graph, Detector detector, Info info, SearchList list) {
         //set up functions
-        //TODO: Think about moving everything into an INFO struct for ease of everything... this is where maxLow
-        //TODO: and maxUp are in the original code
+        //TODO: Move this somewhere else (perhaps parameters...)
+        File folder = new File(info.getRootFolder());
 
         int cycle[] = new int[3];
         info.setMaxLower(graph.getLowerBound());
@@ -27,6 +29,8 @@ public class ExactSolver extends ASMSolver {
 
         //actual algorithm
         while (info.getMaxLower() != info.getMaxUpper() ) {
+            //TODO: Move this elsewhere too
+            folder.mkdir();
 
             //Some parallel bookkeeping functions and load balancing functions first
             if(info.getThreadNumber() > 1) {
@@ -130,10 +134,14 @@ public class ExactSolver extends ASMSolver {
                     list.add(graph, detector, start, end, graph.getUpperBound(), info);
                     info.incrementCount(0);
                 }
+                //restore parent graph
+                graph.expand(detector.getSubgraphs(), start, end);
 
             }
 
         }
+
+        folder.delete();
         return info.getMaxLower();
     }
 

@@ -52,7 +52,8 @@ public class Info {
         threadNumber = params.getThreadNumber();
         maxUpper = new int[threadNumber];
         maxLower = new int[threadNumber];
-        rootFolder = params.getRootFolder();
+        // rootFolder = params.getRootFolder();
+        rootFolder = "temp";
         result = new int[threadNumber];
         countIterations = new int[threadNumber];
         threadCount = new int[threadNumber];
@@ -112,9 +113,7 @@ public class Info {
         return maxUpper[0];
     }
 
-    public String getRootFolder() {
-        return rootFolder;
-    }
+    public String getRootFolder() { return rootFolder; }
 
     public void setMaxUpper(int maxUpper) {
         this.maxUpper[0] = maxUpper;

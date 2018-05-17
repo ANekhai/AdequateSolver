@@ -1,9 +1,11 @@
 package structs;
 
+import java.io.File;
+
 public class Parameters {
     private int threadNumber = 1;
     private int breakNumber = -1;
-    private String rootFolder;
+    private String rootFolder = "tmp";
     private int threshhold = 2000; //from params file they provided
 
     public Parameters() {
@@ -11,7 +13,6 @@ public class Parameters {
     }
 
     public Parameters(String[] args) {
-        rootFolder = null;
         //TODO: Create parser for arguments
     }
 

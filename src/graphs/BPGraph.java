@@ -22,10 +22,12 @@ public class BPGraph {
     private ArrayList<String> footprint = new ArrayList<>();
     private ArrayList<String> footprintCopy = new ArrayList<>();
     private ArrayList<String> temporarySubgraphs = new ArrayList<>();
+    private ArrayList<HashMap<String, String>> edgesPreShrink;
 
 
     public BPGraph(){
         colors = new ArrayList<>();
+        edgesPreShrink = new ArrayList<>();
     }
 
     public BPGraph(ContractedGraph... graphs) {
@@ -33,12 +35,14 @@ public class BPGraph {
         colors.addAll(Arrays.asList(graphs));
         addInitialAvailabilities(graphs);
         getBounds();
+        initEdgesPreShrink();
     }
 
     public BPGraph(NonContractedGraph... graphs) {
         isContracted = false;
         colors.addAll(Arrays.asList(graphs));
         addInitialAvailabilities(graphs);
+        initEdgesPreShrink();
     }
 
     public BPGraph(BufferedReader in) {
@@ -58,6 +62,7 @@ public class BPGraph {
         }
         geneNumber = availableVertices.keySet().size() / 2;
         getBounds();
+        initEdgesPreShrink();
     }
 
     //Getters and Setters
@@ -119,6 +124,7 @@ public class BPGraph {
         colors.add(graph);
         addInitialAvailabilities(graph);
         geneNumber = this.getNodes().size() / 2;
+        initEdgesPreShrink();
     }
 
     private void addInitialAvailabilities(Graph... graphs) {
@@ -132,6 +138,13 @@ public class BPGraph {
             availableVertices.putIfAbsent(node, true);
         }
         geneNumber = this.getNodes().size() / 2;
+    }
+
+    private void initEdgesPreShrink() {
+        edgesPreShrink = new ArrayList<>();
+        for (int i = 0; i < colors.size(); ++i) {
+            edgesPreShrink.add(new HashMap<>());
+        }
     }
 
     public boolean checkAvailable(String node){
@@ -182,12 +195,14 @@ public class BPGraph {
                 } else {
                     String leftAdjacency = getFirstAdjacency(left, color); // TODO: breaks here when AS0 shrink happens
                     String rightAdjacency = getFirstAdjacency(right, color);
+                    edgesPreShrink.get(color).put(left, leftAdjacency);
+                    edgesPreShrink.get(color).put(right, rightAdjacency);
+
                     // remove edges
                     colors.get(color).removeEdge(left, leftAdjacency);
                     colors.get(color).removeEdge(right, rightAdjacency);
                     // add new edges
-                    colors.get(color).addEdge(left, rightAdjacency);
-                    colors.get(color).addEdge(right, leftAdjacency);
+                    colors.get(color).addEdge(leftAdjacency, rightAdjacency);
                 }
 
             }
@@ -238,14 +253,17 @@ public class BPGraph {
                 if (colors.get(color).getAdjacentNodes(left).contains(right)) {
                     --cycleNumber;
                 } else {
-                    String twoDeepLeft = getFirstAdjacency(getFirstAdjacency(left, color), color);
-                    String twoDeepRight = getFirstAdjacency(getFirstAdjacency(right, color), color);
+                    String leftAdjacency = edgesPreShrink.get(color).get(left);
+                    String rightAdjacency = edgesPreShrink.get(color).get(right);
                     // remove edges
-                    colors.get(color).removeEdge(twoDeepLeft, getFirstAdjacency(twoDeepLeft, color));
-                    colors.get(color).removeEdge(twoDeepRight, getFirstAdjacency(twoDeepRight, color));
+                    colors.get(color).removeEdge(leftAdjacency, rightAdjacency);
+
                     // set new edges
-                    colors.get(color).addEdge(twoDeepLeft, left);
-                    colors.get(color).addEdge(twoDeepRight, right);
+                    colors.get(color).addEdge(left, leftAdjacency);
+                    colors.get(color).addEdge(right, rightAdjacency);
+
+                    edgesPreShrink.get(color).remove(left);
+                    edgesPreShrink.get(color).remove(right);
                 }
 
             }

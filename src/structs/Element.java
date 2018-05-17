@@ -319,10 +319,12 @@ public class Element {
         }
         this.available[writePosition] = false;
         info.incrementFileCheck(threadID, upperBound);
-        String name = info.getRootFolder() + "/" + threadID + "_" + upperBound + "_" + info.getFileCheck(threadID, upperBound);
+        String name = info.getRootFolder() + "/" + threadID + "_" + upperBound + "_" + info.getFileCheck(threadID, upperBound) + ".tmp";
         File file = new File(name);
 
         try {
+            if (!file.exists())
+                file.createNewFile();
 
             FileWriter writer = new FileWriter(file);
 
