@@ -83,6 +83,14 @@ public class Genome {
         throw new IndexOutOfBoundsException();
     }
 
+    public int getGeneNumber() {
+        int geneNumber = 0;
+        for (Chromosome chromosome : chromosomes) {
+            geneNumber += chromosome.getSize();
+        }
+        return geneNumber;
+    }
+
     public boolean isEmpty(){
         return this.chromosomes.size() == 0;
     }

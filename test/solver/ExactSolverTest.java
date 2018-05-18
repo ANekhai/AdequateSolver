@@ -105,7 +105,6 @@ class ExactSolverTest {
         int lower = graph.getLowerBound(), upper = graph.getUpperBound();
 
         int result = solver.solve(graph, detector, info, list);
-        System.out.println(result);
 
         assertTrue(lower <= result);
         assertTrue(upper >= result);

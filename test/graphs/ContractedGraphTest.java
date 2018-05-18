@@ -86,20 +86,6 @@ class ContractedGraphTest {
         assertEquals(8, graph.getNodes().size());
     }
 
-
-    @Test
-    void testUniquenessOfEdges() {
-        chromosome.add("1"); chromosome.add("2");
-        genome.addChromosome(chromosome, true);
-        graph.addGenome(genome);
-        Graph secondGraph = new ContractedGraph(genome);
-
-        ElementOrder<Integer> order = graph.getEdgeOrder();
-
-        assertFalse(graph.getEdgeOrder().equals(secondGraph.getEdgeOrder()));
-
-    }
-
     @Test
     void testTwoDuplicatedGenome() {
         chromosome.add("1"); chromosome.add("2");
@@ -121,6 +107,36 @@ class ContractedGraphTest {
 
         assertEquals(4, graph.getNodes().size());
         assertEquals(6, graph.numEdges);
+    }
+
+    @Test
+    void testGraphToGenomeNoDuplicates() {
+        chromosome.add("1"); chromosome.add("2");
+        genome.addChromosome(chromosome, true);
+        chromosome = new ArrayList<>();
+        chromosome.add("-3"); chromosome.add("-4");
+        genome.addChromosome(chromosome, true);
+        chromosome = new ArrayList<>();
+        chromosome.add("-5"); chromosome.add("6"); chromosome.add("-7"); chromosome.add("8");
+        genome.addChromosome(chromosome, true);
+
+        graph.addGenome(genome);
+
+        Genome newGenome = graph.toGeneOrder();
+
+        assertEquals(3, (int) newGenome.getSize());
+        assertEquals(8, newGenome.getGeneNumber());
+
+    }
+
+    @Test
+    void testGraphToGenomeWithDuplicatesThrowsException() {
+        chromosome.add("1"); chromosome.add("2"); chromosome.add("1");
+        genome.addChromosome(chromosome, true);
+
+        graph.addGenome(genome);
+
+        assertThrows(RuntimeException.class, ()->graph.toGeneOrder());
     }
 
 

@@ -380,4 +380,19 @@ public class BPGraph {
     public Set<String> getAdjacenciesInColor(String u, int color) { return colors.get(color).getAdjacentNodes(u); }
 
     public boolean hasEdgeInColor(String u, String v, int color) { return colors.get(color).hasEdge(u, v); }
+
+    public Graph getMedianGenome() {
+        Graph median = new ContractedGraph();
+
+        for (int i = 0; i < footprintCopy.size(); i += 2)
+            median.addEdge(footprintCopy.get(i), footprintCopy.get(i + 1));
+
+        for (int i = 0; i < footprint.size(); i += 2)
+            median.addEdge(footprint.get(i), footprint.get(i + 1));
+
+        //TODO: There is still a thing with next_median_adj() here
+
+        return median;
+    }
+
 }

@@ -3,13 +3,14 @@ package graphs;
 import com.google.common.graph.*;
 import genome.Genome;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Graph {
     protected MutableNetwork<String, Integer> graph;
     protected int numEdges = 0;
-    //TODO: availableNodes mirrors DetectorCir but I suspect there are problems with this when we have duplicated nodes
 
     abstract void addGenome(Genome order);
 
@@ -58,7 +59,7 @@ public abstract class Graph {
 
     public boolean equals(Graph otherGraph) { return graph.equals(otherGraph); }
 
-    private String getOppositeExtremity(String node) {
+    protected String getOppositeExtremity(String node) {
         if (node.indexOf('h') != -1){
             return node.replace('h', 't');
         }else {
@@ -66,9 +67,7 @@ public abstract class Graph {
         }
     }
 
-    abstract Genome toGeneOrder();
-
-
-    //TODO: Add Shrink function for graph
+    //TODO: Will need to be updated for linear genomes eventually.
+    public abstract Genome toGeneOrder();
 
 }

@@ -391,7 +391,7 @@ public class Element {
         }
         this.available[readPosition] = false;
 
-        String name = info.getRootFolder() + "/" + threadID + "_" + upperBound + "_" + info.getFileCheck(threadID, upperBound);
+        String name = info.getRootFolder() + "/" + threadID + "_" + upperBound + "_" + info.getFileCheck(threadID, upperBound) + ".tmp";
         File file = new File(name);
 
         try {

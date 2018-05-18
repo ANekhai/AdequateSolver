@@ -4,6 +4,7 @@ import com.google.common.graph.*;
 import genome.Genome;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class ContractedGraph extends Graph {
 
@@ -51,9 +52,55 @@ public class ContractedGraph extends Graph {
         }
     }
 
+    //TODO: Will need to be updated once linear chromosomes are
+    public Genome toGeneOrder() {
+        ArrayList<ArrayList<String>> chromosomes = new ArrayList<>();
 
-    public Genome toGeneOrder(){
-        return null;
+        HashSet<String> available = new HashSet<>(this.getNodes());
+
+        while (available.size() > 0) {
+            ArrayList<String> chromosome = new ArrayList<>();
+
+            String currNode = available.iterator().next();
+            String firstNode = currNode;
+
+
+            do {
+                if (this.getDegree(currNode) > 1) {
+                    throw new RuntimeException("Converting to order is ambiguous with duplicated genes");
+                }
+
+
+                chromosome.add(currNode);
+                available.remove(currNode);
+                currNode = getOppositeExtremity(currNode);
+                chromosome.add(currNode);
+                available.remove(currNode);
+                currNode = getAdjacentNodes(currNode).iterator().next();
+
+            } while ( !currNode.equals(firstNode));
+
+            chromosomes.add(chromosome);
+
+        }
+
+        Genome order = new Genome();
+        for (ArrayList<String> chromosome : chromosomes) {
+            ArrayList<String> genes = new ArrayList<>();
+            for (int i = 0; i < chromosome.size(); i += 2) {
+                String extremity = chromosome.get(i);
+                if (extremity.substring(extremity.length() - 1).equals("h")) {
+                    extremity = extremity.substring(0, extremity.length() - 1);
+                } else {
+                    extremity = "-" + extremity.substring(0, extremity.length() - 1);
+                }
+                genes.add(extremity);
+
+            }
+            order.addChromosome(genes, true);
+        }
+
+        return order;
     }
 
 }

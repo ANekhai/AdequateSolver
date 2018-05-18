@@ -13,7 +13,7 @@ public class Info {
     private String rootFolder;
     private int maxUpper[];
     private int maxLower[];
-    private boolean started = true;
+    private boolean started = false;
     private int iterator = 0;
     private int originalGeneNumber;
     // private BufferedWriter traceWriter;
@@ -126,7 +126,7 @@ public class Info {
     //Member functions
 
     public void markStarted() {
-        started = false;
+        started = true;
     }
 
     public void addIteration() {
@@ -160,4 +160,6 @@ public class Info {
     public void incrementCount(int thread) { ++this.countIterations[thread]; }
 
     public void setRoot() { this.isRoot = true; }
+
+    public void decrementMaxUpper() { --this.maxUpper[0]; }
 }

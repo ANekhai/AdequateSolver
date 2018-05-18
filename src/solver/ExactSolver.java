@@ -25,12 +25,12 @@ public class ExactSolver extends ASMSolver {
             return graph.getLowerBound();
         }
 
-        detector.clean(); //
+        detector.clean();
+        //TODO: Move this elsewhere too
+        folder.mkdir();
 
         //actual algorithm
         while (info.getMaxLower() != info.getMaxUpper() ) {
-            //TODO: Move this elsewhere too
-            folder.mkdir();
 
             //Some parallel bookkeeping functions and load balancing functions first
             if(info.getThreadNumber() > 1) {
@@ -40,12 +40,13 @@ public class ExactSolver extends ASMSolver {
             // Updates after first iteration of while loop
             if (info.getStarted()){
 
-//                if (!list.get(info.max_up[0], g, info)) {
-//                    list.list[info.max_up[0]] = null;
-//                    System.gc();
-//                    info.max_up[0]--; //Why decrementing here what?
-//                    continue;
-//                }
+                if (!list.get(info.getMaxUpper(), graph, info)) {
+                    list.setNull(info.getMaxUpper());
+
+                    System.gc();
+                    info.decrementMaxUpper(); //Why decrementing here?
+                    continue;
+                }
 
 //                ASMSolver.checkUpdate(0); // Used when multiple threads all working at once
 
@@ -55,7 +56,7 @@ public class ExactSolver extends ASMSolver {
                 graph.shrink(graph.getTempSubgraphs(), 0, graph.getTempSubgraphsSize());
 
 //                info.total[0]--;
-//                list.refresh_all(info.max_up[0], info);
+                list.refreshAll(info.getMaxUpper(), info);
             }
             info.addIteration();
             info.markStarted();

@@ -69,4 +69,5 @@ public class SearchList {
         }
     }
 
+    public void setNull(int upperBound) { this.list[upperBound] = null; }
 }
