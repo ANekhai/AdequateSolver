@@ -1,6 +1,7 @@
 package wrapper;
 
 import detector.Detector;
+import genome.Genome;
 import graphs.BPGraph;
 import solver.ExactSolver;
 import structs.Info;
@@ -50,6 +51,10 @@ public class TestWrapper {
             int solution = solver.solve(graph, detector, info, list);
 
             System.out.println("New Bound: " + solution + " Cycles Found: " + graph.getCycleNumber());
+
+            Genome median = graph.getMedian();
+
+            System.out.println(median.toString());
 
         }
     }

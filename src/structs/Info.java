@@ -5,7 +5,7 @@ public class Info {
     private int countIterations[];
     private int numberAS = 0;
     private int kernelSize = 0;
-    private boolean kernelFound = false;
+    private boolean kernel = false;
     // TODO: figure these out
     private int threadCount[];
     private int total[];
@@ -162,4 +162,12 @@ public class Info {
     public void setRoot() { this.isRoot = true; }
 
     public void decrementMaxUpper() { --this.maxUpper[0]; }
+
+    public void incrementSubgraphNumber() { ++this.numberAS; }
+
+    public boolean getKernel() { return kernel; }
+
+    public void setKernel() { kernel = true; }
+
+    public void setKernelSize(int kernelSize) { this.kernelSize = kernelSize; }
 }

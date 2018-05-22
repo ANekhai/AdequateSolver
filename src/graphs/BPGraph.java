@@ -23,6 +23,8 @@ public class BPGraph {
     private ArrayList<String> footprintCopy = new ArrayList<>();
     private ArrayList<String> temporarySubgraphs = new ArrayList<>();
     private ArrayList<HashMap<String, String>> edgesPreShrink;
+    private ArrayList<HashMap<String, Integer>> vertexRank;
+    private ArrayList<HashMap<String, Integer>> cycleRank;
 
 
     public BPGraph(){
@@ -35,14 +37,14 @@ public class BPGraph {
         colors.addAll(Arrays.asList(graphs));
         addInitialAvailabilities(graphs);
         getBounds();
-        initEdgesPreShrink();
+        initArrays();
     }
 
     public BPGraph(NonContractedGraph... graphs) {
         isContracted = false;
         colors.addAll(Arrays.asList(graphs));
         addInitialAvailabilities(graphs);
-        initEdgesPreShrink();
+        initArrays();
     }
 
     public BPGraph(BufferedReader in) {
@@ -62,7 +64,7 @@ public class BPGraph {
         }
         geneNumber = availableVertices.keySet().size() / 2;
         getBounds();
-        initEdgesPreShrink();
+        initArrays();
     }
 
     //Getters and Setters
@@ -124,7 +126,7 @@ public class BPGraph {
         colors.add(graph);
         addInitialAvailabilities(graph);
         geneNumber = this.getNodes().size() / 2;
-        initEdgesPreShrink();
+        initArrays();
     }
 
     private void addInitialAvailabilities(Graph... graphs) {
@@ -140,10 +142,14 @@ public class BPGraph {
         geneNumber = this.getNodes().size() / 2;
     }
 
-    private void initEdgesPreShrink() {
+    private void initArrays() {
         edgesPreShrink = new ArrayList<>();
+        vertexRank = new ArrayList<>();
+        cycleRank = new ArrayList<>();
         for (int i = 0; i < colors.size(); ++i) {
             edgesPreShrink.add(new HashMap<>());
+            vertexRank.add(new HashMap<>());
+            cycleRank.add(new HashMap<>());
         }
     }
 
@@ -305,7 +311,7 @@ public class BPGraph {
             }
         }
 
-        //generalizing finding lowest index
+        //TODO: Place in separate function
         int lowestIndex = 0;
         int lowestValue = cycles.get(0);
         for (int i = 0; i < cycles.size(); ++i) {
@@ -381,7 +387,7 @@ public class BPGraph {
 
     public boolean hasEdgeInColor(String u, String v, int color) { return colors.get(color).hasEdge(u, v); }
 
-    public Graph getMedianGenome() {
+    public Genome getMedian() {
         Graph median = new ContractedGraph();
 
         for (int i = 0; i < footprintCopy.size(); i += 2)
@@ -390,9 +396,72 @@ public class BPGraph {
         for (int i = 0; i < footprint.size(); i += 2)
             median.addEdge(footprint.get(i), footprint.get(i + 1));
 
-        //TODO: There is still a thing with next_median_adj() here
+        //TODO: There is still a thing with next_median_adj() here, perhaps it is not needed?
 
-        return median;
+        return median.toGeneOrder();
     }
 
+    public void getLinearBounds(String v1, String v2) {
+
+        for (int i = 0; i < colors.size(); ++i) {
+            for (int j = i + 1; j < colors.size(); ++j) {
+                countLinearCycle(v1, v2, i, j);
+            }
+        }
+
+        //TODO: Place in separate function
+        int lowestIndex = 0;
+        int lowestValue = cycles.get(0);
+        for (int i = 0; i < cycles.size(); ++i) {
+            if (cycles.get(i) <= lowestValue) {
+                lowestIndex = i;
+                lowestValue = cycles.get(i);
+            }
+        }
+
+        upperBound = cycleNumber + (int) Math.floor((3 * geneNumber + cycles.get(0) + cycles.get(1) + cycles.get(2)) / 2);
+        lowerBound = cycleNumber + geneNumber + cycles.get(0) + cycles.get(1) + cycles.get(2) - cycles.get(lowestIndex);
+    }
+
+    // TODO: Will need alternative for duplicated genes
+    private void countLinearCycle(String v1, String v2, int c1, int c2) {
+        int color = 3 - c1 - c2;
+        String x, y, w, z;
+        int xRank, yRank, wRank, zRank;
+
+
+        if(!cycleRank.get(color).get(v1).equals(cycleRank.get(color).get(v2))) {
+            cycles.set(color, cycles.get(color) - 1);
+        } else {
+            x = getFirstAdjacency(v1, c1);
+            y = getFirstAdjacency(v1, c2);
+            w = getFirstAdjacency(v2, c1);
+            z = getFirstAdjacency(v2, c2);
+            xRank = vertexRank.get(color).get(x);
+            yRank = vertexRank.get(color).get(y);
+            wRank = vertexRank.get(color).get(w);
+            zRank = vertexRank.get(color).get(z);
+
+            if (xRank == zRank || yRank == wRank)
+                return;
+            else if (x.equals(v2) || y.equals(v2) || w.equals(v1) || z.equals(v1))
+                return;
+
+
+            String left, right;
+            String start = left = x;
+            do {
+                right = getFirstAdjacency(left, c2);
+                left = getFirstAdjacency(right, c1);
+                if (left.equals(y) || left.equals(z))
+                    return;
+
+            } while (!left.equals(start));
+            cycles.set(color, cycles.get(color) + 1);
+        }
+    }
+
+    public void setRanks(int c1, int c2) {
+        //TODO: FINISH THIS
+    }
 }

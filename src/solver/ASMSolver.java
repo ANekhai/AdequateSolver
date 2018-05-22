@@ -29,9 +29,7 @@ public abstract class ASMSolver {
             }
 
         }
-        //TODO: will avoid implementing this probably
-//        if (info.root != false && !parameter.isSim())
-//            graph.rename();
+
         if (maxUpper <= maxLower) {
             return true;
         }

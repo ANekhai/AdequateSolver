@@ -195,6 +195,9 @@ public class Element {
     }
 
     private boolean switchReadPosition(Info info, int threadID) {
+        if(this.full == null || this.available == null)
+            return false;
+
         this.currentPosition = detectAvailableReadPosition();
         if (this.currentPosition != -1) {
             full[currentPosition] = false;

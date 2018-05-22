@@ -50,8 +50,6 @@ public class ExactSolver extends ASMSolver {
 
 //                ASMSolver.checkUpdate(0); // Used when multiple threads all working at once
 
-                // TODO: Figure out what major_tmp is
-//                g.shrink(g.major_tmp, 0, g.idx_tmp);
                 graph.expand(graph.getFootprint(), 0, graph.getFootprintSize());
                 graph.shrink(graph.getTempSubgraphs(), 0, graph.getTempSubgraphsSize());
 
@@ -73,21 +71,30 @@ public class ExactSolver extends ASMSolver {
                 for (int i = 0; i < 3; ++i) {
                     cycle[i] = graph.getCycle(i);
                 }
-
+                //TODO: Add this
 //                graph.getRankCycleNumber(0, 1);
 //                graph.getRankCycleNumber(0, 2);
 //                graph.getRankCycleNumber(1, 2);
-//                if (info.kernel == false) {
-//                    int num = 0;
-//                    for (int i = 0; i < g.v_num; ++i) {
-//                        if (g.check[i]) {
-//                            ++num;
-//                        }
-//                        System.out.printf("kernel size: %d\n",num);
-//                        info.kernel = true;
-//                    }
-//                }
-//                ++info.numAS;
+
+                for (int i = 0; i < graph.getColorsSize(); ++i) {
+                    for (int j = i + 1; j < graph.getColorsSize(); ++j) {
+                        graph.setRanks(i, j);
+                    }
+                }
+
+                if (info.getKernel() == false) {
+                    int num = 0;
+                    for (String node : graph.getNodes()) {
+
+                        if (graph.checkAvailable(node)) {
+                            ++num;
+                        }
+
+                    }
+                    info.setKernel();
+                    info.setKernelSize(num);
+                }
+                info.incrementSubgraphNumber();
 
             }
 
@@ -100,18 +107,14 @@ public class ExactSolver extends ASMSolver {
                 graph.shrink(detector.getSubgraphs(), start, end);
 
                 if (detector.getNumDetected() > 2) { // I am fairly certain this is only for the linear case
-//                    g.c[0] = cycle[0];
-//                    g.c[1] = cycle[1];
-//                    g.c[2] = cycle[2];
+                    //TODO: Fix this.
+
                     for (int j = 0; j < 3; ++j) {
                         graph.setCycle(j, cycle[j]);
                     }
 
-                    // ???
-                    graph.getBounds();
                     // Definitely problems here
-//                    g.get_bounds_linear(ade.major[start_major],
-//                            ade.major[end_major - 1]);
+                    graph.getLinearBounds(detector.getSubgraphVertex(start), detector.getSubgraphVertex(end - 1));
 
                 } else {
                     graph.getBounds();
@@ -121,12 +124,12 @@ public class ExactSolver extends ASMSolver {
                     info.setMaxLower(graph.getLowerBound());
                 }
                 if (graph.getUpperBound() > info.getMaxUpper()) {
+                    //TODO: This still seems suspect to me
                     graph.setUpperBound(info.getMaxUpper());
                 }
 
                 if (graph.getLowerBound() >= info.getMaxUpper()) {
                     info.setMaxLower(graph.getLowerBound());
-                    graph = null;
                     info.markFinished();
                     return info.getMaxLower();
                 }
