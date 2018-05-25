@@ -34,6 +34,7 @@ public class Info {
     private int fileCheck[][];
     private int fileBase;
     private long breakNumber;
+    private int frequency = 0;
 //    private long break_num;
 //    private boolean isBuffered;
     private int maxElementSize;
@@ -97,41 +98,25 @@ public class Info {
     }
 
     //GETTERS AND SETTERS
-    public boolean getStarted() {
-        return started;
-    }
+    public boolean isStarted() { return started; }
 
-    public int getThreadNumber() {
-        return threadNumber;
-    }
+    public int getThreadNumber() { return threadNumber; }
 
-    public int getMaxLower() {
-        return maxLower[0];
-    }
+    public int getMaxLower() { return maxLower[0]; }
 
-    public int getMaxUpper() {
-        return maxUpper[0];
-    }
+    public int getMaxUpper() { return maxUpper[0]; }
 
     public String getRootFolder() { return rootFolder; }
 
-    public void setMaxUpper(int maxUpper) {
-        this.maxUpper[0] = maxUpper;
-    }
+    public void setMaxUpper(int maxUpper) { this.maxUpper[0] = maxUpper; }
 
-    public void setMaxLower(int maxLower) {
-        this.maxLower[0] = maxLower;
-    }
+    public void setMaxLower(int maxLower) { this.maxLower[0] = maxLower; }
 
     //Member functions
 
-    public void markStarted() {
-        started = true;
-    }
+    public void markStarted() { started = true; }
 
-    public void addIteration() {
-        ++countIterations[0];
-    }
+    public void addIteration() { ++countIterations[0]; }
 
     public boolean checkBreakNumber() {
         if (breakNumber == -1) {
@@ -170,4 +155,14 @@ public class Info {
     public void setKernel() { kernel = true; }
 
     public void setKernelSize(int kernelSize) { this.kernelSize = kernelSize; }
+
+    public int getCount(int threadNumber) { return this.threadCount[threadNumber]; }
+
+    public int getFrequency() {return this.frequency; }
+
+    public void setTotal(int threadNumber) { this.total[threadNumber] = 0; }
+
+    public boolean isFinished() { return globalFinished; }
+
+    public void decrementTotal(int threadNumber) { --total[threadNumber]; }
 }

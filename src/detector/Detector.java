@@ -3,7 +3,6 @@ package detector;
 import graphs.BPGraph;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 public class Detector {
     private int numDetected;
@@ -13,7 +12,7 @@ public class Detector {
 
     //SubGraph Detectors
     //TODO: condense these into a list storing subdetectors
-    private AS0 as0 = new AS0();
+    private BruteForce bruteForce = new BruteForce();
     private AS1 as1 = new AS1();
     private AS2 as2 = new AS2();
     private AS4 as4 = new AS4();
@@ -51,7 +50,7 @@ public class Detector {
         foundSubgraphs.clear();
         numDetected = 0;
         //numDetectedTemp = 0;
-        as0.clean();
+        bruteForce.clean();
         as1.clean();
         as2.clean();
         as4.clean();
@@ -77,8 +76,8 @@ public class Detector {
         } else if (as4.AS4(graph)){
             copy(as4);
         } else {
-            as0.AS0(graph);
-            copy(as0);
+            bruteForce.bruteForce(graph);
+            copy(bruteForce);
         }
     }
 

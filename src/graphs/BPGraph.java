@@ -5,10 +5,7 @@ import genome.Grimm;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 public class BPGraph {
     private ArrayList<Graph> colors = new ArrayList<>();
@@ -199,7 +196,7 @@ public class BPGraph {
                 if (colors.get(color).getAdjacentNodes(left).contains(right)) {
                     ++cycleNumber;
                 } else {
-                    String leftAdjacency = getFirstAdjacency(left, color); // TODO: breaks here when AS0 shrink happens
+                    String leftAdjacency = getFirstAdjacency(left, color); // TODO: breaks here when BruteForce shrink happens
                     String rightAdjacency = getFirstAdjacency(right, color);
                     edgesPreShrink.get(color).put(left, leftAdjacency);
                     edgesPreShrink.get(color).put(right, rightAdjacency);
@@ -387,7 +384,7 @@ public class BPGraph {
 
     public boolean hasEdgeInColor(String u, String v, int color) { return colors.get(color).hasEdge(u, v); }
 
-    public Genome getMedian() {
+    public Graph getMedian() {
         Graph median = new ContractedGraph();
 
         for (int i = 0; i < footprintCopy.size(); i += 2)
@@ -396,9 +393,19 @@ public class BPGraph {
         for (int i = 0; i < footprint.size(); i += 2)
             median.addEdge(footprint.get(i), footprint.get(i + 1));
 
-        //TODO: There is still a thing with next_median_adj() here, perhaps it is not needed?
+        //TODO: There is still a thing with next_median_adj() here
+        SortedSet<String> remaining = new TreeSet<>();
+        for (String node : getNodes())
+            if (checkAvailable(node))
+                remaining.add(node);
 
-        return median.toGeneOrder();
+        Iterator itr = remaining.iterator();
+
+        while (itr.hasNext()) {
+            median.addEdge((String) itr.next(), (String) itr.next());
+        }
+
+        return median;
     }
 
     public void getLinearBounds(String v1, String v2) {
@@ -462,6 +469,67 @@ public class BPGraph {
     }
 
     public void setRanks(int c1, int c2) {
-        //TODO: FINISH THIS
+        int cycles = 0;
+        String start, left, right;
+        int color = 3 - c1 - c2;
+        int rank;
+
+        HashMap<String, Boolean> unused = copyAvailability();
+
+        for (String vertex : getNodes()) {
+            if (!unused.get(vertex))
+                continue;
+
+            start = left = vertex;
+            rank = 0;
+            do {
+                right = getFirstAdjacency(left, c1);
+                unused.put(left, false); unused.put(right, false);
+                cycleRank.get(color).put(left, cycles);
+                vertexRank.get(color).put(left, rank);
+                cycleRank.get(color).put(right, cycles);
+                cycleRank.get(color).put(right, rank + 1);
+                rank += 2;
+                left = getFirstAdjacency(right, c2);
+            } while (!left.equals(start));
+            ++cycles;
+        }
+        this.cycles.add(color, cycles);
     }
+
+    public Graph getColor(int color) { return colors.get(color); }
+
+    //TODO: REMOVE THIS
+    public void printEdges() {
+        ArrayList<HashMap<String, String>> edges = new ArrayList<>();
+        for (int i = 0; i < 3; ++i) {
+            edges.add(new HashMap<>());
+        }
+
+        for (String node : getNodes()) {
+            if (!availableVertices.get(node))
+                continue;
+
+            for (int color = 0; color < 3; ++color) {
+                String adjNode = getFirstAdjacency(node, color);
+                if (edges.get(color).keySet().contains(adjNode))
+                    continue;
+
+                edges.get(color).put(node, adjNode);
+            }
+        }
+
+        for (int color = 0; color < 3; ++color) {
+            System.out.println("Color" + color);
+
+            for (String node : edges.get(color).keySet()) {
+                System.out.println(node + " - " + edges.get(color).get(node));
+            }
+
+        }
+
+
+    }
+
+
 }

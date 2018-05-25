@@ -38,11 +38,11 @@ public abstract class ASMSolver {
         return false;
     }
 
-    //TODO: come back to this when working on parallelization
-    public static void checkUpdate(int threadNumber) {
-//        if (info.count[th_num] % info.freq == 0) {
+    //TODO: Come back when parallelization is being implemented
+//    public static void checkUpdate(int threadNumber, Info info, SearchList list) {
+//        if (info.getCount(threadNumber) % info.getFrequency() == 0) {
 //            int tmp_low = 0;
-//            for (int i = 0; i < info.num_threads; i++)
+//            for (int i = 0; i < info.getThreadNumber(); i++)
 //                if (info.max_low[i] > tmp_low)
 //                    tmp_low = info.max_low[i];
 //            if (tmp_low > info.max_low[th_num]) {
@@ -50,6 +50,6 @@ public abstract class ASMSolver {
 //                info.max_low[th_num] = info.max_low[th_num];
 //            }
 //        }
-    }
+//    }
 
 }

@@ -1,8 +1,10 @@
 package wrapper;
 
 import detector.Detector;
+import distance.DCJ;
 import genome.Genome;
 import graphs.BPGraph;
+import graphs.Graph;
 import solver.ExactSolver;
 import structs.Info;
 import structs.Parameters;
@@ -27,12 +29,14 @@ public class TestWrapper {
         } else {
 
             String filename = args[0];
-            BPGraph graph;
+            BPGraph graph, graphCopy;
 
             try {
                 BufferedReader in = new BufferedReader(new FileReader(filename));
-
                 graph = new BPGraph(in);
+
+                in = new BufferedReader(new FileReader(filename));
+                graphCopy = new BPGraph(in);
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -45,16 +49,24 @@ public class TestWrapper {
             SearchList list = new SearchList();
             ExactSolver solver = new ExactSolver();
 
-            System.out.println("Initial Bounds:" + endLine + "Lower: " + graph.getLowerBound() +
-                    " Upper: " + graph.getUpperBound());
+            System.out.println("Initial Bounds:" + endLine + "Lower:" + graph.getLowerBound() +
+                    " Upper:" + graph.getUpperBound());
 
             int solution = solver.solve(graph, detector, info, list);
 
-            System.out.println("New Bound: " + solution + " Cycles Found: " + graph.getCycleNumber());
+            Graph median = graph.getMedian();
+            Genome medianOrder = median.toGeneOrder();
+            medianOrder.setName("Median");
 
-            Genome median = graph.getMedian();
+            int d1, d2, d3;
+            d1 = DCJ.getDCJDistance(graphCopy.getColor(0), median);
+            d2 = DCJ.getDCJDistance(graphCopy.getColor(1), median);
+            d3 = DCJ.getDCJDistance(graphCopy.getColor(2), median);
+            int sum = d1 + d2 + d3;
 
-            System.out.println(median.toString());
+            System.out.println("New Bound:" + solution + "  Cycles Found:" + sum + "  Cycle Number:" + graph.getCycleNumber());
+
+            System.out.println(medianOrder.toString());
 
         }
     }

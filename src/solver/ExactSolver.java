@@ -25,35 +25,48 @@ public class ExactSolver extends ASMSolver {
             return graph.getLowerBound();
         }
 
+        info.setTotal(0);
         detector.clean();
         //TODO: Move this elsewhere too
         folder.mkdir();
 
         //actual algorithm
-        while (info.getMaxLower() != info.getMaxUpper() ) {
+        while (info.getMaxLower() != info.getMaxUpper() && !info.isFinished() ) {
 
             //Some parallel bookkeeping functions and load balancing functions first
             if(info.getThreadNumber() > 1) {
-                // some stuff for load balancing
+//                long os = System.currentTimeMillis();
+//                if (info.th_total[0][info.max_up[0]] > p.th_num
+//                        && !info.is_parallel) {
+//                    LoadBalancer.fork_threads(g, p, info, ade, list);
+//                    start_time = System.currentTimeMillis();
+//                }
+//                // only in the finalizing step to balance stacks
+//                else if (info.check_running() < info.num_threads
+//                        && info.max_low[0] == (info.max_up[0] - 1)) {
+//                    LoadBalancer.balance_stack(g, p, info, ade, list,
+//                            info.max_up[0], 0);
+//                }
+//                long oe = System.currentTimeMillis();
+//                info.other_time[0] += (oe - os);
             }
 
             // Updates after first iteration of while loop
-            if (info.getStarted()){
+            if (info.isStarted()){
 
                 if (!list.get(info.getMaxUpper(), graph, info)) {
                     list.setNull(info.getMaxUpper());
-
                     System.gc();
-                    info.decrementMaxUpper(); //Why decrementing here?
+                    info.decrementMaxUpper();
                     continue;
                 }
-
+//                info.checkStatus(list, 0); used to print what's happening, as well as adjusting memory usage metrics
 //                ASMSolver.checkUpdate(0); // Used when multiple threads all working at once
 
                 graph.expand(graph.getFootprint(), 0, graph.getFootprintSize());
                 graph.shrink(graph.getTempSubgraphs(), 0, graph.getTempSubgraphsSize());
 
-//                info.total[0]--;
+                info.decrementTotal(0);
                 list.refreshAll(info.getMaxUpper(), info);
             }
             info.addIteration();
@@ -64,17 +77,21 @@ public class ExactSolver extends ASMSolver {
 
             detector.detectAdequateSubgraphs(graph);
 
-            // used for both linear case and AS0
+            // graph.printEdges();
+            if (detector.getNumDetected() <= 2) {
+                System.out.println("ADEQUATE SUBGRAPH FOUND!");
+                System.out.println(detector.getSubgraphs().toString());
+                // graph.printEdges();
+            }
+
+
+            // used for both linear case and BruteForce
             if (detector.getNumDetected() > 2) {
                 graph.getBounds();
 
                 for (int i = 0; i < 3; ++i) {
                     cycle[i] = graph.getCycle(i);
                 }
-                //TODO: Add this
-//                graph.getRankCycleNumber(0, 1);
-//                graph.getRankCycleNumber(0, 2);
-//                graph.getRankCycleNumber(1, 2);
 
                 for (int i = 0; i < graph.getColorsSize(); ++i) {
                     for (int j = i + 1; j < graph.getColorsSize(); ++j) {
@@ -82,20 +99,17 @@ public class ExactSolver extends ASMSolver {
                     }
                 }
 
-                if (info.getKernel() == false) {
+                if (!info.getKernel()) {
                     int num = 0;
                     for (String node : graph.getNodes()) {
-
                         if (graph.checkAvailable(node)) {
                             ++num;
                         }
-
                     }
                     info.setKernel();
                     info.setKernelSize(num);
                 }
                 info.incrementSubgraphNumber();
-
             }
 
             for (int i = 0; i < detector.getNumDetected(); ++i) {
@@ -121,6 +135,7 @@ public class ExactSolver extends ASMSolver {
                 }
 
                 if (graph.getLowerBound() > info.getMaxLower()) {
+                    list.clean(graph.getLowerBound(), info);
                     info.setMaxLower(graph.getLowerBound());
                 }
                 if (graph.getUpperBound() > info.getMaxUpper()) {
@@ -130,6 +145,9 @@ public class ExactSolver extends ASMSolver {
 
                 if (graph.getLowerBound() >= info.getMaxUpper()) {
                     info.setMaxLower(graph.getLowerBound());
+                    list = null;
+                    graph = null; //TODO: why is the graph being set to null?
+                    System.gc();
                     info.markFinished();
                     return info.getMaxLower();
                 }

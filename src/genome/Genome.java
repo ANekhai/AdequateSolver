@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 
 public class Genome {
+
     public class Chromosome {
         private ArrayList<String> genes;
         private boolean cyclical;
@@ -90,6 +91,9 @@ public class Genome {
         }
         return geneNumber;
     }
+
+    public void setName(String name) { this.name = name; }
+
 
     public boolean isEmpty(){
         return this.chromosomes.size() == 0;

@@ -69,5 +69,4 @@ public abstract class Graph {
 
     //TODO: Will need to be updated for linear genomes eventually.
     public abstract Genome toGeneOrder();
-
 }
