@@ -77,14 +77,6 @@ public class ExactSolver extends ASMSolver {
 
             detector.detectAdequateSubgraphs(graph);
 
-            // graph.printEdges();
-            if (detector.getNumDetected() <= 2) {
-                System.out.println("ADEQUATE SUBGRAPH FOUND!");
-                System.out.println(detector.getSubgraphs().toString());
-                // graph.printEdges();
-            }
-
-
             // used for both linear case and BruteForce
             if (detector.getNumDetected() > 2) {
                 graph.getBounds();

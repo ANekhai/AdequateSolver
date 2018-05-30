@@ -237,9 +237,6 @@ public class BPGraph {
         }
     }
 
-
-    //TODO: NEEDS TO BE BROUGHT INTO CLOSER ALIGNMENT WITH SHRINK FUNCTION
-
     public void expand(ArrayList<String> subGraphs, int start, int end) {
         int i;
         String left, right;
@@ -430,7 +427,7 @@ public class BPGraph {
         lowerBound = cycleNumber + geneNumber + cycles.get(0) + cycles.get(1) + cycles.get(2) - cycles.get(lowestIndex);
     }
 
-    // TODO: Will need alternative for duplicated genes
+    // TODO: Error in here
     private void countLinearCycle(String v1, String v2, int c1, int c2) {
         int color = 3 - c1 - c2;
         String x, y, w, z;
@@ -499,7 +496,7 @@ public class BPGraph {
 
     public Graph getColor(int color) { return colors.get(color); }
 
-    //TODO: REMOVE THIS
+    //TODO: REMOVE THIS EVENTUALLY
     public void printEdges() {
         ArrayList<HashMap<String, String>> edges = new ArrayList<>();
         for (int i = 0; i < 3; ++i) {

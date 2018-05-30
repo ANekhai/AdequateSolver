@@ -54,6 +54,19 @@ public class TestWrapper {
 
             int solution = solver.solve(graph, detector, info, list);
 
+            detector.detectAdequateSubgraphs(graph);
+            while (detector.getNumDetected() > 0) {
+                if (detector.getNumDetected() == 1)
+                    graph.shrink(detector.getSubgraphs(), 0, detector.getDetectedSubgraphsSize());
+                else {
+                    int gran = detector.getDetectedSubgraphsSize() / detector.getNumDetected();
+                    graph.shrink(detector.getSubgraphs(), 0, gran);
+                }
+                detector.clean();
+                detector.detectAdequateSubgraphs(graph);
+            }
+
+
             Graph median = graph.getMedian();
             Genome medianOrder = median.toGeneOrder();
             medianOrder.setName("Median");
