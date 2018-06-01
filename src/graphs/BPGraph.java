@@ -87,6 +87,9 @@ public class BPGraph {
     }
 
     public String getFirstAdjacency(String node, int color) {
+        if (colors.get(color).getAdjacentNodes(node).size() == 0)
+            return null;
+
         return colors.get(color).getAdjacentNodes(node).iterator().next();
     }
     
@@ -196,7 +199,7 @@ public class BPGraph {
                 if (colors.get(color).getAdjacentNodes(left).contains(right)) {
                     ++cycleNumber;
                 } else {
-                    String leftAdjacency = getFirstAdjacency(left, color); // TODO: breaks here when BruteForce shrink happens
+                    String leftAdjacency = getFirstAdjacency(left, color);
                     String rightAdjacency = getFirstAdjacency(right, color);
                     edgesPreShrink.get(color).put(left, leftAdjacency);
                     edgesPreShrink.get(color).put(right, rightAdjacency);
@@ -407,6 +410,7 @@ public class BPGraph {
 
     public void getLinearBounds(String v1, String v2) {
 
+
         for (int i = 0; i < colors.size(); ++i) {
             for (int j = i + 1; j < colors.size(); ++j) {
                 countLinearCycle(v1, v2, i, j);
@@ -429,7 +433,7 @@ public class BPGraph {
 
     // TODO: Error in here
     private void countLinearCycle(String v1, String v2, int c1, int c2) {
-        int color = 3 - c1 - c2;
+        int color = c1 + c2 - 1;
         String x, y, w, z;
         int xRank, yRank, wRank, zRank;
 
@@ -441,6 +445,16 @@ public class BPGraph {
             y = getFirstAdjacency(v1, c2);
             w = getFirstAdjacency(v2, c1);
             z = getFirstAdjacency(v2, c2);
+            //TODO: Refactor this to be cleaner
+            if (x == null)
+                x = edgesPreShrink.get(c1).get(v1);
+            if (y == null)
+                y = edgesPreShrink.get(c2).get(v1);
+            if (w == null)
+                w = edgesPreShrink.get(c1).get(v2);
+            if (z == null)
+                z = edgesPreShrink.get(c2).get(v2);
+
             xRank = vertexRank.get(color).get(x);
             yRank = vertexRank.get(color).get(y);
             wRank = vertexRank.get(color).get(w);
@@ -468,7 +482,7 @@ public class BPGraph {
     public void setRanks(int c1, int c2) {
         int cycles = 0;
         String start, left, right;
-        int color = 3 - c1 - c2;
+        int color = c1 + c2 - 1;
         int rank;
 
         HashMap<String, Boolean> unused = copyAvailability();
@@ -485,13 +499,13 @@ public class BPGraph {
                 cycleRank.get(color).put(left, cycles);
                 vertexRank.get(color).put(left, rank);
                 cycleRank.get(color).put(right, cycles);
-                cycleRank.get(color).put(right, rank + 1);
+                vertexRank.get(color).put(right, rank + 1);
                 rank += 2;
                 left = getFirstAdjacency(right, c2);
             } while (!left.equals(start));
             ++cycles;
         }
-        this.cycles.add(color, cycles);
+        this.cycles.set(color, cycles);
     }
 
     public Graph getColor(int color) { return colors.get(color); }

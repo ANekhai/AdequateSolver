@@ -90,7 +90,7 @@ public class ExactSolver extends ASMSolver {
                         graph.setRanks(i, j);
                     }
                 }
-
+                //TODO: what is the point of this?
                 if (!info.getKernel()) {
                     int num = 0;
                     for (String node : graph.getNodes()) {
@@ -113,7 +113,6 @@ public class ExactSolver extends ASMSolver {
                 graph.shrink(detector.getSubgraphs(), start, end);
 
                 if (detector.getNumDetected() > 2) { // I am fairly certain this is only for the linear case
-                    //TODO: Fix this.
 
                     for (int j = 0; j < 3; ++j) {
                         graph.setCycle(j, cycle[j]);
@@ -131,14 +130,13 @@ public class ExactSolver extends ASMSolver {
                     info.setMaxLower(graph.getLowerBound());
                 }
                 if (graph.getUpperBound() > info.getMaxUpper()) {
-                    //TODO: This still seems suspect to me
                     graph.setUpperBound(info.getMaxUpper());
                 }
 
                 if (graph.getLowerBound() >= info.getMaxUpper()) {
                     info.setMaxLower(graph.getLowerBound());
                     list = null;
-                    graph = null; //TODO: why is the graph being set to null?
+                    graph = null;
                     System.gc();
                     info.markFinished();
                     return info.getMaxLower();
