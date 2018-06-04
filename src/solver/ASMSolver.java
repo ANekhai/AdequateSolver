@@ -10,7 +10,7 @@ public abstract class ASMSolver {
     public abstract int solve(BPGraph g, Detector detector, Info info, SearchList list);
 
     public boolean collapse(BPGraph graph, Detector detector, Info info, SearchList list) {
-        int maxLower = graph.getLowerBound(), maxUpper = graph.getUpperBound();
+
         while (true){
             detector.detectAdequateSubgraphs(graph);
             if (detector.getNumDetected() == 1) {
@@ -18,10 +18,15 @@ public abstract class ASMSolver {
                 info.setRoot();
                 graph.shrink(detector.getSubgraphs(), 0, detector.getDetectedSubgraphsSize());
                 graph.getBounds();
-                if (graph.getLowerBound() > maxLower)
-                    maxLower = graph.getLowerBound();
-//                if(!parameter.isSim())
-//                    graph.cleanFootprint();
+                System.out.println("Collapse Bounds: " + graph.getUpperBound());
+
+                if (graph.getLowerBound() > info.getMaxLower())
+                    info.setMaxLower(graph.getLowerBound());
+
+                info.setMaxUpper(graph.getUpperBound());
+
+                if (graph.getLowerBound() >= info.getMaxUpper())
+                    return true;
                 detector.clean();
             } else {
                 detector.clean();
@@ -30,7 +35,7 @@ public abstract class ASMSolver {
 
         }
 
-        if (maxUpper <= maxLower) {
+        if (info.getMaxUpper() <= info.getMaxLower()) {
             return true;
         }
         list.init(info, 0);

@@ -37,7 +37,7 @@ public class SearchList {
 
     public boolean get(int upperBound, BPGraph graph, Info info) {
         graph.cleanTemporarySubgraphs();
-        if (list[upperBound].getNode(graph, info, threadID))
+        if (list[upperBound].getNode(graph, info, threadID)) //TODO: Error may be here
             return true;
         else {
             list[upperBound] = null;

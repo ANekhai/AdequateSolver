@@ -72,14 +72,14 @@ public class AS2 extends SubDetector{
                     addVertices(u, u2, v, v2);
                     updateVisitedVertices(incident, u, u2, v, v2);
                     updateVisitedVertices(valid, u, u2, v, v2);
-                } else if (graph.getFirstAdjacency(u1, color).equals(v1)
-                        && graph.getFirstAdjacency(u2, color).equals(v2)
-                        && !u1.equals(v2) && !u2.equals(v1) && valid.get(u1) && valid.get(u2)
-                        && valid.get(v1) && valid.get(v2)) {
-                    // double four 0 1 1, 0 2' 2, 0
-                    addVertices(u, v, u1, v1, u2, v2);
-                    updateVisitedVertices(incident, u, v, u1, v1, u2, v2);
-                    updateVisitedVertices(valid, u, v, u1, v1, u2, v2);
+//                } else if (graph.getFirstAdjacency(u1, color).equals(v1)
+//                        && graph.getFirstAdjacency(u2, color).equals(v2)
+//                        && !u1.equals(v2) && !u2.equals(v1) && valid.get(u1) && valid.get(u2)
+//                        && valid.get(v1) && valid.get(v2)) {
+//                    // double four 0 1 1, 0 2' 2, 0
+//                    addVertices(u, v, u1, v1, u2, v2);
+//                    updateVisitedVertices(incident, u, v, u1, v1, u2, v2);
+//                    updateVisitedVertices(valid, u, v, u1, v1, u2, v2);
                 }else if (foundSubgraphs.size() == 0) { // This could probably just be an else as I think foundSubgraphs should be empty?
                     if (graph.getFirstAdjacency(u1, color).equals(v1)
                             && valid.get(u1) && valid.get(v1)) {
@@ -108,9 +108,9 @@ public class AS2 extends SubDetector{
             addVertices(fourCycle[0], fourCycle[2], fourCycle[1], fourCycle[3]);
             numDetected = 2;
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
 

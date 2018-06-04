@@ -12,13 +12,12 @@ public class ExactSolver extends ASMSolver {
 
     public int solve(BPGraph graph, Detector detector, Info info, SearchList list) {
         //set up functions
-        //TODO: Move this somewhere else (perhaps parameters...)
+        //TODO: Move this somewhere else
         File folder = new File(info.getRootFolder());
 
         int cycle[] = new int[3];
         info.setMaxLower(graph.getLowerBound());
         info.setMaxUpper(graph.getUpperBound());
-
 
         if (collapse(graph, detector, info, list)){
             // System.out.printf("finished in collapse %d\n", graph.getLowerBound());
@@ -32,6 +31,8 @@ public class ExactSolver extends ASMSolver {
 
         //actual algorithm
         while (info.getMaxLower() != info.getMaxUpper() && !info.isFinished() ) {
+            //TODO: remove these print statements
+            System.out.println("Cycle Number: " + graph.getCycleNumber());
 
             //Some parallel bookkeeping functions and load balancing functions first
             if(info.getThreadNumber() > 1) {
@@ -90,7 +91,7 @@ public class ExactSolver extends ASMSolver {
                         graph.setRanks(i, j);
                     }
                 }
-                //TODO: what is the point of this?
+
                 if (!info.getKernel()) {
                     int num = 0;
                     for (String node : graph.getNodes()) {
@@ -112,13 +113,12 @@ public class ExactSolver extends ASMSolver {
 
                 graph.shrink(detector.getSubgraphs(), start, end);
 
-                if (detector.getNumDetected() > 2) { // I am fairly certain this is only for the linear case
+                if (detector.getNumDetected() > 2) {
 
                     for (int j = 0; j < 3; ++j) {
                         graph.setCycle(j, cycle[j]);
                     }
 
-                    // Definitely problems here
                     graph.getLinearBounds(detector.getSubgraphVertex(start), detector.getSubgraphVertex(end - 1));
 
                 } else {
@@ -136,7 +136,6 @@ public class ExactSolver extends ASMSolver {
                 if (graph.getLowerBound() >= info.getMaxUpper()) {
                     info.setMaxLower(graph.getLowerBound());
                     list = null;
-                    graph = null;
                     System.gc();
                     info.markFinished();
                     return info.getMaxLower();
@@ -152,7 +151,7 @@ public class ExactSolver extends ASMSolver {
             }
 
         }
-
+        //TODO: move this somewhere else
         folder.delete();
         return info.getMaxLower();
     }
