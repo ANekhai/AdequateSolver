@@ -54,7 +54,7 @@ public class TestWrapper {
 
             int solution = solver.solve(graph, detector, info, list);
 
-            graph.printEdges();
+//            graph.printEdges();
 
             detector.detectAdequateSubgraphs(graph);
             while (detector.getNumDetected() > 0) {

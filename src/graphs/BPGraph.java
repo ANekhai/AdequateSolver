@@ -17,8 +17,8 @@ public class BPGraph {
     private int upperBound = 0;
     private int lowerBound = 0;
     private ArrayList<String> footprint = new ArrayList<>();
-    private ArrayList<String> footprintCopy = new ArrayList<>();
-    private ArrayList<String> temporarySubgraphs = new ArrayList<>();
+    private ArrayList<String> tempFootprint = new ArrayList<>();
+    private ArrayList<String> tempSubgraphs = new ArrayList<>();
     private ArrayList<HashMap<String, String>> edgesPreShrink;
     private ArrayList<HashMap<String, Integer>> vertexRank;
     private ArrayList<HashMap<String, Integer>> cycleRank;
@@ -224,22 +224,6 @@ public class BPGraph {
 
     }
 
-    public void duplicatedShrink(ArrayList<String> subGraphs, int start, int end) {
-        String left, right;
-
-        for (int i = start; i < end; i += 2) {
-            left = subGraphs.get(i);
-            right = subGraphs.get(i + 1);
-            for (Graph color : colors) {
-                if (color.getAdjacentNodes(left).contains(right)) {
-
-                } else {
-
-                }
-            }
-        }
-    }
-
     public void expand(ArrayList<String> subGraphs, int start, int end) {
         int i;
         String left, right;
@@ -286,17 +270,6 @@ public class BPGraph {
 
     private void removeFootprint() {
         footprint.remove(footprint.size() - 1);
-    }
-
-    public void cleanFootprint() {
-//        // copy to a temp location
-//        for (int i = 0; i < this.idx_ft; i++, ft_before_idx++) {
-//            this.ft_before_rename[ft_before_idx] = this.footprint[i];
-//        }
-//        this.idx_ft = 0;
-        footprintCopy = (ArrayList<String>) footprint.clone();
-        footprint = new ArrayList<>();
-
     }
 
     public void getBounds() {
@@ -360,24 +333,24 @@ public class BPGraph {
         return footprint;
     }
 
-    public void cleanTemporarySubgraphs() {
-        temporarySubgraphs = new ArrayList<>();
+    public void cleanTempSubgraphs() {
+        tempSubgraphs = new ArrayList<>();
     }
 
     public ArrayList<String> getTempSubgraphs() {
-        return temporarySubgraphs;
+        return tempSubgraphs;
     }
 
     public int getTempSubgraphsSize() {
-        return temporarySubgraphs.size();
+        return tempSubgraphs.size();
     }
 
     public String getTempSubgraphVertex(int i) {
-        return temporarySubgraphs.get(i);
+        return tempSubgraphs.get(i);
     }
 
     public void addTempSubgraphVertex(String vertex) {
-        temporarySubgraphs.add(vertex);
+        tempSubgraphs.add(vertex);
     }
 
     public Set<String> getAdjacenciesInColor(String u, int color) { return colors.get(color).getAdjacentNodes(u); }
@@ -387,8 +360,8 @@ public class BPGraph {
     public Graph getMedian() {
         Graph median = new ContractedGraph();
 
-        for (int i = 0; i < footprintCopy.size(); i += 2)
-            median.addEdge(footprintCopy.get(i), footprintCopy.get(i + 1));
+        for (int i = 0; i < tempFootprint.size(); i += 2)
+            median.addEdge(tempFootprint.get(i), tempFootprint.get(i + 1));
 
         for (int i = 0; i < footprint.size(); i += 2)
             median.addEdge(footprint.get(i), footprint.get(i + 1));

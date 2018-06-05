@@ -7,7 +7,7 @@ import structs.SearchList;
 
 public abstract class ASMSolver {
 
-    public abstract int solve(BPGraph g, Detector detector, Info info, SearchList list);
+    public abstract int solve(BPGraph graph, Detector detector, Info info, SearchList list);
 
     public boolean collapse(BPGraph graph, Detector detector, Info info, SearchList list) {
 
