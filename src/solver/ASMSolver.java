@@ -9,6 +9,8 @@ public abstract class ASMSolver {
 
     public abstract int solve(BPGraph graph, Detector detector, Info info, SearchList list);
 
+    //TODO: REMOVE SEARCHLIST DEPENDENCY IN COLLAPSE
+
     public boolean collapse(BPGraph graph, Detector detector, Info info, SearchList list) {
 
         while (true){
@@ -38,6 +40,7 @@ public abstract class ASMSolver {
         if (info.getMaxUpper() <= info.getMaxLower()) {
             return true;
         }
+//        graph.cleanFootprint();
         list.init(info, 0);
         info.initFileCheck(graph.getUpperBound(), graph.getLowerBound());
         return false;

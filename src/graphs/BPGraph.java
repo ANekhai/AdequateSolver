@@ -272,6 +272,8 @@ public class BPGraph {
         footprint.remove(footprint.size() - 1);
     }
 
+    public void cleanFootprint() { footprint = new ArrayList<>(); }
+
     public void getBounds() {
 
         cycles = new ArrayList<>();
