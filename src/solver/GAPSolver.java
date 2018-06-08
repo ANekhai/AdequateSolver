@@ -10,26 +10,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GAPSolver extends ASMSolver {
+    long currFile = 0;
+    long newFile = 0;
+    int mostCycles = 0;
+
 
     //TODO: REMOVE DEPENDENCY ON SEARCHLIST
     public int solve(BPGraph graph, Detector detector, Info info, SearchList list) {
-        long currFile, newFile;
-        int mostCycles;
-        currFile = newFile = mostCycles = 0;
 
+        //TODO: MOVE THIS ELSEWHERE
+        File folder = new File(info.getRootFolder());
+        folder.mkdir();
 
 //        File solution = new File("solution.gen"); // TODO: add capability to change solution file name
 
         collapse(graph, detector, info, list);
+        writeSolution(graph.getTempFootprint());
         graph.cleanFootprint();
 
-        toFile(graph.getFootprint(), info, newFile);
-        ++newFile;
+        toFile(graph.getFootprint(), info);
 
         while (currFile != newFile) {
             //transform graph to current consideration case
-            ArrayList<String> shrunkVertices = fromFile(info, currFile);
-            ++currFile;
+            ArrayList<String> shrunkVertices = fromFile(info);
 
             graph.shrink(shrunkVertices, 0, shrunkVertices.size());
 
@@ -42,15 +45,16 @@ public class GAPSolver extends ASMSolver {
 
                 graph.shrink(detector.getSubgraphs(), start, end);
 
-                if (graph.getGeneNumber() > 0) {
+                if (graph.getGeneNumber() == 0) {
                     if (graph.getCycleNumber() > mostCycles) {
                         //write solution to solution file
                         writeSolution(graph.getFootprint());
+                        mostCycles = graph.getCycleNumber();
                     }
                 } else {
                     // write subgraphs to file
-                    toFile(graph.getFootprint(), info, newFile);
-                    ++newFile;
+                    toFile(graph.getFootprint(), info);
+
                 }
 
                 graph.expand(detector.getSubgraphs(), start, end);
@@ -63,33 +67,40 @@ public class GAPSolver extends ASMSolver {
         }
 
         //read from solution file and reshrink graph
+        System.out.println("Number of Iterations: " + currFile);
         ArrayList<String> solution = readSolution();
         graph.shrink(solution, 0, solution.size());
+
+        folder.delete(); //TODO: MOVE THIS ELSEWHERE
 
         return graph.getCycleNumber();
     }
 
     //TODO: Move these functions into their own IO library
 
-    private ArrayList<String> fromFile(Info info, long file) {
+    private ArrayList<String> fromFile(Info info) {
         ArrayList<String> edges;
 
-        File inFile = new File(info.getRootFolder() + System.getProperty("File.separator") + file + ".tmp");
+        File inFile = new File(info.getRootFolder() + System.getProperty("file.separator") + currFile + ".tmp");
         try {
             BufferedReader reader = new BufferedReader(new FileReader(inFile));
-            edges = new ArrayList<String>(Arrays.asList(reader.readLine().split(" ")));
+            edges = new ArrayList<>();
+            String line = reader.readLine();
+            if (line != null)
+                edges.addAll(Arrays.asList(line.split(" ")));
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException();
         }
+        ++currFile;
         inFile.delete();
         return edges;
     }
 
-    private void toFile(ArrayList<String> vertices, Info info, long file) {
+    private void toFile(ArrayList<String> vertices, Info info) {
         try {
-            FileWriter out = new FileWriter(info.getRootFolder() + System.getProperty("File.separator") + file + ".tmp");
+            FileWriter out = new FileWriter(info.getRootFolder() + System.getProperty("file.separator") + newFile + ".tmp");
             for (int i = 0; i < vertices.size(); ++i) {
                 if (i > 0)
                     out.write(" ");
@@ -101,7 +112,7 @@ public class GAPSolver extends ASMSolver {
             e.printStackTrace();
             throw new RuntimeException();
         }
-
+        ++newFile;
     }
 
     //TODO: Get rid of duplicated code and allow solution file to have different name

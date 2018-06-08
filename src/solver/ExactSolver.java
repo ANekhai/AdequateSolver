@@ -12,9 +12,6 @@ public class ExactSolver extends ASMSolver {
 
     public int solve(BPGraph graph, Detector detector, Info info, SearchList list) {
         //set up functions
-        //TODO: Move this somewhere else
-        File folder = new File(info.getRootFolder());
-
         int cycle[] = new int[3];
         info.setMaxLower(graph.getLowerBound());
         info.setMaxUpper(graph.getUpperBound());
@@ -26,13 +23,15 @@ public class ExactSolver extends ASMSolver {
 
         info.setTotal(0);
         detector.clean();
-        //TODO: Move this elsewhere too
+
+        //TODO: Move this somewhere else
+        File folder = new File(info.getRootFolder());
         folder.mkdir();
 
         //actual algorithm
         while (info.getMaxLower() != info.getMaxUpper() && !info.isFinished() ) {
             //TODO: remove these print statements
-            System.out.println("Cycle Number: " + graph.getCycleNumber());
+            System.out.println("Cycle Number: " + graph.getCycleNumber() + " LB: " + graph.getLowerBound() + " UB: " + graph.getUpperBound());
 
             //Some parallel bookkeeping functions and load balancing functions first
             if(info.getThreadNumber() > 1) {
@@ -125,8 +124,10 @@ public class ExactSolver extends ASMSolver {
                     graph.getBounds();
                 }
 
+
                 if (graph.getLowerBound() > info.getMaxLower()) {
                     list.clean(graph.getLowerBound(), info);
+//                    list.clean(info.getMaxLower(), info);
                     info.setMaxLower(graph.getLowerBound());
                 }
                 if (graph.getUpperBound() > info.getMaxUpper()) {

@@ -29,6 +29,8 @@ public abstract class ASMSolver {
 
                 if (graph.getLowerBound() >= info.getMaxUpper())
                     return true;
+
+                graph.cleanFootprint();
                 detector.clean();
             } else {
                 detector.clean();
@@ -40,7 +42,7 @@ public abstract class ASMSolver {
         if (info.getMaxUpper() <= info.getMaxLower()) {
             return true;
         }
-//        graph.cleanFootprint();
+
         list.init(info, 0);
         info.initFileCheck(graph.getUpperBound(), graph.getLowerBound());
         return false;

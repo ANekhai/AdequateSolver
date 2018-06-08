@@ -264,6 +264,8 @@ public class BPGraph {
     }
 
     // TODO: I don't think I need index ints, will remove them
+    public void cleanTempSubgraphs() { tempSubgraphs = new ArrayList<>(); }
+
     private void addFootprint(String u) {
         footprint.add(u);
     }
@@ -272,7 +274,10 @@ public class BPGraph {
         footprint.remove(footprint.size() - 1);
     }
 
-    public void cleanFootprint() { footprint = new ArrayList<>(); }
+    public void cleanFootprint() {
+        tempFootprint.addAll(footprint);
+        footprint = new ArrayList<>();
+    }
 
     public void getBounds() {
 
@@ -326,17 +331,8 @@ public class BPGraph {
         return cycles;
     }
 
-    protected int countCyclesWithDuplications(int firstColor, int secondColor) {
-
-        return 0;
-    }
-
     public ArrayList<String> getFootprint() {
         return footprint;
-    }
-
-    public void cleanTempSubgraphs() {
-        tempSubgraphs = new ArrayList<>();
     }
 
     public ArrayList<String> getTempSubgraphs() {
@@ -517,5 +513,7 @@ public class BPGraph {
 
     }
 
-
+    public ArrayList<String> getTempFootprint() {
+        return tempFootprint;
+    }
 }
