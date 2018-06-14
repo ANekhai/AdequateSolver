@@ -11,6 +11,7 @@ public class Grimm {
 
         //Parse multiple genomes in a GRIMM file to a list of genomes
         public static ArrayList<Genome> parseGRIMM(BufferedReader in) throws IOException {
+
             ArrayList<Genome> genomes = new ArrayList<>();
             Genome currGenome = null;
 
