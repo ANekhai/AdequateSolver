@@ -52,6 +52,7 @@ public class SearchList {
         }
     }
 
+    //TODO: This is the parallel implementation of
     public void clean(int lowerBound, Info info ) {
         for (int k = info.getThreadMaxLower(threadID); k < lowerBound; ++k) {
             //TODO: Figure out what f_check does

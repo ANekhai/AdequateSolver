@@ -365,16 +365,16 @@ public class BPGraph {
             median.addEdge(footprint.get(i), footprint.get(i + 1));
 
         //TODO: There is still a thing with next_median_adj() here
-        SortedSet<String> remaining = new TreeSet<>();
-        for (String node : getNodes())
-            if (checkAvailable(node))
-                remaining.add(node);
+//        SortedSet<String> remaining = new TreeSet<>();
+//        for (String node : getNodes())
+//            if (checkAvailable(node))
+//                remaining.add(node);
 
-        Iterator itr = remaining.iterator();
-
-        while (itr.hasNext()) {
-            median.addEdge((String) itr.next(), (String) itr.next());
-        }
+//        Iterator itr = remaining.iterator();
+//
+//        while (itr.hasNext()) {
+//            median.addEdge((String) itr.next(), (String) itr.next());
+//        }
 
         return median;
     }

@@ -6,9 +6,10 @@ import structs.Info;
 import structs.SearchList;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class ExactSolver extends ASMSolver {
-
+    ArrayList<String> tempSolution = null;
 
     public int solve(BPGraph graph, Detector detector, Info info, SearchList list) {
         //set up functions
@@ -29,9 +30,11 @@ public class ExactSolver extends ASMSolver {
         folder.mkdir();
 
         //actual algorithm
-        while (info.getMaxLower() != info.getMaxUpper() && !info.isFinished() ) {
+        Solver: while (info.getMaxLower() != info.getMaxUpper() && !info.isFinished() ) {
+//        Solver: while (true) {
             //TODO: remove these print statements
-            System.out.println("Cycle Number: " + graph.getCycleNumber() + " LB: " + graph.getLowerBound() + " UB: " + graph.getUpperBound());
+            System.out.println("Cycle Number: " + graph.getCycleNumber() + " LB: " + graph.getLowerBound() + " UB: " + graph.getUpperBound()
+                    + " INFOLB: " + info.getMaxLower() + " INFOUB: " + info.getMaxUpper());
 
             //Some parallel bookkeeping functions and load balancing functions first
             if(info.getThreadNumber() > 1) {
@@ -127,8 +130,8 @@ public class ExactSolver extends ASMSolver {
 
                 if (graph.getLowerBound() > info.getMaxLower()) {
                     list.clean(graph.getLowerBound(), info);
-//                    list.clean(info.getMaxLower(), info);
                     info.setMaxLower(graph.getLowerBound());
+                    tempSolution = (ArrayList<String>) graph.getFootprint().clone();
                 }
                 if (graph.getUpperBound() > info.getMaxUpper()) {
                     graph.setUpperBound(info.getMaxUpper());
@@ -152,6 +155,13 @@ public class ExactSolver extends ASMSolver {
             }
 
         }
+        if (tempSolution != null) {
+            graph.expand(graph.getFootprint(), 0, graph.getFootprintSize());
+            graph.shrink(tempSolution, 0, tempSolution.size());
+            graph.getBounds();
+        }
+        graph.getBounds();
+
         //TODO: move this somewhere else
         folder.delete();
         return info.getMaxLower();
