@@ -1,8 +1,11 @@
 package graphs;
 
 import com.google.common.graph.*;
-import structs.Genome;
+import genome.Genome;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Graph {
@@ -11,38 +14,56 @@ public abstract class Graph {
 
     abstract void addGenome(Genome order);
 
-    public void addEdge(String u, String v){
-        ++numEdges;
+
+    public void addEdge(String u, String v) {
         graph.addEdge(u, v, numEdges);
+        ++numEdges;
     }
 
-    //Getters
+    public void removeEdge(String u, String v) {
+        graph.removeEdge(graph.edgeConnectingOrNull(u, v));
 
-    Set<String> getNodes() { return graph.nodes(); }
+    }
 
-    Integer getDegree(String node) { return graph.degree(node); }
+    //Getter 
+  
+    public Set<String> getNodes() { return graph.nodes(); }
 
-    Set<Integer> incidentEdges(String node) { return graph.incidentEdges(node); }
+    public int getNumNodes() { return graph.nodes().size(); }
 
-    Set<String> getAdjacentNodes(String node) { return graph.adjacentNodes(node); }
+    public int getNumEdges() { return numEdges; }
 
-    Set<Integer> getEdgesConnecting(String nodeU, String nodeV) { return graph.edgesConnecting(nodeU, nodeV); }
+    public int getDegree(String node) { return graph.degree(node); }
 
-    ElementOrder<String> getNodeOrder() { return graph.nodeOrder(); }
+    public Set<Integer> incidentEdges(String node) { return graph.incidentEdges(node); }
 
-    ElementOrder<Integer> getEdgeOrder() { return graph.edgeOrder(); }
+
+    public Set<String> getAdjacentNodes(String node) {
+        try {
+            return graph.adjacentNodes(node);
+        } catch (IllegalArgumentException e) {
+            return new HashSet<>();
+        }
+    }
+
+    public Set<Integer> getEdgesConnecting(String nodeU, String nodeV) { return graph.edgesConnecting(nodeU, nodeV); }
+
+    public ElementOrder<String> getNodeOrder() { return graph.nodeOrder(); }
+
+    public ElementOrder<Integer> getEdgeOrder() { return graph.edgeOrder(); }
 
     //Member Functions
 
-    boolean contains(String node){
+    public boolean contains(String node){
         return graph.nodes().contains(node);
     }
 
-    boolean hasEdge(String nodeU, String nodeV) { return graph.hasEdgeConnecting(nodeU, nodeV); }
 
-    boolean equals(Graph otherGraph) { return graph.equals(otherGraph); }
+    public boolean hasEdge(String nodeU, String nodeV) { return graph.hasEdgeConnecting(nodeU, nodeV); }
 
-    private String getAdjacentExtremity(String node) {
+    public boolean equals(Graph otherGraph) { return graph.equals(otherGraph); }
+
+    protected String getOppositeExtremity(String node) {
         if (node.indexOf('h') != -1){
             return node.replace('h', 't');
         }else {
@@ -50,6 +71,7 @@ public abstract class Graph {
         }
     }
 
-    abstract Genome toGeneOrder();
 
+    //TODO: Will need to be updated for linear genomes eventually.
+    public abstract Genome toGeneOrder();
 }
