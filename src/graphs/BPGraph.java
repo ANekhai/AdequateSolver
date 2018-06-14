@@ -1,5 +1,6 @@
 package graphs;
 
+import detector.Detector;
 import genome.Genome;
 import genome.Grimm;
 
@@ -364,17 +365,29 @@ public class BPGraph {
         for (int i = 0; i < footprint.size(); i += 2)
             median.addEdge(footprint.get(i), footprint.get(i + 1));
 
-        //TODO: There is still a thing with next_median_adj() here
-//        SortedSet<String> remaining = new TreeSet<>();
-//        for (String node : getNodes())
-//            if (checkAvailable(node))
-//                remaining.add(node);
+        //Brute Force add back Adequate Subgraph Edges
+        //TODO: Fix bug in exact solver that ends the algorithm before all best adequate subgraphs are added to genome
+        Detector detector = new Detector();
+        detector.detectAdequateSubgraphs(this);
+        while (detector.getNumDetected() > 0) {
+            int gran = detector.getDetectedSubgraphsSize() / detector.getNumDetected();
+            int tempCycleNumber = this.cycleNumber;
+            for (int i = 0; i < detector.getNumDetected(); ++i) {
+                int start = i*gran;
+                int end = (i+1)*gran;
 
-//        Iterator itr = remaining.iterator();
-//
-//        while (itr.hasNext()) {
-//            median.addEdge((String) itr.next(), (String) itr.next());
-//        }
+                shrink(detector.getSubgraphs(), start, end);
+                getBounds();
+                if (this.cycleNumber > tempCycleNumber)
+                    break;
+                else {
+                    expand(detector.getSubgraphs(), start, end);
+                }
+
+            }
+            detector.clean();
+            detector.detectAdequateSubgraphs(this);
+        }
 
         return median;
     }

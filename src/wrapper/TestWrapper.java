@@ -37,11 +37,20 @@ public class TestWrapper {
 
         detector.detectAdequateSubgraphs(graph);
         while (detector.getNumDetected() > 0) {
-            if (detector.getNumDetected() == 1)
-                graph.shrink(detector.getSubgraphs(), 0, detector.getDetectedSubgraphsSize());
-            else {
-                int gran = detector.getDetectedSubgraphsSize() / detector.getNumDetected();
-                graph.shrink(detector.getSubgraphs(), 0, gran);
+            int gran = detector.getDetectedSubgraphsSize() / detector.getNumDetected();
+            int tempCycleNumber = graph.getCycleNumber();
+            for (int i = 0; i < detector.getNumDetected(); ++i) {
+                int start = i*gran;
+                int end = (i+1)*gran;
+
+                graph.shrink(detector.getSubgraphs(), start, end);
+                graph.getBounds();
+                if (graph.getCycleNumber() > tempCycleNumber)
+                    break;
+                else {
+                    graph.expand(detector.getSubgraphs(), start, end);
+                }
+
             }
             detector.clean();
             detector.detectAdequateSubgraphs(graph);

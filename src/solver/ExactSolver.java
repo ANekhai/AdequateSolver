@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class ExactSolver extends ASMSolver {
     ArrayList<String> tempSolution = null;
+    int remainingEdges = Integer.MAX_VALUE;
 
     public int solve(BPGraph graph, Detector detector, Info info, SearchList list) {
         //set up functions
@@ -31,10 +32,9 @@ public class ExactSolver extends ASMSolver {
 
         //actual algorithm
         Solver: while (info.getMaxLower() != info.getMaxUpper() && !info.isFinished() ) {
-//        Solver: while (true) {
             //TODO: remove these print statements
             System.out.println("Cycle Number: " + graph.getCycleNumber() + " LB: " + graph.getLowerBound() + " UB: " + graph.getUpperBound()
-                    + " INFOLB: " + info.getMaxLower() + " INFOUB: " + info.getMaxUpper());
+                    + " INFOLB: " + info.getMaxLower() + " INFOUB: " + info.getMaxUpper() + " GENES_REMAIN: " + graph.getGeneNumber());
 
             //Some parallel bookkeeping functions and load balancing functions first
             if(info.getThreadNumber() > 1) {
@@ -132,7 +132,14 @@ public class ExactSolver extends ASMSolver {
                     list.clean(graph.getLowerBound(), info);
                     info.setMaxLower(graph.getLowerBound());
                     tempSolution = (ArrayList<String>) graph.getFootprint().clone();
+                    remainingEdges = graph.getGeneNumber();
                 }
+                if (graph.getLowerBound() == info.getMaxLower() && graph.getGeneNumber() < remainingEdges) {
+                    tempSolution = (ArrayList<String>) graph.getFootprint().clone();
+                    remainingEdges = graph.getGeneNumber();
+                }
+
+
                 if (graph.getUpperBound() > info.getMaxUpper()) {
                     graph.setUpperBound(info.getMaxUpper());
                 }
