@@ -28,9 +28,10 @@ public class NonContractedGraph extends Graph {
         } else {
             name = gene;
         }
-        if (geneEnum.containsKey(name))
+        if (geneEnum.containsKey(name)){
             geneEnum.put(name, geneEnum.get(name) + 1);
-        else
+            this.duplicated = true; //TODO: Test this
+        } else
             geneEnum.put(name, 0);
 
         ArrayList<String> labels = new ArrayList<>();

@@ -14,9 +14,7 @@ public class GAPSolver extends ASMSolver {
     long newFile = 0;
     int mostCycles = 0;
 
-
-    //TODO: REMOVE DEPENDENCY ON SEARCHLIST
-    public int solve(BPGraph graph, Detector detector, Info info, SearchList list) {
+    public int solve(BPGraph graph, Detector detector, Info info) {
 
         //TODO: MOVE THIS ELSEWHERE
         File folder = new File(info.getRootFolder());
@@ -24,7 +22,7 @@ public class GAPSolver extends ASMSolver {
 
 //        File solution = new File("solution.gen"); // TODO: add capability to change solution file name
 
-        collapse(graph, detector, info, list);
+        collapse(graph, detector, info);
         writeSolution(graph.getTempFootprint());
         graph.cleanFootprint();
 

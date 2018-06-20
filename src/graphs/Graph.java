@@ -11,9 +11,10 @@ import java.util.Set;
 public abstract class Graph {
     protected MutableNetwork<String, Integer> graph;
     protected int numEdges = 0;
+    protected boolean duplicated = false;
+
 
     abstract void addGenome(Genome order);
-
 
     public void addEdge(String u, String v) {
         graph.addEdge(u, v, numEdges);
@@ -22,11 +23,10 @@ public abstract class Graph {
 
     public void removeEdge(String u, String v) {
         graph.removeEdge(graph.edgeConnectingOrNull(u, v));
-
     }
 
-    //Getter 
-  
+    //Getters
+
     public Set<String> getNodes() { return graph.nodes(); }
 
     public int getNumNodes() { return graph.nodes().size(); }
@@ -36,7 +36,6 @@ public abstract class Graph {
     public int getDegree(String node) { return graph.degree(node); }
 
     public Set<Integer> incidentEdges(String node) { return graph.incidentEdges(node); }
-
 
     public Set<String> getAdjacentNodes(String node) {
         try {
@@ -58,7 +57,6 @@ public abstract class Graph {
         return graph.nodes().contains(node);
     }
 
-
     public boolean hasEdge(String nodeU, String nodeV) { return graph.hasEdgeConnecting(nodeU, nodeV); }
 
     public boolean equals(Graph otherGraph) { return graph.equals(otherGraph); }
@@ -70,7 +68,6 @@ public abstract class Graph {
             return node.replace('t', 'h');
         }
     }
-
 
     //TODO: Will need to be updated for linear genomes eventually.
     public abstract Genome toGeneOrder();

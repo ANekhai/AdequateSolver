@@ -2,24 +2,20 @@ package graphs;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import genome.Genome;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class BPGraphTest {
     private BPGraph bpGraph;
-
     private ContractedGraph contracted;
     private NonContractedGraph nonContracted;
 
     private String endLine = System.getProperty("line.separator");
-
 
     @BeforeEach
     void setUp() {
@@ -50,7 +46,6 @@ class BPGraphTest {
 
     @Test
     void testBPGraphFromContractedGraphs() {
-
         bpGraph = new BPGraph(contracted, contracted, contracted);
 
         assertEquals(3, bpGraph.getColorsSize());
@@ -67,14 +62,12 @@ class BPGraphTest {
 
     @Test
     void testAddingContractedGraphToEmptyBPGraph() {
-
         bpGraph.add(contracted);
         assertTrue(bpGraph.isContracted());
     }
 
     @Test
     void testAddingNonContractedGraphToEmptyBPGraph() {
-
         bpGraph.add(nonContracted);
         assertFalse(bpGraph.isContracted());
     }
@@ -84,7 +77,6 @@ class BPGraphTest {
         bpGraph.add(contracted);
         assertThrows(RuntimeException.class, ()->bpGraph.add(nonContracted));
     }
-
 
     //TODO: REWRITE THIS TEST AS BPGRAPH REQUIRES EQUAL GENE CONTENT RIGHT NOW
     @Test
@@ -179,5 +171,6 @@ class BPGraphTest {
     }
 
     //TODO: TEST CHANGING AVAILABILITY
+
 
 }

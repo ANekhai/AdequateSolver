@@ -7,11 +7,9 @@ import structs.SearchList;
 
 public abstract class ASMSolver {
 
-    public abstract int solve(BPGraph graph, Detector detector, Info info, SearchList list);
+    public abstract int solve(BPGraph graph, Detector detector, Info info);
 
-    //TODO: REMOVE SEARCHLIST DEPENDENCY IN COLLAPSE
-
-    public boolean collapse(BPGraph graph, Detector detector, Info info, SearchList list) {
+    public boolean collapse(BPGraph graph, Detector detector, Info info) {
 
         while (true){
             detector.detectAdequateSubgraphs(graph);
@@ -20,7 +18,8 @@ public abstract class ASMSolver {
                 info.setRoot();
                 graph.shrink(detector.getSubgraphs(), 0, detector.getDetectedSubgraphsSize());
                 graph.getBounds();
-                System.out.println("Collapse Bounds: " + graph.getUpperBound());
+
+//                System.out.println("Collapse Bounds: " + graph.getUpperBound());
 
                 if (graph.getLowerBound() > info.getMaxLower())
                     info.setMaxLower(graph.getLowerBound());
@@ -43,8 +42,6 @@ public abstract class ASMSolver {
             return true;
         }
 
-        list.init(info, 0);
-        info.initFileCheck(graph.getUpperBound(), graph.getLowerBound());
         return false;
     }
 

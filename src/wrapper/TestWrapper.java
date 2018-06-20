@@ -6,11 +6,10 @@ import genome.Genome;
 import graphs.BPGraph;
 import graphs.Graph;
 import solver.ASMSolver;
-import solver.ExactSolver;
+import solver.GMPSolver;
 import solver.GAPSolver;
 import structs.Info;
 import structs.Parameters;
-import structs.SearchList;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -19,19 +18,17 @@ import java.io.FileReader;
 
 public class TestWrapper {
     static String endLine = System.getProperty("line.separator");
-    static String tab = String.format("%c", '\t');
 
     private static void runExactSolver(BPGraph graph, BPGraph graphCopy) {
         Detector detector = new Detector();
         Parameters params = new Parameters();
         Info info = new Info(params);
-        SearchList list = new SearchList();
-        ExactSolver solver = new ExactSolver();
+        GMPSolver solver = new GMPSolver();
 
         System.out.println("Initial Bounds:" + endLine + "Lower:" + graph.getLowerBound() +
                 " Upper:" + graph.getUpperBound());
 
-        int solution = solver.solve(graph, detector, info, list);
+        int solution = solver.solve(graph, detector, info);
 
 //            graph.printEdges();
 
@@ -77,13 +74,12 @@ public class TestWrapper {
         Detector detector = new Detector();
         Parameters params = new Parameters();
         Info info = new Info(params);
-        SearchList list = new SearchList();
         ASMSolver solver = new GAPSolver();
 
         System.out.println("Initial Bounds:" + endLine + "Lower:" + graph.getLowerBound() +
                 " Upper:" + graph.getUpperBound());
 
-        int solution = solver.solve(graph, detector, info, list);
+        int solution = solver.solve(graph, detector, info);
 
         Graph median = graph.getMedian();
         Genome medianOrder = median.toGeneOrder();

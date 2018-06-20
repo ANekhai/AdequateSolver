@@ -10,7 +10,8 @@ import java.util.*;
 
 public class BPGraph {
     private ArrayList<Graph> colors = new ArrayList<>();
-    private boolean isContracted;
+    private boolean contracted;
+    private boolean duplicated = false;
     private HashMap<String, Boolean> availableVertices = new HashMap<>();
     private int cycleNumber = 0;
     private ArrayList<Integer> cycles = new ArrayList<>();
@@ -31,7 +32,7 @@ public class BPGraph {
     }
 
     public BPGraph(ContractedGraph... graphs) {
-        isContracted = true;
+        contracted = true;
         colors.addAll(Arrays.asList(graphs));
         addInitialAvailabilities(graphs);
         getBounds();
@@ -39,19 +40,19 @@ public class BPGraph {
     }
 
     public BPGraph(NonContractedGraph... graphs) {
-        isContracted = false;
+        contracted = false;
         colors.addAll(Arrays.asList(graphs));
         addInitialAvailabilities(graphs);
         initArrays();
     }
 
     public BPGraph(BufferedReader in) {
-        ArrayList<Genome> genomes = new ArrayList<>();
+        ArrayList<Genome> genomes;
         try {
             genomes = Grimm.Reader.parseGRIMM(in);
         } catch (IOException e) {
             System.out.println(e.getStackTrace());
-            isContracted = false;
+            contracted = false;
             return;
         }
         Graph contracted;
@@ -64,6 +65,8 @@ public class BPGraph {
         getBounds();
         initArrays();
     }
+
+
 
     //Getters and Setters
 
@@ -118,9 +121,9 @@ public class BPGraph {
 
     public void add(Graph graph) {
         if (colors.isEmpty()){
-            isContracted = graph instanceof ContractedGraph;
-        } else if ((graph instanceof NonContractedGraph && isContracted) ||
-                (graph instanceof ContractedGraph && !isContracted) ) {
+            contracted = graph instanceof ContractedGraph;
+        } else if ((graph instanceof NonContractedGraph && contracted) ||
+                (graph instanceof ContractedGraph && !contracted) ) {
             //perhaps modify this to throw a checked exception instead
             throw new UnsupportedOperationException("Breakpoint graph must consist of the same genome graph type");
         }
@@ -174,7 +177,7 @@ public class BPGraph {
         }
     }
 
-    public boolean isContracted() { return isContracted; }
+    public boolean isContracted() { return contracted; }
 
     public boolean isConnected(String u, String v) {
         if (u == null || v == null)

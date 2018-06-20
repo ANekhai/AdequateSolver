@@ -27,6 +27,10 @@ public class ContractedGraph extends Graph {
             labels.add(gene + "t"); labels.add(gene + "h");
         }
 
+        if (getNodes().contains(labels.get(0)) || getNodes().contains(labels.get(1))) {
+            this.duplicated = true; //TODO: Test this
+        }
+
         return labels;
     }
 
