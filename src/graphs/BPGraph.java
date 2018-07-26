@@ -191,7 +191,7 @@ public class BPGraph {
         return false;
     }
 
-    //TODO: CIRCULAR CASE, WILL NEED MODIFICATION FOR LINEAR ONE
+    //TODO: circular case, will need to be modified for linear case
     public void shrink(ArrayList<String> subGraphs, int start, int end) {
         String left, right;
 
@@ -267,7 +267,6 @@ public class BPGraph {
         geneNumber += (end - start) / 2;
     }
 
-    // TODO: I don't think I need index ints, will remove them
     public void cleanTempSubgraphs() { tempSubgraphs = new ArrayList<>(); }
 
     private void addFootprint(String u) {
@@ -369,7 +368,6 @@ public class BPGraph {
             median.addEdge(footprint.get(i), footprint.get(i + 1));
 
         //Brute Force add back Adequate Subgraph Edges
-        //TODO: Fix bug in exact solver that ends the algorithm before all best adequate subgraphs are added to genome
         Detector detector = new Detector();
         detector.detectAdequateSubgraphs(this);
         while (detector.getNumDetected() > 0) {
@@ -418,7 +416,6 @@ public class BPGraph {
         lowerBound = cycleNumber + geneNumber + cycles.get(0) + cycles.get(1) + cycles.get(2) - cycles.get(lowestIndex);
     }
 
-    // TODO: Error in here
     private void countLinearCycle(String v1, String v2, int c1, int c2) {
         int color = c1 + c2 - 1;
         String x, y, w, z;
@@ -497,39 +494,11 @@ public class BPGraph {
 
     public Graph getColor(int color) { return colors.get(color); }
 
-    //TODO: REMOVE THIS EVENTUALLY
-    public void printEdges() {
-        ArrayList<HashMap<String, String>> edges = new ArrayList<>();
-        for (int i = 0; i < 3; ++i) {
-            edges.add(new HashMap<>());
-        }
-
-        for (String node : getNodes()) {
-            if (!availableVertices.get(node))
-                continue;
-
-            for (int color = 0; color < 3; ++color) {
-                String adjNode = getFirstAdjacency(node, color);
-                if (edges.get(color).keySet().contains(adjNode))
-                    continue;
-
-                edges.get(color).put(node, adjNode);
-            }
-        }
-
-        for (int color = 0; color < 3; ++color) {
-            System.out.println("Color" + color);
-
-            for (String node : edges.get(color).keySet()) {
-                System.out.println(node + " - " + edges.get(color).get(node));
-            }
-
-        }
-
-
-    }
-
     public ArrayList<String> getTempFootprint() {
         return tempFootprint;
+    }
+
+    public int getNodeSize() {
+        return availableVertices.size();
     }
 }

@@ -74,25 +74,4 @@ class AS1Test {
 
     }
 
-    @Test
-    void testGraphWithDuplicatedEarSubgraph() {
-        addGraphFromGenes("1", "-1");
-        addGraphFromGenes("1");
-
-        assertTrue(detector.duplicateAS1(graph));
-
-        assertEquals(1, detector.numDetected);
-    }
-
-    @Test
-    void testGraphWithParallelEdgesInColor() {
-        addGraphFromGenes("1", "1");
-        addGraphFromGenes("1");
-
-        assertTrue(detector.duplicateAS1(graph));
-
-        assertEquals(1, detector.numDetected);
-
-    }
-
 }

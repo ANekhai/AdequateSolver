@@ -29,6 +29,8 @@ public abstract class Graph {
 
     public Set<String> getNodes() { return graph.nodes(); }
 
+    public Set<Integer> getEdges() { return graph.edges(); }
+
     public int getNumNodes() { return graph.nodes().size(); }
 
     public int getNumEdges() { return numEdges; }
@@ -50,6 +52,8 @@ public abstract class Graph {
     public ElementOrder<String> getNodeOrder() { return graph.nodeOrder(); }
 
     public ElementOrder<Integer> getEdgeOrder() { return graph.edgeOrder(); }
+
+    public boolean isDuplicated() { return duplicated; }
 
     //Member Functions
 
