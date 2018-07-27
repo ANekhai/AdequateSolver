@@ -55,6 +55,15 @@ public abstract class Graph {
 
     public boolean isDuplicated() { return duplicated; }
 
+    public String getAdjacentNode(String node, int edge) {
+        EndpointPair<String> nodes = graph.incidentNodes(edge);
+        if (nodes.nodeU().equals(node))
+            return nodes.nodeV();
+        else
+            return nodes.nodeU();
+
+    }
+
     //Member Functions
 
     public boolean contains(String node){
