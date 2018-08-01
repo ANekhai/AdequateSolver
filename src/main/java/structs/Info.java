@@ -10,7 +10,7 @@ public class Info {
     private int threadCount[];
     private int total[];
     private boolean isRoot = false;
-    private String rootFolder;
+    private String rootDirectory;
     private int maxUpper[];
     private int maxLower[];
     private boolean started = false;
@@ -53,8 +53,8 @@ public class Info {
         threadNumber = params.getThreadNumber();
         maxUpper = new int[threadNumber];
         maxLower = new int[threadNumber];
-        // rootFolder = params.getRootFolder();
-        rootFolder = "temp";
+        // rootDirectory = params.getRootDirectory();
+        rootDirectory = "temp";
         result = new int[threadNumber];
         countIterations = new int[threadNumber];
         threadCount = new int[threadNumber];
@@ -69,7 +69,6 @@ public class Info {
         isLocked = new boolean[threadNumber];
         breakNumber = params.getBreakNumber();
 //        this.freq = p.check_freq;
-//        this.root_dir = p.root;
 //        this.is_buffered = p.is_buffered;
         this.maxElementSize = params.getThreshhold();
 //        this.avg_node_num = p.avg_node_num;
@@ -106,7 +105,7 @@ public class Info {
 
     public int getMaxUpper() { return maxUpper[0]; }
 
-    public String getRootFolder() { return rootFolder; }
+    public String getRootDirectory() { return rootDirectory; }
 
     public void setMaxUpper(int maxUpper) { this.maxUpper[0] = maxUpper; }
 
@@ -165,4 +164,12 @@ public class Info {
     public boolean isFinished() { return globalFinished; }
 
     public void decrementTotal(int threadNumber) { --total[threadNumber]; }
+
+    public void unlock(int i) { isLocked[i] = false; }
+
+    public void lock(int i) { isLocked[i] = true; }
+
+    public int getThreadTotal(int thread, int maxUpper) { return threadTotal[thread][maxUpper]; }
+
+    public void setParallel() { isParallel = true; }
 }

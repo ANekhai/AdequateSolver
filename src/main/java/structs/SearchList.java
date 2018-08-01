@@ -13,7 +13,7 @@ public class SearchList {
 
     public void init(Info info, int threadID) {
         this.threadID = threadID;
-        this.rootFolder = info.getRootFolder();
+        this.rootFolder = info.getRootDirectory();
         info.setThreadMaxUpper(threadID, info.getMaxUpper());
         info.setThreadMaxLower(threadID, info.getMaxLower());
         this.list = new Element[info.getThreadMaxUpper(threadID) + 1];

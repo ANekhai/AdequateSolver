@@ -3,11 +3,12 @@ package solver;
 import detector.Detector;
 import graphs.BPGraph;
 import structs.Info;
+import structs.Parameters;
 import structs.SearchList;
 
 public abstract class ASMSolver {
 
-    public abstract int solve(BPGraph graph, Detector detector, Info info);
+    public abstract int solve(BPGraph graph, Parameters params, Detector detector, Info info);
 
     public boolean collapse(BPGraph graph, Detector detector, Info info) {
 
@@ -46,17 +47,17 @@ public abstract class ASMSolver {
     }
 
     //TODO: Come back when parallelization is being implemented
-//    public static void checkUpdate(int threadNumber, Info info, SearchList list) {
-//        if (info.getCount(threadNumber) % info.getFrequency() == 0) {
-//            int tmp_low = 0;
-//            for (int i = 0; i < info.getThreadNumber(); i++)
-//                if (info.max_low[i] > tmp_low)
-//                    tmp_low = info.max_low[i];
-//            if (tmp_low > info.max_low[th_num]) {
-//                list.clean(tmp_low, info);
-//                info.max_low[th_num] = info.max_low[th_num];
-//            }
-//        }
-//    }
+    public static void checkUpdate(int threadNumber, Info info, SearchList list) {
+        if (info.getCount(threadNumber) % info.getFrequency() == 0) {
+            int tmp_low = 0;
+            for (int i = 0; i < info.getThreadNumber(); i++)
+                if (info.getThreadMaxLower(i) > tmp_low)
+                    tmp_low = info.getThreadMaxLower(i);
+            if (tmp_low > info.getThreadMaxLower(threadNumber)) {
+                list.clean(tmp_low, info);
+                info.setThreadMaxLower(threadNumber, info.getThreadMaxLower(threadNumber));
+            }
+        }
+    }
 
 }

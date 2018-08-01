@@ -322,7 +322,7 @@ public class Element {
         }
         this.available[writePosition] = false;
         info.incrementFileCheck(threadID, upperBound);
-        String name = info.getRootFolder() + "/" + threadID + "_" + upperBound + "_" + info.getFileCheck(threadID, upperBound) + ".tmp";
+        String name = info.getRootDirectory() + "/" + threadID + "_" + upperBound + "_" + info.getFileCheck(threadID, upperBound) + ".tmp";
         File file = new File(name);
 
         try {
@@ -394,7 +394,7 @@ public class Element {
         }
         this.available[readPosition] = false;
 
-        String name = info.getRootFolder() + "/" + threadID + "_" + upperBound + "_" + info.getFileCheck(threadID, upperBound) + ".tmp";
+        String name = info.getRootDirectory() + "/" + threadID + "_" + upperBound + "_" + info.getFileCheck(threadID, upperBound) + ".tmp";
         File file = new File(name);
 
         try {

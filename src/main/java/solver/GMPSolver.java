@@ -2,7 +2,9 @@ package solver;
 
 import detector.Detector;
 import graphs.BPGraph;
+import scheduler.LoadBalancer;
 import structs.Info;
+import structs.Parameters;
 import structs.SearchList;
 
 import java.io.File;
@@ -13,7 +15,7 @@ public class GMPSolver extends ASMSolver {
     private int remainingEdges = Integer.MAX_VALUE;
     private SearchList list = new SearchList();
 
-    public int solve(BPGraph graph, Detector detector, Info info) {
+    public int solve(BPGraph graph, Parameters params, Detector detector, Info info) {
         //set up functions
         int cycle[] = new int[3];
         info.setMaxLower(graph.getLowerBound());
@@ -25,28 +27,21 @@ public class GMPSolver extends ASMSolver {
 
         list.init(info, 0);
         info.initFileCheck(graph.getUpperBound(), graph.getLowerBound());
-        info.setTotal(0);
+        info.setTotal(0); //TODO: set 0-index thread's total to 0
         detector.clean();
 
         //TODO: Move this somewhere else
-        File folder = new File(info.getRootFolder());
+        File folder = new File(info.getRootDirectory());
         folder.mkdir();
 
-        //actual algorithm
-        Solver: while (info.getMaxLower() != info.getMaxUpper() && !info.isFinished() ) {
-
-
-            //TODO: remove these print statements
-//            System.out.println("Cycle Number: " + graph.getCycleNumber() + " LB: " + graph.getLowerBound() + " UB: " + graph.getUpperBound()
-//                    + " INFOLB: " + info.getMaxLower() + " INFOUB: " + info.getMaxUpper() + " GENES_REMAIN: " + graph.getGeneNumber());
-
-
+        //Begin branch-and-bound algorithm
+        while (info.getMaxLower() != info.getMaxUpper() && !info.isFinished() ) {
             //Some parallel bookkeeping functions and load balancing functions first
             if(info.getThreadNumber() > 1) {
 //                long os = System.currentTimeMillis();
-//                if (info.th_total[0][info.max_up[0]] > p.th_num
+                if(info.getThreadTotal(0, info.getMaxUpper()) > params.getThreadNumber());
 //                        && !info.is_parallel) {
-//                    LoadBalancer.fork_threads(g, p, info, ade, list);
+//                    LoadBalancer.forkThreads(graph, params, info, detector, list);
 //                    start_time = System.currentTimeMillis();
 //                }
 //                // only in the finalizing step to balance stacks

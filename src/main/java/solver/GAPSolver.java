@@ -3,7 +3,6 @@ package solver;
 import detector.Detector;
 import graphs.BPGraph;
 import structs.Info;
-import structs.SearchList;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class GAPSolver extends ASMSolver {
     public int solve(BPGraph graph, Detector detector, Info info) {
 
         //TODO: MOVE THIS ELSEWHERE
-        File folder = new File(info.getRootFolder());
+        File folder = new File(info.getRootDirectory());
         folder.mkdir();
 
 //        File solution = new File("solution.gen"); // TODO: add capability to change solution file name
@@ -79,7 +78,7 @@ public class GAPSolver extends ASMSolver {
     private ArrayList<String> fromFile(Info info) {
         ArrayList<String> edges;
 
-        File inFile = new File(info.getRootFolder() + System.getProperty("file.separator") + currFile + ".tmp");
+        File inFile = new File(info.getRootDirectory() + System.getProperty("file.separator") + currFile + ".tmp");
         try {
             BufferedReader reader = new BufferedReader(new FileReader(inFile));
             edges = new ArrayList<>();
@@ -98,7 +97,7 @@ public class GAPSolver extends ASMSolver {
 
     private void toFile(ArrayList<String> vertices, Info info) {
         try {
-            FileWriter out = new FileWriter(info.getRootFolder() + System.getProperty("file.separator") + newFile + ".tmp");
+            FileWriter out = new FileWriter(info.getRootDirectory() + System.getProperty("file.separator") + newFile + ".tmp");
             for (int i = 0; i < vertices.size(); ++i) {
                 if (i > 0)
                     out.write(" ");
