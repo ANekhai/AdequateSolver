@@ -37,6 +37,8 @@ public abstract class Graph {
 
     public int getDegree(String node) { return graph.degree(node); }
 
+    public EndpointPair<String> incidentNodes(int edge) { return graph.incidentNodes(edge); }
+
     public Set<Integer> incidentEdges(String node) { return graph.incidentEdges(node); }
 
     public Set<String> getAdjacentNodes(String node) {

@@ -18,6 +18,18 @@ public class ContractedGraph extends Graph {
         addGenome(order);
     }
 
+    public ContractedGraph(Graph graph) {
+        this.graph = NetworkBuilder.undirected().allowsParallelEdges(true).allowsSelfLoops(true).build();
+
+        // add edges in graph to new graph
+        for (int edge : graph.getEdges()) {
+            EndpointPair<String> nodes = graph.incidentNodes(edge);
+            addEdge(nodes.nodeU(), nodes.nodeV());
+        }
+        this.duplicated = graph.duplicated;
+
+    }
+
     private ArrayList<String> getLabels(String gene){
         ArrayList<String> labels = new ArrayList<>();
         if (gene.charAt(0) == '-') {

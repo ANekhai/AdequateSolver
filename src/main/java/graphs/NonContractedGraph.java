@@ -21,6 +21,22 @@ public class NonContractedGraph extends Graph {
         addGenome(order);
     }
 
+    public NonContractedGraph(Graph graph) {
+        this.graph = NetworkBuilder.undirected().allowsParallelEdges(true).allowsSelfLoops(true).build();
+
+        // add edges in graph to new graph
+        for (int edge : graph.getEdges()) {
+            EndpointPair<String> nodes = graph.incidentNodes(edge);
+            addEdge(nodes.nodeU(), nodes.nodeV());
+        }
+        this.duplicated = graph.duplicated;
+
+        this.duplicated = graph.duplicated;
+        //TODO: add a way to access gene enum
+//        this.geneEnum = new HashMap<String, Integer>(graph.geneEnum);
+
+    }
+
     private ArrayList<String> getLabels(String gene) {
         String name;
         if (gene.charAt(0) == '-') {

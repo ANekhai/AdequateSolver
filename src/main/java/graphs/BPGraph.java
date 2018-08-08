@@ -69,6 +69,41 @@ public class BPGraph {
         initArrays();
     }
 
+    public BPGraph(BPGraph graph) { //TODO: test this
+        // Copy graphs over
+        for (Graph color : graph.colors) {
+            if (color instanceof ContractedGraph) {
+                this.colors.add(new ContractedGraph(color));
+                this.contracted = true;
+            } else {
+                this.colors.add(new NonContractedGraph(color));
+                this.contracted = false;
+            }
+
+        }
+
+        this.duplicated = graph.duplicated;
+        this.availableVertices = new HashMap<>(graph.availableVertices);
+        this.cycleNumber = graph.cycleNumber;
+        this.cycles = new ArrayList<>(graph.cycles);
+        this.geneNumber = graph.geneNumber;
+        this.upperBound = graph.upperBound;
+        this.lowerBound = graph.lowerBound;
+        this.footprint = new ArrayList<>(graph.footprint);
+        this.tempFootprint = new ArrayList<>(graph.tempFootprint);
+        this.tempSubgraphs = new ArrayList<>(graph.tempSubgraphs);
+
+        this.edgesPreShrink = new ArrayList<>();
+        for (HashMap<String, String> edges : graph.edgesPreShrink)
+            this.edgesPreShrink.add(new HashMap<>(edges));
+        this.vertexRank = new ArrayList<>();
+        for (HashMap<String, Integer> vertexRanks : graph.vertexRank)
+            this.vertexRank.add(new HashMap<>(vertexRanks));
+        this.cycleRank = new ArrayList<>();
+        for (HashMap<String, Integer> cycleRanks : graph.cycleRank)
+            this.cycleRank.add(new HashMap<>(cycleRanks));
+
+    }
 
 
     //Getters and Setters

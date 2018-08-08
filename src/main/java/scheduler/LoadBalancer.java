@@ -51,7 +51,11 @@ public class LoadBalancer {
 //
 //                info.th_total[from_thread][max_ub] -= info.max_elem_sz;
 //                info.th_total[to_thread][max_ub] += info.max_elem_sz;
+                info.decreaseTotal(fromThread, info.getMaxElementSize());
+                info.increaseTotal(toThread, info.getMaxElementSize());
 
+                info.decreaseThreadTotal(fromThread, maxUpper, info.getMaxElementSize());
+                info.increaseThreadTotal(toThread, maxUpper, info.getMaxElementSize());
             }
             result = true;
         }
@@ -64,7 +68,7 @@ public class LoadBalancer {
     public static boolean balanceStack(BPGraph graph, Parameters params, Info info, Detector detector, SearchList list,
                                        int maxUpper, int fromThread) {
 
-//        int gran = list.list[maxUpper].c_check / 2; //TODO: add this
+        int gran = list.getElement(maxUpper).getChildCheck() / 2;
         if (gran < 200)
             return false;
         // distribute stacks
@@ -82,16 +86,15 @@ public class LoadBalancer {
         System.out.println("Balancing stacks from thread " + fromThread + " to thread " + toThread);
         info.setThreadMaxLower(toThread, info.getThreadMaxLower(fromThread));
         info.setThreadMaxUpper(toThread, info.getThreadMaxUpper(fromThread));
-        SearchList tlist = new SearchList();
-        tlist.init(info, toThread);
-//        tlist.list[info.max_up[to_thread]].fork(gran, //TODO: Add this
-//                list.list[info.max_up[from_thread]], from_thread, to_thread,
-//                info);
+        SearchList tList = new SearchList();
+        tList.init(info, toThread);
+        tList.getElement(info.getThreadMaxUpper(toThread)).fork(gran,
+                list.getElement(info.getThreadMaxUpper(fromThread)), fromThread, toThread, info);
 
-//        BPGraph tg = new BPGraph(graph); //Todo: need to implement a graph copying function
+        BPGraph tGraph = new BPGraph(graph);
         Detector tdetector = new Detector();
 
-        (new Thread(new ExactThread(tg, params, info, tdetector, tlist, toThread))).start();
+        (new Thread(new ExactThread(tGraph, params, info, tdetector, tList, toThread))).start();
         info.unlock(toThread);
         return true;
     }
@@ -99,16 +102,15 @@ public class LoadBalancer {
     public static void forkThreads(BPGraph graph, Parameters params, Info info, Detector detector, SearchList list) {
         int gran = info.getThreadTotal(0, info.getMaxUpper()) / params.getThreadNumber();
         for (int i = 1; i < params.getThreadNumber(); ++i) {
-            SearchList tlist = new SearchList();
-            tlist.init(info, i);
-//            tlist.list[info.max_up[0]].fork(gran, list.list[info.max_up[0]], 0, \\TODO: Add this
-//                    i, info);
-//            BPGraph tg = new BPGraph(graph);
+            SearchList tList = new SearchList();
+            tList.init(info, i);
+            tList.getElement(info.getMaxUpper()).fork(gran, list.getElement(info.getMaxUpper()), 0, i, info);
+            BPGraph tGraph = new BPGraph(graph);
             Detector tdetector = new Detector();
 
             info.setThreadMaxLower(i, info.getMaxLower());
             info.setThreadMaxUpper(i, info.getMaxUpper());
-            (new Thread(new ExactThread(tg, params, info, tdetector, tlist, i))).start();
+            (new Thread(new ExactThread(tGraph, params, info, tdetector, tList, i))).start();
 
         }
         info.setParallel();

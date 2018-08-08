@@ -71,4 +71,6 @@ public class SearchList {
     }
 
     public void setNull(int upperBound) { this.list[upperBound] = null; }
+
+    public Element getElement(int index) { return this.list[index]; }
 }

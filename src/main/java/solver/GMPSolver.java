@@ -27,7 +27,7 @@ public class GMPSolver extends ASMSolver {
 
         list.init(info, 0);
         info.initFileCheck(graph.getUpperBound(), graph.getLowerBound());
-        info.setTotal(0); //TODO: set 0-index thread's total to 0
+        info.resetTotal(0); //TODO: set 0-index thread's total to 0
         detector.clean();
 
         //TODO: Move this somewhere else
@@ -38,18 +38,17 @@ public class GMPSolver extends ASMSolver {
         while (info.getMaxLower() != info.getMaxUpper() && !info.isFinished() ) {
             //Some parallel bookkeeping functions and load balancing functions first
             if(info.getThreadNumber() > 1) {
-//                long os = System.currentTimeMillis();
-                if(info.getThreadTotal(0, info.getMaxUpper()) > params.getThreadNumber());
-//                        && !info.is_parallel) {
-//                    LoadBalancer.forkThreads(graph, params, info, detector, list);
-//                    start_time = System.currentTimeMillis();
-//                }
-//                // only in the finalizing step to balance stacks
-//                else if (info.check_running() < info.num_threads
-//                        && info.max_low[0] == (info.max_up[0] - 1)) {
-//                    LoadBalancer.balance_stack(g, p, info, ade, list,
-//                            info.max_up[0], 0);
-//                }
+
+                if(info.getThreadTotal(0, info.getMaxUpper()) > params.getThreadNumber()
+                        && !info.isParallel()) {
+                    LoadBalancer.forkThreads(graph, params, info, detector, list);
+                }
+                // only in the finalizing step to balance stacks
+                else if (info.checkRunning() < info.getThreadNumber()
+                        && info.getMaxLower() == (info.getMaxUpper() - 1)) {
+                    LoadBalancer.balanceStack(graph, params, info, detector, list,
+                            info.getMaxUpper(), 0);
+                }
 //                long oe = System.currentTimeMillis();
 //                info.other_time[0] += (oe - os);
             }
@@ -64,7 +63,7 @@ public class GMPSolver extends ASMSolver {
                     continue;
                 }
 //                info.checkStatus(list, 0); used to print what's happening, as well as adjusting memory usage metrics
-//                ASMSolver.checkUpdate(0); // Used when multiple threads all working at once
+                ASMSolver.checkUpdate(0, info, list); // Used when multiple threads all working at once
 
                 graph.expand(graph.getFootprint(), 0, graph.getFootprintSize());
                 graph.shrink(graph.getTempSubgraphs(), 0, graph.getTempSubgraphsSize());
@@ -131,11 +130,11 @@ public class GMPSolver extends ASMSolver {
                 if (graph.getLowerBound() > info.getMaxLower()) {
                     list.clean(graph.getLowerBound(), info);
                     info.setMaxLower(graph.getLowerBound());
-                    tempSolution = (ArrayList<String>) graph.getFootprint().clone();
-                    remainingEdges = graph.getGeneNumber();
+                    tempSolution = new ArrayList<>(graph.getFootprint());
+                    remainingEdges = graph.getGeneNumber(); // TODO: Is this necessary?
                 }
                 if (graph.getLowerBound() == info.getMaxLower() && graph.getGeneNumber() < remainingEdges) {
-                    tempSolution = (ArrayList<String>) graph.getFootprint().clone();
+                    tempSolution = new ArrayList<>(graph.getFootprint());
                     remainingEdges = graph.getGeneNumber();
                 }
 

@@ -35,14 +35,14 @@ public class Info {
     private int fileBase;
     private long breakNumber;
     private int frequency = 0;
-//    private long break_num;
+    //    private long break_num;
 //    private boolean isBuffered;
     private int maxElementSize;
     private int averageNodeNumber;
-//    private boolean enableTrace = false;
+    //    private boolean enableTrace = false;
     private boolean isParallel = false;
     private int threadTotal[][];
-//    private float spaceUsage[][];
+    //    private float spaceUsage[][];
 //    private float actualUsage[][];
 //    private float actualBytes = 0;
 //    private boolean isZero;
@@ -59,7 +59,7 @@ public class Info {
         countIterations = new int[threadNumber];
         threadCount = new int[threadNumber];
         total = new int[threadNumber];
-//        time = new long[threadNumber];
+//        time = new long[thread];
 //        bound_time = new long[p.th_num];
 //        as_time = new long[p.th_num];
 //        vec_time = new long[p.th_num];
@@ -84,38 +84,56 @@ public class Info {
         this.fileBase = lowerBound;
     }
 
-    public void incrementFileCheck(int threadID, int upperBound) {
-        ++this.fileCheck[threadID][upperBound];
+    public void incrementFileCheck(int thread, int upperBound) {
+        ++this.fileCheck[thread][upperBound];
     }
 
-    public void decrementFileCheck(int threadID, int upperBound) {
-        --this.fileCheck[threadID][upperBound];
+    public void decrementFileCheck(int thread, int upperBound) {
+        --this.fileCheck[thread][upperBound];
     }
 
-    public int getFileCheck(int threadID, int upperBound) {
-        return fileCheck[threadID][upperBound];
+    public int getFileCheck(int thread, int upperBound) {
+        return fileCheck[thread][upperBound];
     }
 
     //GETTERS AND SETTERS
-    public boolean isStarted() { return started; }
+    public boolean isStarted() {
+        return started;
+    }
 
-    public int getThreadNumber() { return threadNumber; }
+    public int getThreadNumber() {
+        return threadNumber;
+    }
 
-    public int getMaxLower() { return maxLower[0]; }
+    public int getMaxLower() {
+        return maxLower[0];
+    }
 
-    public int getMaxUpper() { return maxUpper[0]; }
+    public int getMaxUpper() {
+        return maxUpper[0];
+    }
 
-    public String getRootDirectory() { return rootDirectory; }
+    public String getRootDirectory() {
+        return rootDirectory;
+    }
 
-    public void setMaxUpper(int maxUpper) { this.maxUpper[0] = maxUpper; }
+    public void setMaxUpper(int maxUpper) {
+        this.maxUpper[0] = maxUpper;
+    }
 
-    public void setMaxLower(int maxLower) { this.maxLower[0] = maxLower; }
+    public void setMaxLower(int maxLower) {
+        this.maxLower[0] = maxLower;
+    }
 
     //Member functions
 
-    public void markStarted() { started = true; }
+    public void markStarted() {
+        started = true;
+    }
 
-    public void addIteration() { ++countIterations[0]; }
+    public void addIteration() {
+        ++countIterations[0];
+    }
 
     public boolean checkBreakNumber() {
         if (breakNumber == -1) {
@@ -126,50 +144,135 @@ public class Info {
 
     }
 
-    public void markFinished() { globalFinished = true; }
+    public void markFinished() {
+        globalFinished = true;
+    }
 
-    public void setThreadMaxUpper(int threadID, int value) { this.maxUpper[threadID] = value; }
+    public void setThreadMaxUpper(int thread, int value) {
+        this.maxUpper[thread] = value;
+    }
 
-    public void setThreadMaxLower(int threadID, int value) { this.maxLower[threadID] = value; }
+    public void setThreadMaxLower(int thread, int value) {
+        this.maxLower[thread] = value;
+    }
 
-    public int getThreadMaxUpper(int threadID) { return maxUpper[threadID]; }
+    public int getThreadMaxUpper(int thread) {
+        return maxUpper[thread];
+    }
 
 
-    public int getThreadMaxLower(int threadID) { return maxLower[threadID]; }
+    public int getThreadMaxLower(int thread) {
+        return maxLower[thread];
+    }
 
-    public int getMaxElementSize() { return maxElementSize; }
+    public int getMaxElementSize() {
+        return maxElementSize;
+    }
 
-    public boolean isLocked(int threadID) { return isLocked[threadID]; }
+    public boolean isLocked(int thread) {
+        return isLocked[thread];
+    }
 
-    public void incrementCount(int thread) { ++this.countIterations[thread]; }
+    public void incrementCount(int thread) {
+        ++this.countIterations[thread];
+    }
 
-    public void setRoot() { this.isRoot = true; }
+    public void setRoot() {
+        this.isRoot = true;
+    }
 
-    public void decrementMaxUpper() { --this.maxUpper[0]; }
+    public void decrementMaxUpper() {
+        --this.maxUpper[0];
+    }
 
-    public void incrementSubgraphNumber() { ++this.numberAS; }
+    public void incrementSubgraphNumber() {
+        ++this.numberAS;
+    }
 
-    public boolean getKernel() { return kernel; }
+    public boolean getKernel() {
+        return kernel;
+    }
 
-    public void setKernel() { kernel = true; }
+    public void setKernel() {
+        kernel = true;
+    }
 
-    public void setKernelSize(int kernelSize) { this.kernelSize = kernelSize; }
+    public void setKernelSize(int kernelSize) {
+        this.kernelSize = kernelSize;
+    }
 
-    public int getCount(int threadNumber) { return this.threadCount[threadNumber]; }
+    public int getCount(int thread) {
+        return this.threadCount[thread];
+    }
 
-    public int getFrequency() {return this.frequency; }
+    public int getFrequency() {
+        return this.frequency;
+    }
 
-    public void setTotal(int threadNumber) { this.total[threadNumber] = 0; }
+    public void resetTotal(int thread) {
+        this.total[thread] = 0;
+    }
+    
+    public void setTotal(int thread, int value) {
+        
+    }
 
-    public boolean isFinished() { return globalFinished; }
+    public boolean isFinished() {
+        return globalFinished;
+    }
 
-    public void decrementTotal(int threadNumber) { --total[threadNumber]; }
+    public void decrementTotal(int thread) {
+        --total[thread];
+    }
 
-    public void unlock(int i) { isLocked[i] = false; }
+    public void unlock(int i) {
+        isLocked[i] = false;
+    }
 
-    public void lock(int i) { isLocked[i] = true; }
+    public void lock(int i) {
+        isLocked[i] = true;
+    }
 
-    public int getThreadTotal(int thread, int maxUpper) { return threadTotal[thread][maxUpper]; }
+    public int getThreadTotal(int thread, int maxUpper) {
+        return threadTotal[thread][maxUpper];
+    }
 
-    public void setParallel() { isParallel = true; }
+    public void setParallel() {
+        isParallel = true;
+    }
+
+    public void decreaseTotal(int thread, int value) {
+        this.total[thread] -= value;
+    }
+
+    public void increaseTotal(int thread, int value) {
+        this.total[thread] += value;
+    }
+
+    public void decreaseThreadTotal(int thread, int upperBound, int value) {
+        this.threadTotal[thread][upperBound] -= value;
+    }
+
+    public void increaseThreadTotal(int thread, int upperBound, int value) {
+        this.threadTotal[thread][upperBound] += value;
+    }
+
+    public boolean isParallel() {
+        return parallel;
+    }
+
+    public int checkRunning() {
+        int result = 0;
+        int sumCount = 0;
+        for (int i = 0; i < this.threadNumber; ++i) {
+            if (this.maxLower[i] < this.maxUpper[i] && this.countIterations[i] <= this.breakNumber ) {
+                result++;
+                sumCount += this.countIterations[i];
+            }
+        }
+        if (sumCount >= this.breakNumber){
+            this.globalFinished = true;
+        }
+        return result;
+    }
 }
