@@ -14,12 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GMPSolverTest {
-    BPGraph graph;
-    ASMSolver solver;
-    Detector detector = new Detector();
-    Parameters params;
-    Info info;
-    String endLine = System.getProperty("line.separator");
+    private BPGraph graph;
+    private ASMSolver solver;
+    private Detector detector = new Detector();
+    private Parameters params;
+    private Info info;
+
+    private String endLine = System.getProperty("line.separator");
 
     @BeforeEach
     void setUp() {
@@ -43,50 +44,14 @@ class GMPSolverTest {
     }
 
     @Test
-    void testCollapseOnGenomeWithAS2s() {
-        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 2 @" + endLine +
-                ">Two" + endLine + "1 -2 @" + endLine + ">Three" + endLine + "1 @" + endLine + "2 @"));
-
-        graph = new BPGraph(in);
-
-        assertTrue(solver.collapse(graph, detector, info));
-
-        assertEquals(4, graph.getCycleNumber());
-    }
-
-    @Test
-    void testCollapseOnGenomeWithAS1sAnd2s() {
-        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 2 @" + endLine + "3 @" +
-                endLine + ">Two" + endLine + "1 -2 @" + endLine + "3 @" + endLine +
-                ">Three" + endLine + "1 @" + endLine + "2 @" + endLine + "3 @"));
-
-        graph = new BPGraph(in);
-
-        assertTrue(solver.collapse(graph, detector, info));
-
-        assertEquals(7, graph.getCycleNumber());
-
-    }
-
-    @Test
     void testExactSolverWithIdenticalGenomes() {
         BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 2 3 @" + endLine +
                 ">Two" + endLine + "1 2 3 @" + endLine + ">Three" + endLine + "1 2 3 @"));
 
         graph = new BPGraph(in);
 
-        assertEquals(9, solver.solve(graph, detector, info));
+        assertEquals(9, solver.solve(graph, params, detector, info));
 
-    }
-
-    @Test
-    void testExactSolverWithAS2() {
-        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 2 @" + endLine +
-                ">Two" + endLine + "1 -2 @" + endLine + ">Three" + endLine + "1 @" + endLine + "2 @"));
-
-        graph = new BPGraph(in);
-
-        assertEquals(4, solver.solve(graph, detector, info));
     }
 
     //TODO: breaks on expand
@@ -101,7 +66,7 @@ class GMPSolverTest {
 
         int lower = graph.getLowerBound(), upper = graph.getUpperBound();
 
-        int result = solver.solve(graph, detector, info);
+        int result = solver.solve(graph, params, detector, info);
 
         assertTrue(lower <= result);
         assertTrue(upper >= result);
@@ -119,11 +84,48 @@ class GMPSolverTest {
         graph = new BPGraph(in);
         int lower = graph.getLowerBound(), upper = graph.getUpperBound();
 
-        int result = solver.solve(graph, detector, info);
+        int result = solver.solve(graph, params, detector, info);
 
         assertTrue(lower <= result);
         assertTrue(upper >= result);
 
     }
+
+    //TODO: Add back in when errors with AS2s fixed and AS2 added back to algorithm
+//    @Test
+//    void testCollapseOnGenomeWithAS2s() {
+//        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 2 @" + endLine +
+//                ">Two" + endLine + "1 -2 @" + endLine + ">Three" + endLine + "1 @" + endLine + "2 @"));
+//
+//        graph = new BPGraph(in);
+//
+//        assertTrue(solver.collapse(graph, detector, info));
+//
+//        assertEquals(4, graph.getCycleNumber());
+//    }
+//
+//    @Test
+//    void testCollapseOnGenomeWithAS1sAnd2s() {
+//        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 2 @" + endLine + "3 @" +
+//                endLine + ">Two" + endLine + "1 -2 @" + endLine + "3 @" + endLine +
+//                ">Three" + endLine + "1 @" + endLine + "2 @" + endLine + "3 @"));
+//
+//        graph = new BPGraph(in);
+//
+//        assertTrue(solver.collapse(graph, detector, info));
+//
+//        assertEquals(7, graph.getCycleNumber());
+//
+//    }
+//
+//    @Test
+//    void testExactSolverWithAS2() {
+//        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 2 @" + endLine +
+//                ">Two" + endLine + "1 -2 @" + endLine + ">Three" + endLine + "1 @" + endLine + "2 @"));
+//
+//        graph = new BPGraph(in);
+//
+//        assertEquals(4, solver.solve(graph, params, detector, info));
+//    }
 
 }

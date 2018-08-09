@@ -54,8 +54,8 @@ public class LoadBalancer {
                 info.decreaseTotal(fromThread, info.getMaxElementSize());
                 info.increaseTotal(toThread, info.getMaxElementSize());
 
-                info.decreaseThreadTotal(fromThread, maxUpper, info.getMaxElementSize());
-                info.increaseThreadTotal(toThread, maxUpper, info.getMaxElementSize());
+                info.decreaseTotal(fromThread, maxUpper, info.getMaxElementSize());
+                info.increaseTotal(toThread, maxUpper, info.getMaxElementSize());
             }
             result = true;
         }
@@ -74,7 +74,7 @@ public class LoadBalancer {
         // distribute stacks
         int toThread = -1;
         for (int i = 0; i < info.getThreadNumber(); ++i) {
-            if (info.getThreadMaxUpper(i) == info.getThreadMaxLower(i) && !info.isLocked(i)) {
+            if (info.getUpperBound(i) == info.getLowerBound(i) && !info.isLocked(i)) {
                 toThread = i;
                 info.lock(i);
                 break;
@@ -84,12 +84,12 @@ public class LoadBalancer {
             return false;
 
         System.out.println("Balancing stacks from thread " + fromThread + " to thread " + toThread);
-        info.setThreadMaxLower(toThread, info.getThreadMaxLower(fromThread));
-        info.setThreadMaxUpper(toThread, info.getThreadMaxUpper(fromThread));
+        info.setLowerBound(toThread, info.getLowerBound(fromThread));
+        info.setUpperBound(toThread, info.getUpperBound(fromThread));
         SearchList tList = new SearchList();
         tList.init(info, toThread);
-        tList.getElement(info.getThreadMaxUpper(toThread)).fork(gran,
-                list.getElement(info.getThreadMaxUpper(fromThread)), fromThread, toThread, info);
+        tList.getElement(info.getUpperBound(toThread)).fork(gran,
+                list.getElement(info.getUpperBound(fromThread)), fromThread, toThread, info);
 
         BPGraph tGraph = new BPGraph(graph);
         Detector tdetector = new Detector();
@@ -108,8 +108,8 @@ public class LoadBalancer {
             BPGraph tGraph = new BPGraph(graph);
             Detector tdetector = new Detector();
 
-            info.setThreadMaxLower(i, info.getMaxLower());
-            info.setThreadMaxUpper(i, info.getMaxUpper());
+            info.setLowerBound(i, info.getMaxLower());
+            info.setUpperBound(i, info.getMaxUpper());
             (new Thread(new ExactThread(tGraph, params, info, tdetector, tList, i))).start();
 
         }

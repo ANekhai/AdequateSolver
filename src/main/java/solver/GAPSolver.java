@@ -3,6 +3,7 @@ package solver;
 import detector.Detector;
 import graphs.BPGraph;
 import structs.Info;
+import structs.Parameters;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class GAPSolver extends ASMSolver {
     long newFile = 0;
     int mostCycles = 0;
 
-    public int solve(BPGraph graph, Detector detector, Info info) {
+    public int solve(BPGraph graph, Parameters params, Detector detector, Info info) {
 
         //TODO: MOVE THIS ELSEWHERE
         File folder = new File(info.getRootDirectory());

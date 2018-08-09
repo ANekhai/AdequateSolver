@@ -17,6 +17,9 @@ public abstract class Graph {
     abstract void addGenome(Genome order);
 
     public void addEdge(String u, String v) {
+        if (getNodes().contains(u) || getNodes().contains(v))
+            duplicated = true;
+
         graph.addEdge(u, v, numEdges);
         ++numEdges;
     }

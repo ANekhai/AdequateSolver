@@ -47,17 +47,17 @@ class AS4Test {
         return new ContractedGraph(genome);
     }
 
-    @Test
-    void testNoAdequateSubgraphs() {
-        addGraphFromGenes("1", "2", "3", "4", "5");
-        addGraphFromGenes("1", "5", "3", "2", "4");
-        addGraphFromGenes("1", "3", "5", "4", "2");
-
-        detector.AS4(graph);
-
-        assertEquals(0, detector.numDetected);
-
-    }
+//    @Test
+//    void testNoAdequateSubgraphs() {
+//        addGraphFromGenes("1", "2", "3", "4", "5");
+//        addGraphFromGenes("1", "5", "3", "2", "4");
+//        addGraphFromGenes("1", "3", "5", "4", "2");
+//
+//        detector.AS4(graph);
+//
+//        assertEquals(0, detector.numDetected);
+//
+//    }
 
 //    @Test
 //    void testOnlyAS1s() {

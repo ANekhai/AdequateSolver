@@ -68,9 +68,9 @@ class AS1Test {
 
         assertTrue(detector.AS1(graph));
 
-        // should detect an 2 nodes in an AS for each
+        // should detect 2 nodes in an AS for each
         assertEquals(1, detector.numDetected);
-        assertEquals(6, detector.foundSubgraphs.size());
+        assertEquals(2, detector.foundSubgraphs.size());
 
     }
 

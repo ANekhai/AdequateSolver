@@ -28,7 +28,7 @@ public class TestWrapper {
         System.out.println("Initial Bounds:" + endLine + "Lower:" + graph.getLowerBound() +
                 " Upper:" + graph.getUpperBound());
 
-        int solution = solver.solve(graph, detector, info);
+        int solution = solver.solve(graph, params, detector, info);
 
 //            graph.printEdges();
 
@@ -79,7 +79,7 @@ public class TestWrapper {
         System.out.println("Initial Bounds:" + endLine + "Lower:" + graph.getLowerBound() +
                 " Upper:" + graph.getUpperBound());
 
-        int solution = solver.solve(graph, detector, info);
+        int solution = solver.solve(graph, params, detector, info);
 
         Graph median = graph.getMedian();
         Genome medianOrder = median.toGeneOrder();

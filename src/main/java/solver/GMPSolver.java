@@ -74,7 +74,7 @@ public class GMPSolver extends ASMSolver {
             info.addIteration();
             info.markStarted();
 
-            if (info.checkBreakNumber())
+            if (info.checkBreakNumber(0))
                 break;
 
             detector.detectAdequateSubgraphs(graph);
@@ -143,13 +143,13 @@ public class GMPSolver extends ASMSolver {
                     graph.setUpperBound(info.getMaxUpper());
                 }
 
-                if (graph.getLowerBound() >= info.getMaxUpper()) {
-                    info.setMaxLower(graph.getLowerBound());
-                    list = null;
-                    System.gc();
-                    info.markFinished();
-                    return info.getMaxLower();
-                }
+//                if (graph.getLowerBound() >= info.getMaxUpper()) {
+//                    info.setMaxLower(graph.getLowerBound());
+//                    list = null;
+//                    System.gc();
+//                    info.markFinished();
+//                    return info.getMaxLower();
+//                }
 
                 if(graph.getGeneNumber() > 0 && graph.getUpperBound() > info.getMaxLower()) {
                     list.add(graph, detector, start, end, graph.getUpperBound(), info);

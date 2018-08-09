@@ -51,11 +51,11 @@ public abstract class ASMSolver {
         if (info.getCount(threadNumber) % info.getFrequency() == 0) {
             int tmp_low = 0;
             for (int i = 0; i < info.getThreadNumber(); i++)
-                if (info.getThreadMaxLower(i) > tmp_low)
-                    tmp_low = info.getThreadMaxLower(i);
-            if (tmp_low > info.getThreadMaxLower(threadNumber)) {
+                if (info.getLowerBound(i) > tmp_low)
+                    tmp_low = info.getLowerBound(i);
+            if (tmp_low > info.getLowerBound(threadNumber)) {
                 list.clean(tmp_low, info);
-                info.setThreadMaxLower(threadNumber, info.getThreadMaxLower(threadNumber));
+                info.setLowerBound(threadNumber, info.getLowerBound(threadNumber));
             }
         }
     }

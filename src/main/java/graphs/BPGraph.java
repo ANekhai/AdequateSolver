@@ -345,6 +345,7 @@ public class BPGraph {
         }
     }
 
+    //TODO: Error in cycle finding!
     protected int countCycles(int firstColor, int secondColor) {
 
         String start, left, right;

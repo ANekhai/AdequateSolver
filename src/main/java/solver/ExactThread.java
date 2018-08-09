@@ -7,6 +7,8 @@ import structs.Info;
 import structs.Parameters;
 import structs.SearchList;
 
+import java.util.ArrayList;
+
 public class ExactThread implements Runnable {
     BPGraph graph;
     Parameters params;
@@ -14,6 +16,9 @@ public class ExactThread implements Runnable {
     Detector detector;
     SearchList list;
     int threadID;
+
+    ArrayList<String> tempSolution;
+    int remainingEdges;
 
     public ExactThread(BPGraph graph, Parameters params, Info info, Detector detector, SearchList list, int threadID) {
         super();
@@ -31,45 +36,45 @@ public class ExactThread implements Runnable {
 
         int cycle[] = new int[3];
 
-        info.setTotal(threadID, info.getThreadTotal(threadID, info.getThreadMaxUpper(threadID)));
+        info.setTotal(threadID, info.getThreadTotal(threadID, info.getUpperBound(threadID)));
 
         detector.clean();
 
         //Begin branch-and-bound algorithm
-        while (info.getThreadMaxLower(threadID) != info.getThreadMaxUpper(threadID) && !info.isFinished() ) {
+        while (info.getLowerBound(threadID) != info.getUpperBound(threadID) && !info.isFinished() ) {
             if (info.checkRunning() < info.getThreadNumber()
-                        && info.getThreadMaxLower(threadID) == (info.getThreadMaxUpper(threadID) - 1)) {
-                    LoadBalancer.balanceStack(graph, params, info, detector, list,
-                            info.getThreadMaxUpper(threadID), threadID);
-                }
+                        && info.getLowerBound(threadID) == (info.getUpperBound(threadID) - 1)) {
+                LoadBalancer.balanceStack(graph, params, info, detector, list,
+                        info.getUpperBound(threadID), threadID);
+            }
 //                long oe = System.currentTimeMillis();
 //                info.other_time[0] += (oe - os);
-            }
+
 
             info.incrementCount(threadID);
 
-            // Updates after first iteration of while loop
+            // load graph
             if (info.isStarted()){
 
-                if (!list.get(info.getThreadMaxUpper(threadID), graph, info)) {
-                    list.setNull(info.getThreadMaxUpper(threadID));
+                if (!list.get(info.getUpperBound(threadID), graph, info)) {
+                    list.setNull(info.getUpperBound(threadID));
                     System.gc();
-                    info.decrementMaxUpper();
+                    info.decrementUpperBound(threadID);
                     continue;
                 }
 //                info.checkStatus(list, 0); used to print what's happening, as well as adjusting memory usage metrics
-                ASMSolver.checkUpdate(0, info, list); // Used when multiple threads all working at once
+                ASMSolver.checkUpdate(threadID, info, list); // Used when multiple threads all working at once
 
                 graph.expand(graph.getFootprint(), 0, graph.getFootprintSize());
                 graph.shrink(graph.getTempSubgraphs(), 0, graph.getTempSubgraphsSize());
 
-                info.decrementTotal(0);
-                list.refreshAll(info.getMaxUpper(), info);
+                info.decrementTotal(threadID);
+                list.refreshAll(info.getUpperBound(threadID), info);
             }
-            info.addIteration();
+
             info.markStarted();
 
-            if (info.checkBreakNumber())
+            if (info.checkBreakNumber(threadID))
                 break;
 
             detector.detectAdequateSubgraphs(graph);
@@ -122,33 +127,33 @@ public class ExactThread implements Runnable {
                 }
 
 
-                if (graph.getLowerBound() > info.getMaxLower()) {
+                if (graph.getLowerBound() > info.getLowerBound(threadID)) {
                     list.clean(graph.getLowerBound(), info);
-                    info.setMaxLower(graph.getLowerBound());
-                    tempSolution = (ArrayList<String>) graph.getFootprint().clone();
+                    info.setLowerBound(threadID, graph.getLowerBound());
+                    tempSolution = new ArrayList<>(graph.getFootprint());
                     remainingEdges = graph.getGeneNumber();
                 }
-                if (graph.getLowerBound() == info.getMaxLower() && graph.getGeneNumber() < remainingEdges) {
-                    tempSolution = (ArrayList<String>) graph.getFootprint().clone();
+                if (graph.getLowerBound() == info.getLowerBound(threadID) && graph.getGeneNumber() < remainingEdges) {
+                    tempSolution = new ArrayList<>(graph.getFootprint());
                     remainingEdges = graph.getGeneNumber();
                 }
 
 
-                if (graph.getUpperBound() > info.getMaxUpper()) {
-                    graph.setUpperBound(info.getMaxUpper());
+                if (graph.getUpperBound() > info.getUpperBound(threadID)) {
+                    graph.setUpperBound(info.getUpperBound(threadID));
                 }
 
-                if (graph.getLowerBound() >= info.getMaxUpper()) {
-                    info.setMaxLower(graph.getLowerBound());
+                if (graph.getLowerBound() >= info.getUpperBound(threadID)) {
+                    info.setLowerBound(threadID, graph.getLowerBound());
                     list = null;
                     System.gc();
                     info.markFinished();
-                    return info.getMaxLower();
+                    return;
                 }
 
-                if(graph.getGeneNumber() > 0 && graph.getUpperBound() > info.getMaxLower()) {
+                if(graph.getGeneNumber() > 0 && graph.getUpperBound() > info.getLowerBound(threadID)) {
                     list.add(graph, detector, start, end, graph.getUpperBound(), info);
-                    info.incrementCount(0);
+                    info.incrementCount(threadID);
                 }
                 //restore parent graph
                 graph.expand(detector.getSubgraphs(), start, end);

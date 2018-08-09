@@ -35,10 +35,11 @@ class BPGraphTest {
         bpGraph = new BPGraph(in);
 
         assertEquals(3, bpGraph.getColorsSize());
-        assertEquals(9, bpGraph.getGeneNumber());
+        assertEquals(3, bpGraph.getGeneNumber());
 
     }
 
+    //TODO: Fill this in
     @Test
     void testMalformedStringInBufferedConstructor() {
 
@@ -79,20 +80,20 @@ class BPGraphTest {
     }
 
     //TODO: REWRITE THIS TEST AS BPGRAPH REQUIRES EQUAL GENE CONTENT RIGHT NOW
-    @Test
-    void testConnectedEdgeChecking() {
-        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 @" + endLine +
-                ">Two" + endLine + "-2 @" + endLine + ">Three" + endLine + "3 @"));
-
-        bpGraph = new BPGraph(in);
-
-        assertTrue(bpGraph.isConnected("1t", "1h") && bpGraph.isConnected("2h", "2t") &&
-                bpGraph.isConnected("3h", "3t"));
-
-        assertFalse(bpGraph.isConnected("1t", "2h"));
-        assertFalse(bpGraph.isConnected("4h", "4t"));
-
-    }
+//    @Test
+//    void testConnectedEdgeChecking() {
+//        BufferedReader in = new BufferedReader(new StringReader(">One" + endLine + "1 @" + endLine +
+//                ">Two" + endLine + "-2 @" + endLine + ">Three" + endLine + "3 @"));
+//
+//        bpGraph = new BPGraph(in);
+//
+//        assertTrue(bpGraph.isConnected("1t", "1h") && bpGraph.isConnected("2h", "2t") &&
+//                bpGraph.isConnected("3h", "3t"));
+//
+//        assertFalse(bpGraph.isConnected("1t", "2h"));
+//        assertFalse(bpGraph.isConnected("4h", "4t"));
+//
+//    }
 
     @Test
     void testShrinkWithOneEdge() {
@@ -107,7 +108,6 @@ class BPGraphTest {
         bpGraph.shrink(foundSubgraphs, 0, 1);
 
         assertTrue(bpGraph.getAdjacencyInColor("1t", 1).contains("2h"));
-        // TODO: There are problems with how the edge number is updated I think (at least with start = 0, end = 1
         // assertEquals(7, bpGraph.getEdgeNumber());
         assertEquals(1, bpGraph.getCycleNumber());
         assertEquals(2, bpGraph.getFootprintSize());
@@ -127,7 +127,6 @@ class BPGraphTest {
         bpGraph.shrink(foundSubgraphs, 0, 1);
 
         assertTrue(bpGraph.getAdjacencyInColor("1t", 1).contains("2h"));
-        // TODO: There are problems with how the edge number is updated I think (at least with start = 0, end = 1
         // assertEquals(7, bpGraph.getEdgeNumber());
         assertEquals(1, bpGraph.getCycleNumber());
         assertEquals(2, bpGraph.getFootprintSize());
@@ -153,8 +152,8 @@ class BPGraphTest {
         bpGraph = new BPGraph(in);
         bpGraph.getBounds();
 
-        assertEquals( 15, bpGraph.getLowerBound());
-        assertEquals(18, bpGraph.getUpperBound());
+        assertEquals( 9, bpGraph.getLowerBound());
+        assertEquals(9, bpGraph.getUpperBound());
     }
 
     @Test
@@ -165,10 +164,12 @@ class BPGraphTest {
         bpGraph = new BPGraph(in);
         bpGraph.getBounds();
 
-        assertEquals(13, bpGraph.getLowerBound());
-        assertEquals(16, bpGraph.getUpperBound());
+        assertEquals(7, bpGraph.getLowerBound());
+        assertEquals(7, bpGraph.getUpperBound());
 
     }
+
+    //TODO: Add test case with a different upper and lower bound
 
     //TODO: TEST CHANGING AVAILABILITY
 

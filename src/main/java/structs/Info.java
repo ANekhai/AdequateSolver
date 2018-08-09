@@ -34,7 +34,7 @@ public class Info {
     private int fileCheck[][];
     private int fileBase;
     private long breakNumber;
-    private int frequency = 0;
+    private int frequency = 1;
     //    private long break_num;
 //    private boolean isBuffered;
     private int maxElementSize;
@@ -135,11 +135,11 @@ public class Info {
         ++countIterations[0];
     }
 
-    public boolean checkBreakNumber() {
+    public boolean checkBreakNumber(int thread) {
         if (breakNumber == -1) {
             return false;
         } else {
-            return countIterations[0] > breakNumber;
+            return countIterations[thread] > breakNumber;
         }
 
     }
@@ -148,20 +148,20 @@ public class Info {
         globalFinished = true;
     }
 
-    public void setThreadMaxUpper(int thread, int value) {
+    public void setUpperBound(int thread, int value) {
         this.maxUpper[thread] = value;
     }
 
-    public void setThreadMaxLower(int thread, int value) {
+    public void setLowerBound(int thread, int value) {
         this.maxLower[thread] = value;
     }
 
-    public int getThreadMaxUpper(int thread) {
+    public int getUpperBound(int thread) {
         return maxUpper[thread];
     }
 
 
-    public int getThreadMaxLower(int thread) {
+    public int getLowerBound(int thread) {
         return maxLower[thread];
     }
 
@@ -249,11 +249,11 @@ public class Info {
         this.total[thread] += value;
     }
 
-    public void decreaseThreadTotal(int thread, int upperBound, int value) {
+    public void decreaseTotal(int thread, int upperBound, int value) {
         this.threadTotal[thread][upperBound] -= value;
     }
 
-    public void increaseThreadTotal(int thread, int upperBound, int value) {
+    public void increaseTotal(int thread, int upperBound, int value) {
         this.threadTotal[thread][upperBound] += value;
     }
 
@@ -274,5 +274,9 @@ public class Info {
             this.globalFinished = true;
         }
         return result;
+    }
+
+    public void decrementUpperBound(int thread) {
+        --this.maxUpper[thread];
     }
 }

@@ -39,10 +39,6 @@ public class ContractedGraph extends Graph {
             labels.add(gene + "t"); labels.add(gene + "h");
         }
 
-        if (getNodes().contains(labels.get(0)) || getNodes().contains(labels.get(1))) {
-            this.duplicated = true; //TODO: Test this
-        }
-
         return labels;
     }
 
@@ -85,7 +81,6 @@ public class ContractedGraph extends Graph {
                 if (this.getDegree(currNode) > 1) {
                     throw new RuntimeException("Converting to order is ambiguous with duplicated genes");
                 }
-
 
                 chromosome.add(currNode);
                 available.remove(currNode);
