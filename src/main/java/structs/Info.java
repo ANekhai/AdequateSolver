@@ -54,7 +54,7 @@ public class Info {
         maxUpper = new int[threadNumber];
         maxLower = new int[threadNumber];
         // rootDirectory = params.getRootDirectory();
-        rootDirectory = "temp";
+        rootDirectory = params.getRootFolder();
         result = new int[threadNumber];
         countIterations = new int[threadNumber];
         threadCount = new int[threadNumber];
@@ -70,7 +70,7 @@ public class Info {
         breakNumber = params.getBreakNumber();
 //        this.freq = p.check_freq;
 //        this.is_buffered = p.is_buffered;
-        this.maxElementSize = params.getThreshhold();
+        this.maxElementSize = params.getThreshold();
 //        this.avg_node_num = p.avg_node_num;
 //        this.enable_trace = p.enable_trace;
 //        space_usage = new float[p.th_num][3];

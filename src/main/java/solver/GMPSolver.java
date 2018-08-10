@@ -133,6 +133,7 @@ public class GMPSolver extends ASMSolver {
                     tempSolution = new ArrayList<>(graph.getFootprint());
                     remainingEdges = graph.getGeneNumber(); // TODO: Is this necessary?
                 }
+
                 if (graph.getLowerBound() == info.getMaxLower() && graph.getGeneNumber() < remainingEdges) {
                     tempSolution = new ArrayList<>(graph.getFootprint());
                     remainingEdges = graph.getGeneNumber();
@@ -142,14 +143,6 @@ public class GMPSolver extends ASMSolver {
                 if (graph.getUpperBound() > info.getMaxUpper()) {
                     graph.setUpperBound(info.getMaxUpper());
                 }
-
-//                if (graph.getLowerBound() >= info.getMaxUpper()) {
-//                    info.setMaxLower(graph.getLowerBound());
-//                    list = null;
-//                    System.gc();
-//                    info.markFinished();
-//                    return info.getMaxLower();
-//                }
 
                 if(graph.getGeneNumber() > 0 && graph.getUpperBound() > info.getMaxLower()) {
                     list.add(graph, detector, start, end, graph.getUpperBound(), info);
@@ -166,7 +159,29 @@ public class GMPSolver extends ASMSolver {
             graph.shrink(tempSolution, 0, tempSolution.size());
             graph.getBounds();
         }
-        graph.getBounds();
+
+        //Fill in remaining edges in median
+        detector.detectAdequateSubgraphs(graph);
+        while (detector.getNumDetected() > 0) {
+            int gran = detector.getDetectedSubgraphsSize() / detector.getNumDetected();
+            int tempCycleNumber = graph.getCycleNumber();
+            for (int i = 0; i < detector.getNumDetected(); ++i) {
+                int start = i*gran;
+                int end = (i+1)*gran;
+
+                graph.shrink(detector.getSubgraphs(), start, end);
+                graph.getBounds();
+                if (graph.getCycleNumber() > tempCycleNumber)
+                    break;
+                else {
+                    graph.expand(detector.getSubgraphs(), start, end);
+                }
+
+            }
+            detector.clean();
+            detector.detectAdequateSubgraphs(graph);
+        }
+
 
         //TODO: move this somewhere else
         folder.delete();

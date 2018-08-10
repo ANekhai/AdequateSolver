@@ -406,29 +406,6 @@ public class BPGraph {
         for (int i = 0; i < footprint.size(); i += 2)
             median.addEdge(footprint.get(i), footprint.get(i + 1));
 
-        //Brute Force add back Adequate Subgraph Edges
-        Detector detector = new Detector();
-        detector.detectAdequateSubgraphs(this);
-        while (detector.getNumDetected() > 0) {
-            int gran = detector.getDetectedSubgraphsSize() / detector.getNumDetected();
-            int tempCycleNumber = this.cycleNumber;
-            for (int i = 0; i < detector.getNumDetected(); ++i) {
-                int start = i*gran;
-                int end = (i+1)*gran;
-
-                shrink(detector.getSubgraphs(), start, end);
-                getBounds();
-                if (this.cycleNumber > tempCycleNumber)
-                    break;
-                else {
-                    expand(detector.getSubgraphs(), start, end);
-                }
-
-            }
-            detector.clean();
-            detector.detectAdequateSubgraphs(this);
-        }
-
         return median;
     }
 

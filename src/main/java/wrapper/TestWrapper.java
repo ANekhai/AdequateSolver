@@ -30,30 +30,6 @@ public class TestWrapper {
 
         int solution = solver.solve(graph, params, detector, info);
 
-//            graph.printEdges();
-
-        detector.detectAdequateSubgraphs(graph);
-        while (detector.getNumDetected() > 0) {
-            int gran = detector.getDetectedSubgraphsSize() / detector.getNumDetected();
-            int tempCycleNumber = graph.getCycleNumber();
-            for (int i = 0; i < detector.getNumDetected(); ++i) {
-                int start = i*gran;
-                int end = (i+1)*gran;
-
-                graph.shrink(detector.getSubgraphs(), start, end);
-                graph.getBounds();
-                if (graph.getCycleNumber() > tempCycleNumber)
-                    break;
-                else {
-                    graph.expand(detector.getSubgraphs(), start, end);
-                }
-
-            }
-            detector.clean();
-            detector.detectAdequateSubgraphs(graph);
-        }
-
-
         Graph median = graph.getMedian();
         Genome medianOrder = median.toGeneOrder();
         medianOrder.setName("Median");
