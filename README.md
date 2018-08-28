@@ -1,4 +1,2 @@
-# BPGraph
-A class to handle breakpoint graphs in Java. 
-Can read GRIMM formatted genome files and can store them as genome graphs and Multiple Breakpoint Graphs (requires Google Guava). 
-Now also contains a fork of DCJStream (which is in turn a fork of ASMedian) to solve the Genome Median Problem exactly. This functionality is a work in progress and being tweaked. 
+# AdequateSolver
+This project contains code to solve the GGHP and GAP with adequate subgraphs (still a WIP). Includes a class to handle breakpoint graphs in Java which can read GRIMM formatted genome files and can store them as genome graphs and Multiple Breakpoint Graphs (using google guava). Also contains a fork of DCJStream reimplemented with the modified breakpoint graphs to solve the GMP exactly (complete functionality with linear genomes is a WIP).  
